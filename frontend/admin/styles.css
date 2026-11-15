@@ -1,0 +1,64 @@
+/* Listenly Voice admin. Tokens from the UI design canvas: warm neutrals, ink for primary
+   actions, signal orange as the one accent. No purple/teal "AI" palette. */
+.listenly-app {
+  --lv-ground: #f4f4f1;
+  --lv-side: #fbfbfa;
+  --lv-card: #ffffff;
+  --lv-panel: #f7f7f5;
+  --lv-line: #e7e5e4;
+  --lv-line-strong: #d6d3d1;
+  --lv-ink: #1c1917;
+  --lv-text: #44403c;
+  --lv-muted: #57534e;
+  --lv-accent: #e8590c;
+  --lv-accent-text: #c2410c;
+  --lv-ok: #2f7d4f;
+  --lv-error: #b42318;
+  font-family: Geist, Inter, system-ui, sans-serif;
+  color: var(--lv-ink);
+  margin: 16px 20px 0 0;
+}
+.lv-frame { display: flex; flex-wrap: wrap; background: var(--lv-ground); border-radius: 22px; overflow: hidden; min-height: 640px; }
+.lv-side { flex: 1 1 200px; max-width: 230px; background: var(--lv-side); border-right: 1px solid var(--lv-line); padding: 20px 14px; display: flex; flex-direction: column; gap: 4px; }
+.lv-brand { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 600; margin: 0 6px 24px; }
+.lv-logo { width: 32px; height: 32px; border-radius: 9px; background: var(--lv-ink); color: #fff; display: inline-flex; align-items: center; justify-content: center; }
+.lv-nav { all: unset; box-sizing: border-box; display: flex; align-items: center; min-height: 42px; padding: 0 12px; border-radius: 12px; color: var(--lv-muted); font-size: 14px; cursor: pointer; }
+.lv-nav:focus-visible { outline: 2px solid var(--lv-accent); outline-offset: 2px; }
+.lv-nav[aria-current='page'] { background: var(--lv-card); color: var(--lv-ink); font-weight: 600; box-shadow: 0 1px 3px rgb(28 25 23 / 10%); }
+.lv-main { flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; }
+.lv-top { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; padding: 16px 24px; border-bottom: 1px solid var(--lv-line); background: var(--lv-side); }
+.lv-title { font-size: 15px; font-weight: 500; }
+.lv-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.lv-chip { font-size: 13px; color: var(--lv-muted); border: 1px solid var(--lv-line-strong); border-radius: 999px; padding: 6px 12px; background: var(--lv-card); }
+.lv-btn { min-height: 42px; padding: 0 16px; border-radius: 999px; border: 1px solid var(--lv-line-strong); background: var(--lv-card); color: var(--lv-ink); font: inherit; font-size: 14px; cursor: pointer; }
+.lv-btn-dark { background: var(--lv-ink); border-color: var(--lv-ink); color: #fff; font-weight: 500; }
+.lv-btn:disabled { opacity: 0.55; cursor: default; }
+.lv-btn:focus-visible { outline: 2px solid var(--lv-accent); outline-offset: 2px; }
+.lv-body { padding: 20px 24px 32px; display: flex; flex-direction: column; gap: 16px; }
+.lv-grid { display: flex; flex-direction: column; gap: 16px; max-width: 860px; }
+.lv-card { background: var(--lv-card); border-radius: 18px; padding: 20px; }
+.lv-card h2 { margin: 0 0 6px; font-size: 16px; font-weight: 600; color: var(--lv-ink); }
+.lv-muted { margin: 0 0 14px; color: var(--lv-muted); font-size: 14px; }
+.lv-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.lv-option { all: unset; box-sizing: border-box; display: flex; align-items: center; gap: 10px; min-height: 64px; padding: 14px 16px; border-radius: 14px; background: var(--lv-panel); border: 2px solid transparent; cursor: pointer; }
+.lv-option[aria-checked='true'] { background: var(--lv-card); border-color: var(--lv-ink); }
+.lv-option:focus-visible { outline: 2px solid var(--lv-accent); outline-offset: 2px; }
+.lv-radio { width: 18px; height: 18px; border-radius: 50%; border: 2px solid #a8a29e; box-sizing: border-box; flex-shrink: 0; }
+.lv-option[aria-checked='true'] .lv-radio { border: 6px solid var(--lv-accent); }
+.lv-option-name { font-weight: 600; font-size: 15px; }
+.lv-badge { margin-left: auto; font-size: 11px; border: 1px solid var(--lv-line-strong); border-radius: 999px; padding: 2px 8px; color: var(--lv-text); background: var(--lv-card); }
+.lv-panel { background: var(--lv-panel); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 8px; margin: 10px 0 16px; }
+.lv-panel label, .lv-two label { font-size: 14px; font-weight: 600; display: flex; flex-direction: column; gap: 6px; }
+.lv-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.lv-row input { flex: 1 1 240px; min-height: 44px; padding: 0 14px; border: 1px solid var(--lv-line-strong); border-radius: 12px; }
+.lv-two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.lv-two select { min-height: 44px; border-radius: 12px; border-color: var(--lv-line-strong); }
+.lv-two input[type='range'] { accent-color: var(--lv-ink); min-height: 44px; }
+.lv-ok { margin: 0; color: var(--lv-ok); font-size: 13px; }
+.lv-error { margin: 0; color: var(--lv-error); font-size: 13px; }
+.lv-notice { margin: 0; padding: 10px 14px; border-radius: 12px; font-size: 14px; background: var(--lv-card); border: 1px solid var(--lv-line-strong); }
+.lv-notice-error { color: var(--lv-error); }
+@media (max-width: 782px) {
+  .lv-side { max-width: none; flex-direction: row; flex-wrap: wrap; }
+  .lv-options, .lv-two { grid-template-columns: minmax(0, 1fr); }
+}
