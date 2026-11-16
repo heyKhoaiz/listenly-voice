@@ -141,4 +141,106 @@ final class PostToggleTest extends TestCase {
 
 		$this->assertSame( '', ( new Player( new Registry() ) )->shortcode() );
 	}
+
+	public function test_adds_a_classic_editor_box_only_on_chosen_types(): void {
+		$added = array();
+		Functions\when( 'add_meta_box' )->alias(
+			static function ( $id, $title, $callback, $screen, $context, $priority, $args ) use ( &$added ) {
+				$added[ $screen ] = array( $id, $context, $args );
+			}
+		);
+
+		$toggle = new PostToggle();
+		$toggle->add_meta_box( 'post' );
+		$toggle->add_meta_box( 'page' );
+
+		$this->assertSame( array( 'post' ), array_keys( $added ) );
+		$this->assertSame( 'listenly-voice', $added['post'][0] );
+		$this->assertSame( 'side', $added['post'][1] );
+		$this->assertTrue( $added['post'][2]['__back_compat_meta_box'], 'The block editor has its own panel, so hide the box there.' );
+	}
+
+	public function test_the_box_shows_a_ticked_checkbox_and_a_nonce_when_audio_is_on(): void {
+		Functions\when( 'get_post_meta' )->justReturn( '' );
+		Functions\when( 'wp_nonce_field' )->alias(
+			static function ( $action, $name ) {
+				echo '<input type="hidden" name="' . $name . '" value="nonce-for-' . $action . '">';
+			}
+		);
+		Functions\when( 'checked' )->alias(
+			static function ( $value ) {
+				echo $value ? ' checked="checked"' : '';
+			}
+		);
+
+		ob_start();
+		( new PostToggle() )->render_meta_box( (object) array( 'ID' => 7 ) );
+		$html = (string) ob_get_clean();
+
+		$this->assertStringContainsString( 'name="listenly_audio_on" value="1" checked="checked"', $html );
+		$this->assertStringContainsString( 'Audio player on this post', $html );
+		$this->assertStringContainsString( 'name="listenly_toggle_nonce"', $html );
+	}
+
+	public function test_the_box_is_unticked_when_audio_is_off(): void {
+		Functions\when( 'get_post_meta' )->justReturn( '1' );
+		Functions\when( 'wp_nonce_field' )->justReturn( '' );
+		Functions\when( 'checked' )->alias(
+			static function ( $value ) {
+				echo $value ? ' checked="checked"' : '';
+			}
+		);
+
+		ob_start();
+		( new PostToggle() )->render_meta_box( (object) array( 'ID' => 7 ) );
+		$this->assertStringNotContainsString( 'checked=', (string) ob_get_clean() );
+	}
+
+	/** Simulates the classic editor form being submitted. */
+	private function submit( array $post, bool $nonce_ok = true, bool $can_edit = true, bool $autosave = false ): void {
+		$_POST = $post;
+		Functions\when( 'wp_unslash' )->returnArg();
+		Functions\when( 'sanitize_text_field' )->returnArg();
+		Functions\when( 'wp_verify_nonce' )->justReturn( $nonce_ok ? 1 : false );
+		Functions\when( 'current_user_can' )->justReturn( $can_edit );
+		Functions\when( 'wp_is_post_autosave' )->justReturn( $autosave );
+		Functions\when( 'wp_is_post_revision' )->justReturn( false );
+		( new PostToggle() )->save_meta_box( 7 );
+	}
+
+	protected function tear_down(): void {
+		$_POST = array();
+		parent::tear_down();
+	}
+
+	public function test_unticking_the_box_turns_audio_off(): void {
+		Functions\expect( 'update_post_meta' )->once()->with( 7, PostToggle::META, true );
+		$this->submit( array( 'listenly_toggle_nonce' => 'n' ) );
+	}
+
+	public function test_ticking_the_box_turns_audio_back_on(): void {
+		Functions\expect( 'delete_post_meta' )->once()->with( 7, PostToggle::META );
+		$this->submit( array( 'listenly_toggle_nonce' => 'n', 'listenly_audio_on' => '1' ) );
+	}
+
+	public function test_saves_from_elsewhere_without_the_box_change_nothing(): void {
+		Functions\expect( 'update_post_meta' )->never();
+		Functions\expect( 'delete_post_meta' )->never();
+		$this->submit( array() );
+	}
+
+	public function test_a_bad_nonce_changes_nothing(): void {
+		Functions\expect( 'update_post_meta' )->never();
+		$this->submit( array( 'listenly_toggle_nonce' => 'forged' ), false );
+	}
+
+	public function test_someone_who_cannot_edit_the_post_changes_nothing(): void {
+		Functions\expect( 'update_post_meta' )->never();
+		$this->submit( array( 'listenly_toggle_nonce' => 'n' ), true, false );
+	}
+
+	public function test_an_autosave_changes_nothing(): void {
+		Functions\expect( 'update_post_meta' )->never();
+		$this->submit( array( 'listenly_toggle_nonce' => 'n' ), true, true, true );
+	}
 }
