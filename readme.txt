@@ -21,10 +21,14 @@ Listenly Voice adds a "Listen to this article" player to your posts.
 
 == External services ==
 
-When you choose Google Cloud as the voice, the text of a post is sent to Google Cloud Text-to-Speech (https://texttospeech.googleapis.com) to make the audio, each time a visitor presses play. Nothing is sent while the browser voice is selected.
+When you choose Google Cloud as the voice, the text of a post is sent to Google Cloud Text-to-Speech (https://texttospeech.googleapis.com) to make the audio, each time a visitor presses play. Nothing is sent while the browser voice is selected. When an admin connects a key or presses "Sample" in the setup wizard, one short fixed sentence is sent to the same service to check the key and play a sample.
 Google Cloud terms: https://cloud.google.com/terms — privacy: https://policies.google.com/privacy
 
 == Changelog ==
 
 = 0.1.0 =
 * First version.
+* Setup wizard on first activation: pick a voice (with samples and a key check), choose post types and where the player shows.
+* Player placement: top of the post, end of the post, or a floating button.
+* Player screen: post types, placement, read-along highlighting on or off, and the [listenly_player] shortcode.
+* The browser voice reads one sentence at a time and highlights it, so long articles play to the end in Chrome.

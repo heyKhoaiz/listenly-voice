@@ -29,6 +29,9 @@ final class Hooks {
 	/** Filters the player data printed on a post. */
 	const PLAYER_DATA = 'listenly/player_data';
 
+	/** Filters the allowed read-along highlight modes. Free: sentence, off. */
+	const HIGHLIGHT_MODES = 'listenly/highlight_modes';
+
 	/** Filters the text read aloud for a post. */
 	const POST_TEXT = 'listenly/post_text';
 }

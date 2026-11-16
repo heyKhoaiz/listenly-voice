@@ -55,7 +55,12 @@ final class Player {
 		if ( ! $post || ! in_array( $post->post_type, (array) Settings::get( 'post_types' ), true ) || get_post_meta( $post->ID, '_listenly_disabled', true ) ) {
 			return $content;
 		}
-		return $this->markup( $post->ID ) . $content;
+		$position = (string) Settings::get( 'position' );
+		if ( 'above' === $position ) {
+			return $this->markup( $post->ID ) . $content;
+		}
+		// End of the post, or floating: the floating bar is fixed on screen, so its place in the markup only sets reading order.
+		return $content . $this->markup( $post->ID, 'floating' === $position );
 	}
 
 	/**
@@ -69,9 +74,10 @@ final class Player {
 	/**
 	 * The mount point, with the data the player script reads.
 	 *
-	 * @param int $post_id Post ID.
+	 * @param int  $post_id  Post ID.
+	 * @param bool $floating Fixed to the corner of the screen.
 	 */
-	private function markup( int $post_id ): string {
+	private function markup( int $post_id, bool $floating = false ): string {
 		$this->enqueue();
 		$settings = Settings::all();
 		$provider = $this->providers->get( (string) $settings['provider'] );
@@ -89,7 +95,8 @@ final class Player {
 			$post_id
 		);
 		return sprintf(
-			'<div class="listenly-player" data-listenly="%s"><noscript>%s</noscript></div>',
+			'<div class="%s" data-listenly="%s"><noscript>%s</noscript></div>',
+			$floating ? 'listenly-player listenly-player--floating' : 'listenly-player',
 			esc_attr( (string) wp_json_encode( $data ) ),
 			esc_html__( 'Turn on JavaScript to listen to this article.', 'listenly-voice' )
 		);

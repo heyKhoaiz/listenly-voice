@@ -7,6 +7,10 @@
 
 namespace ListenlyVoice\Support;
 
+use ListenlyVoice\Hooks;
+use ListenlyVoice\Plugin;
+use ListenlyVoice\Tts\Registry;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -16,6 +20,9 @@ final class Settings {
 
 	const OPTION       = 'listenly_settings';
 	const SETUP_OPTION = 'listenly_setup_done';
+
+	/** Where the player goes: top of the post, end of the post, or a floating button. */
+	const POSITIONS = array( 'above', 'below', 'floating' );
 
 	/**
 	 * Defaults: the browser voice on posts, above the content, so the player works with no setup.
@@ -65,7 +72,11 @@ final class Settings {
 		$clean   = $current;
 
 		if ( isset( $input['provider'] ) ) {
-			$clean['provider'] = sanitize_key( (string) $input['provider'] );
+			$provider = sanitize_key( (string) $input['provider'] );
+			$registry = Plugin::instance() ? Plugin::instance()->providers : new Registry();
+			if ( array_key_exists( $provider, $registry->all() ) ) {
+				$clean['provider'] = $provider;
+			}
 		}
 		if ( isset( $input['voice'] ) ) {
 			$clean['voice'] = sanitize_text_field( (string) $input['voice'] );
@@ -76,8 +87,15 @@ final class Settings {
 		if ( isset( $input['post_types'] ) && is_array( $input['post_types'] ) ) {
 			$clean['post_types'] = array_values( array_filter( array_map( 'sanitize_key', $input['post_types'] ), 'post_type_exists' ) );
 		}
-		if ( isset( $input['position'] ) && in_array( $input['position'], array( 'above', 'below_title', 'floating' ), true ) ) {
+		if ( isset( $input['position'] ) && in_array( $input['position'], self::POSITIONS, true ) ) {
 			$clean['position'] = $input['position'];
+		}
+
+		if ( isset( $input['highlight'] ) ) {
+			$modes = (array) apply_filters( Hooks::HIGHLIGHT_MODES, array( 'sentence', 'off' ) );
+			if ( in_array( $input['highlight'], $modes, true ) ) {
+				$clean['highlight'] = $input['highlight'];
+			}
 		}
 
 		update_option( self::OPTION, $clean );

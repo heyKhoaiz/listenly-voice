@@ -3,6 +3,8 @@ import { __ } from './lib/i18n'
 import { config, type Settings } from './lib/config'
 import { api } from './lib/api'
 import { Voices } from './pages/Voices'
+import { Setup } from './pages/Setup'
+import { Player } from './pages/Player'
 
 type Page = 'voices' | 'player'
 
@@ -13,6 +15,7 @@ export function App() {
   const [settings, setSettings] = useState<Settings>(cfg.settings)
   const [saving, setSaving] = useState(false)
   const [notice, setNotice] = useState<{ kind: 'ok' | 'error'; text: string } | null>(null)
+  const [wizard, setWizard] = useState(!cfg.setupDone)
 
   const save = async () => {
     setSaving(true)
@@ -31,6 +34,10 @@ export function App() {
     { id: 'voices', label: __('Voices', 'listenly-voice') },
     { id: 'player', label: __('Player', 'listenly-voice') },
   ]
+
+  if (wizard) {
+    return <Setup settings={settings} onChange={setSettings} onClose={() => { setNotice(null); setWizard(false) }} />
+  }
 
   return (
     <div className="lv-frame">
@@ -52,6 +59,9 @@ export function App() {
           <span className="lv-title">{nav.find((n) => n.id === page)?.label}</span>
           <div className="lv-actions">
             <span className="lv-chip">{__('Free', 'listenly-voice')} · v{cfg.version}</span>
+            <button type="button" className="lv-btn" onClick={() => setWizard(true)}>
+              {__('Run setup', 'listenly-voice')}
+            </button>
             <button type="button" className="lv-btn lv-btn-dark" onClick={save} disabled={saving}>
               {saving ? __('Saving…', 'listenly-voice') : __('Save changes', 'listenly-voice')}
             </button>
@@ -64,12 +74,7 @@ export function App() {
             </p>
           )}
           {page === 'voices' && <Voices settings={settings} onChange={setSettings} />}
-          {page === 'player' && (
-            <section className="lv-card">
-              <h2>{__('Player', 'listenly-voice')}</h2>
-              <p className="lv-muted">{__('Player position and style settings come next.', 'listenly-voice')}</p>
-            </section>
-          )}
+          {page === 'player' && <Player settings={settings} onChange={setSettings} />}
         </main>
       </div>
     </div>

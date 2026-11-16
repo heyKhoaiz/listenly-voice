@@ -10,6 +10,7 @@ namespace ListenlyVoice\Admin;
 use ListenlyVoice\Hooks;
 use ListenlyVoice\Plugin;
 use ListenlyVoice\Support\Settings;
+use ListenlyVoice\Support\Setup;
 use ListenlyVoice\Tts\GoogleProvider;
 
 defined( 'ABSPATH' ) || exit;
@@ -98,10 +99,30 @@ final class Assets {
 				'settings'     => Settings::all(),
 				'providers'    => $providers,
 				'googleKeySet' => '' !== GoogleProvider::key(),
-				'setupDone'    => (bool) get_option( Settings::SETUP_OPTION ),
+				'setupDone'    => Setup::is_done(),
+				'postTypes'    => $this->post_types(),
 				'pro'          => false,
 			)
 		);
+	}
+
+	/**
+	 * Public post types the player can show on, with their names.
+	 *
+	 * @return array<int, array{id: string, label: string}>
+	 */
+	private function post_types(): array {
+		$list = array();
+		foreach ( get_post_types( array( 'public' => true ), 'objects' ) as $type ) {
+			if ( 'attachment' === $type->name ) {
+				continue;
+			}
+			$list[] = array(
+				'id'    => $type->name,
+				'label' => $type->labels->name,
+			);
+		}
+		return $list;
 	}
 
 	/**

@@ -15,7 +15,8 @@ beforeEach(() => {
       { id: 'google', label: 'Google Cloud', ready: false, clientSide: false, voices: [{ id: 'en-US-Neural2-F', label: 'en-US · Neural2-F', language: 'en-US' }] },
     ],
     googleKeySet: false,
-    setupDone: false,
+    setupDone: true,
+    postTypes: [{ id: 'post', label: 'Posts' }],
     pro: false,
   }
 })

@@ -10,7 +10,9 @@ namespace ListenlyVoice\Rest;
 use ListenlyVoice\Player\Text;
 use ListenlyVoice\Plugin;
 use ListenlyVoice\Support\Settings;
+use ListenlyVoice\Support\Setup;
 use ListenlyVoice\Tts\GoogleProvider;
+use ListenlyVoice\Tts\Preview;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -60,6 +62,44 @@ final class SettingsController {
 			)
 		);
 
+		// Finish, skip or restart the setup wizard.
+		register_rest_route(
+			self::NAMESPACE,
+			'/setup',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'setup' ),
+				'permission_callback' => array( $this, 'can_manage' ),
+				'args'                => array(
+					'done' => array(
+						'type'     => 'boolean',
+						'required' => true,
+					),
+				),
+			)
+		);
+
+		// A short sample in a server-side voice. Also proves the API key works.
+		register_rest_route(
+			self::NAMESPACE,
+			'/preview',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'preview' ),
+				'permission_callback' => array( $this, 'can_manage' ),
+				'args'                => array(
+					'provider' => array(
+						'type'     => 'string',
+						'required' => true,
+					),
+					'voice'    => array(
+						'type'    => 'string',
+						'default' => '',
+					),
+				),
+			)
+		);
+
 		// How many audio parts a post has. Cheap: no synthesis.
 		register_rest_route(
 			self::NAMESPACE,
@@ -88,6 +128,41 @@ final class SettingsController {
 	 */
 	public function can_manage(): bool {
 		return current_user_can( 'manage_options' );
+	}
+
+	/**
+	 * Marks setup done (and returns where "View a post" should go) or resets it.
+	 *
+	 * @param \WP_REST_Request $request Request.
+	 */
+	public function setup( \WP_REST_Request $request ): \WP_REST_Response {
+		if ( $request->get_param( 'done' ) ) {
+			Setup::complete();
+		} else {
+			Setup::reset();
+		}
+		return rest_ensure_response(
+			array(
+				'setupDone' => Setup::is_done(),
+				'viewUrl'   => esc_url_raw( Setup::view_url( (array) Settings::get( 'post_types' ) ) ),
+			)
+		);
+	}
+
+	/**
+	 * A voice sample as a data URL.
+	 *
+	 * @param \WP_REST_Request $request Request.
+	 * @return \WP_REST_Response|\WP_Error
+	 */
+	public function preview( \WP_REST_Request $request ) {
+		$providers = Plugin::instance()->providers->all();
+		$id        = sanitize_key( (string) $request->get_param( 'provider' ) );
+		if ( ! isset( $providers[ $id ] ) ) {
+			return new \WP_Error( 'listenly_no_provider', __( 'Unknown voice provider.', 'listenly-voice' ), array( 'status' => 400 ) );
+		}
+		$audio = Preview::run( $providers[ $id ], sanitize_text_field( (string) $request->get_param( 'voice' ) ) );
+		return is_wp_error( $audio ) ? $audio : rest_ensure_response( array( 'audio' => $audio ) );
 	}
 
 	/**
