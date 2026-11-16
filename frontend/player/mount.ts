@@ -2,10 +2,10 @@
 // a ready audio file (data.file, filled by extensions) → plays it;
 // server voices → MP3 parts from /wp-json/listenly/v1/audio/{post}/{part}, or with read-along on,
 // /{part}/timed: the same audio as JSON plus when each sentence starts.
-import { alignMarks, markAt, type Mark } from './marks'
+import { alignMarks, markAt, normalize, type Mark } from './marks'
 import { collectSentences, type Sentence } from './sentences'
 
-type Data = { post: number; clientSide: boolean; file?: string; audioUrl: string; speed: number; highlight: string; position: string; lang: string }
+type Data = { post: number; title?: string; clientSide: boolean; file?: string; audioUrl: string; speed: number; highlight: string; position: string; lang: string }
 
 const t = (text: string) => (window as unknown as { wp?: { i18n?: { __: (s: string, d: string) => string } } }).wp?.i18n?.__(text, 'listenly-voice') ?? text
 const SPEEDS = [0.75, 1, 1.25, 1.5, 2]
@@ -88,10 +88,27 @@ export function mount(root: HTMLElement): void {
     sentences ??= collectSentences(articleOf(root))
     const gen = ++generation
     synth.cancel()
-    if (sentences.length === 0) return finish()
+    const lang = data.lang || document.documentElement.lang || 'en-US'
+    // The title sits outside the post content in most themes, so read it first, unless the
+    // content already starts with it. Google voices read it too (it's in the server's text).
+    const title = (data.title ?? '').trim()
+    const withTitle = from === 0 && title !== '' && !normalize(sentences[0]?.text ?? '').startsWith(normalize(title))
+    if (sentences.length === 0 && !withTitle) return finish()
+    if (withTitle) {
+      const u = new SpeechSynthesisUtterance(title)
+      u.lang = lang
+      u.rate = speed
+      u.onstart = () => {
+        if (gen === generation) mark(null)
+      }
+      u.onend = () => {
+        if (gen === generation && sentences!.length === 0) finish()
+      }
+      synth.speak(u)
+    }
     sentences.slice(from).forEach((sentence, i) => {
       const u = new SpeechSynthesisUtterance(sentence.text)
-      u.lang = data.lang || document.documentElement.lang || 'en-US'
+      u.lang = lang
       u.rate = speed
       u.onstart = () => {
         if (gen !== generation) return

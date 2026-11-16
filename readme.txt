@@ -71,7 +71,7 @@ Add the `[listenly_player]` shortcode to the post, page or widget where you want
 
 = Does the post title get read? =
 
-Not yet. The player reads the post content.
+Yes. Both voices read the title first, then the post content. The title isn't highlighted, because most themes show it outside the post content.
 
 = Does it store anything about my visitors? =
 
@@ -102,5 +102,6 @@ Google Cloud terms: https://cloud.google.com/terms — privacy: https://policies
 * Setup wizard with voice samples and a key check.
 * Player at the top of the post, at the end, or as a floating button, on the post types you choose.
 * Read-along sentence highlighting, for the browser voice and Google voices.
+* The title is read before the post, with both voices.
 * Per-post on/off switch in the block editor and the classic editor, and the `[listenly_player]` shortcode.
 * One-hour cache and rate limits for Google audio.

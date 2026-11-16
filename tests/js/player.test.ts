@@ -143,6 +143,37 @@ describe('browser voice', () => {
     expect(document.querySelector('.lvp-label')).toHaveTextContent("This browser can't read articles aloud.")
   })
 
+  it('reads the post title first, without highlighting it', () => {
+    page({ title: 'How to grow tomatoes' })
+    playButton().click()
+    expect(spoken.map((u) => u.text)).toEqual(['How to grow tomatoes', 'Grow tomatoes', 'First they need sun.', 'Then water daily.'])
+    spoken[0].onstart?.()
+    expect(current()).toBeUndefined()
+  })
+
+  it('does not read the title twice when the page already starts with it', () => {
+    page({ title: 'Grow tomatoes' })
+    playButton().click()
+    expect(spoken.map((u) => u.text)).toEqual(['Grow tomatoes', 'First they need sun.', 'Then water daily.'])
+  })
+
+  it('does not repeat the title when a speed change restarts mid-article', () => {
+    page({ title: 'How to grow tomatoes' })
+    playButton().click()
+    spoken[2].onstart?.() // spoken: title, 'Grow tomatoes', 'First they need sun.', …
+    speedButton().click()
+    expect(spoken.map((u) => u.text)).toEqual(['First they need sun.', 'Then water daily.'])
+  })
+
+  it('reads the title of a post with no other text, then finishes', () => {
+    document.body.innerHTML = `<article><div class="listenly-player" data-listenly='${JSON.stringify({ post: 1, clientSide: true, audioUrl: '/a/', speed: 1, highlight: 'sentence', position: 'above', lang: 'en-US', title: 'Just a title' })}'></div></article>`
+    mount(document.querySelector<HTMLElement>('.listenly-player')!)
+    playButton().click()
+    expect(spoken.map((u) => u.text)).toEqual(['Just a title'])
+    spoken[0].onend?.()
+    expect(playButton()).toHaveAttribute('aria-label', 'Play article')
+  })
+
   it('cycles the speed through 0.75 to 2', () => {
     page()
     const seen = Array.from({ length: 5 }, () => {

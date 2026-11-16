@@ -30,6 +30,8 @@ final class PlayerTest extends TestCase {
 		Functions\when( 'rest_url' )->returnArg();
 		Functions\when( 'esc_url_raw' )->returnArg();
 		Functions\when( 'get_bloginfo' )->justReturn( 'en-US' );
+		Functions\when( 'get_the_title' )->justReturn( 'Hello' );
+		Functions\when( 'wp_strip_all_tags' )->alias( 'strip_tags' );
 		Functions\when( 'wp_enqueue_script' )->justReturn( true );
 		Functions\when( 'wp_enqueue_style' )->justReturn( true );
 		Functions\when( 'wp_set_script_translations' )->justReturn( true );
@@ -63,6 +65,13 @@ final class PlayerTest extends TestCase {
 		$html = $this->render();
 		$this->assertStringContainsString( 'class="listenly-player listenly-player--floating"', $html );
 		$this->assertStringStartsWith( self::CONTENT, $html );
+	}
+
+	public function test_passes_the_plain_post_title_to_the_player_script(): void {
+		Functions\when( 'get_the_title' )->justReturn( 'Salt &amp; <em>pepper</em>' );
+		Functions\when( 'wp_strip_all_tags' )->alias( 'strip_tags' );
+		$this->settings( array() );
+		$this->assertStringContainsString( '&quot;title&quot;:&quot;Salt &amp; pepper&quot;', $this->render() );
 	}
 
 	public function test_passes_the_position_to_the_player_script(): void {

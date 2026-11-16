@@ -86,6 +86,7 @@ final class Player {
 			Hooks::PLAYER_DATA,
 			array(
 				'post'       => $post_id,
+				'title'      => html_entity_decode( wp_strip_all_tags( get_the_title( $post_id ) ), ENT_QUOTES, 'UTF-8' ),
 				'clientSide' => $provider->is_client_side() || ! $provider->is_ready(),
 				'audioUrl'   => esc_url_raw( rest_url( 'listenly/v1/audio/' . $post_id . '/' ) ),
 				'speed'      => (float) $settings['speed'],
