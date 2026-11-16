@@ -26,7 +26,7 @@ export default defineConfig(({ command }) => ({
   esbuild: { minifyIdentifiers: false, minifySyntax: false },
   build: {
     outDir: 'build',
-    // A watch build keeps build/player/ (vite.player.config.ts) while both watch.
+    // A watch build keeps build/player/ and build/editor/ (their own configs) while they all watch.
     emptyOutDir: !process.argv.includes('--watch'),
     manifest: true,
     rollupOptions: { input: 'frontend/admin/main.tsx' },

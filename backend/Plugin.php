@@ -9,8 +9,10 @@ namespace ListenlyVoice;
 
 use ListenlyVoice\Admin\Assets;
 use ListenlyVoice\Admin\Menu;
+use ListenlyVoice\Editor\PostToggle;
 use ListenlyVoice\Player\Player;
 use ListenlyVoice\Rest\SettingsController;
+use ListenlyVoice\Support\Setup;
 use ListenlyVoice\Tts\Registry;
 
 defined( 'ABSPATH' ) || exit;
@@ -62,6 +64,8 @@ final class Plugin {
 
 		( new Menu() )->register();
 		( new Assets() )->register();
+		( new Setup() )->register();
+		( new PostToggle() )->register();
 		( new Player( $this->providers ) )->register();
 
 		add_action(

@@ -6,8 +6,8 @@ export type Settings = {
   voice: string
   speed: number
   post_types: string[]
-  position: 'above' | 'below_title' | 'floating'
-  highlight: 'sentence' | 'word'
+  position: 'above' | 'below' | 'floating'
+  highlight: 'sentence' | 'off' | 'word'
 }
 export type Config = {
   restUrl: string
@@ -18,6 +18,7 @@ export type Config = {
   providers: Provider[]
   googleKeySet: boolean
   setupDone: boolean
+  postTypes: { id: string; label: string }[]
   pro: boolean
 }
 

@@ -7,6 +7,7 @@
 
 namespace ListenlyVoice\Player;
 
+use ListenlyVoice\Editor\PostToggle;
 use ListenlyVoice\Hooks;
 use ListenlyVoice\Support\Settings;
 use ListenlyVoice\Tts\Registry;
@@ -52,26 +53,32 @@ final class Player {
 			return $content;
 		}
 		$post = get_post();
-		if ( ! $post || ! in_array( $post->post_type, (array) Settings::get( 'post_types' ), true ) || get_post_meta( $post->ID, '_listenly_disabled', true ) ) {
+		if ( ! $post || ! in_array( $post->post_type, (array) Settings::get( 'post_types' ), true ) || PostToggle::is_disabled( $post->ID ) ) {
 			return $content;
 		}
-		return $this->markup( $post->ID ) . $content;
+		$position = (string) Settings::get( 'position' );
+		if ( 'above' === $position ) {
+			return $this->markup( $post->ID ) . $content;
+		}
+		// End of the post, or floating: the floating bar is fixed on screen, so its place in the markup only sets reading order.
+		return $content . $this->markup( $post->ID, 'floating' === $position );
 	}
 
 	/**
-	 * [listenly_player] for manual placement.
+	 * [listenly_player] for manual placement. Empty when audio is turned off for the post.
 	 */
 	public function shortcode(): string {
 		$post = get_post();
-		return $post ? $this->markup( $post->ID ) : '';
+		return $post && ! PostToggle::is_disabled( $post->ID ) ? $this->markup( $post->ID ) : '';
 	}
 
 	/**
 	 * The mount point, with the data the player script reads.
 	 *
-	 * @param int $post_id Post ID.
+	 * @param int  $post_id  Post ID.
+	 * @param bool $floating Fixed to the corner of the screen.
 	 */
-	private function markup( int $post_id ): string {
+	private function markup( int $post_id, bool $floating = false ): string {
 		$this->enqueue();
 		$settings = Settings::all();
 		$provider = $this->providers->get( (string) $settings['provider'] );
@@ -79,6 +86,7 @@ final class Player {
 			Hooks::PLAYER_DATA,
 			array(
 				'post'       => $post_id,
+				'title'      => html_entity_decode( wp_strip_all_tags( get_the_title( $post_id ) ), ENT_QUOTES, 'UTF-8' ),
 				'clientSide' => $provider->is_client_side() || ! $provider->is_ready(),
 				'audioUrl'   => esc_url_raw( rest_url( 'listenly/v1/audio/' . $post_id . '/' ) ),
 				'speed'      => (float) $settings['speed'],
@@ -89,7 +97,8 @@ final class Player {
 			$post_id
 		);
 		return sprintf(
-			'<div class="listenly-player" data-listenly="%s"><noscript>%s</noscript></div>',
+			'<div class="%s" data-listenly="%s"><noscript>%s</noscript></div>',
+			$floating ? 'listenly-player listenly-player--floating' : 'listenly-player',
 			esc_attr( (string) wp_json_encode( $data ) ),
 			esc_html__( 'Turn on JavaScript to listen to this article.', 'listenly-voice' )
 		);

@@ -35,4 +35,17 @@ final class TextTest extends TestCase {
 	public function test_empty_text_has_no_chunks(): void {
 		$this->assertSame( array(), Text::chunks( '', 10 ) );
 	}
+
+	public function test_sentences_splits_a_chunk_at_sentence_ends(): void {
+		$this->assertSame( array( 'One two.', 'Three four!', 'Five?' ), Text::sentences( 'One two. Three four! Five?' ) );
+	}
+
+	public function test_sentences_of_an_empty_chunk_is_empty(): void {
+		$this->assertSame( array(), Text::sentences( '  ' ) );
+	}
+
+	public function test_sentences_rejoin_to_the_chunk(): void {
+		$chunk = 'A balcony gets sun. Start small. Water daily.';
+		$this->assertSame( $chunk, implode( ' ', Text::sentences( $chunk ) ) );
+	}
 }
