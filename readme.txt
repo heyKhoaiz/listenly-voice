@@ -32,3 +32,4 @@ Google Cloud terms: https://cloud.google.com/terms — privacy: https://policies
 * Player placement: top of the post, end of the post, or a floating button.
 * Player screen: post types, placement, read-along highlighting on or off, and the [listenly_player] shortcode.
 * The browser voice reads one sentence at a time and highlights it, so long articles play to the end in Chrome.
+* Turn the player off for a single post from the post sidebar in the block editor. The shortcode respects it too.

@@ -7,6 +7,7 @@
 
 namespace ListenlyVoice\Player;
 
+use ListenlyVoice\Editor\PostToggle;
 use ListenlyVoice\Hooks;
 use ListenlyVoice\Support\Settings;
 use ListenlyVoice\Tts\Registry;
@@ -52,7 +53,7 @@ final class Player {
 			return $content;
 		}
 		$post = get_post();
-		if ( ! $post || ! in_array( $post->post_type, (array) Settings::get( 'post_types' ), true ) || get_post_meta( $post->ID, '_listenly_disabled', true ) ) {
+		if ( ! $post || ! in_array( $post->post_type, (array) Settings::get( 'post_types' ), true ) || PostToggle::is_disabled( $post->ID ) ) {
 			return $content;
 		}
 		$position = (string) Settings::get( 'position' );
@@ -64,11 +65,11 @@ final class Player {
 	}
 
 	/**
-	 * [listenly_player] for manual placement.
+	 * [listenly_player] for manual placement. Empty when audio is turned off for the post.
 	 */
 	public function shortcode(): string {
 		$post = get_post();
-		return $post ? $this->markup( $post->ID ) : '';
+		return $post && ! PostToggle::is_disabled( $post->ID ) ? $this->markup( $post->ID ) : '';
 	}
 
 	/**
