@@ -21,6 +21,16 @@ final class Menu {
 	 */
 	public function register(): void {
 		add_action( 'admin_menu', array( $this, 'add' ) );
+		add_filter( 'admin_body_class', array( $this, 'body_class' ) );
+	}
+
+	/**
+	 * Lets the app fill the screen next to the admin menu on its own page only.
+	 *
+	 * @param string $classes Space-separated body classes.
+	 */
+	public function body_class( string $classes ): string {
+		return self::is_plugin_page() ? $classes . ' listenly-fullscreen' : $classes;
 	}
 
 	/**

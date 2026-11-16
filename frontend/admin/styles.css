@@ -35,7 +35,7 @@
 .lv-btn:disabled { opacity: 0.55; cursor: default; }
 .lv-btn:focus-visible { outline: 2px solid var(--lv-accent); outline-offset: 2px; }
 .lv-body { padding: 20px 24px 32px; display: flex; flex-direction: column; gap: 16px; }
-.lv-grid { display: flex; flex-direction: column; gap: 16px; max-width: 860px; }
+.lv-grid { display: flex; flex-direction: column; gap: 16px; }
 .lv-card { background: var(--lv-card); border-radius: 18px; padding: 20px; }
 .lv-card h2 { margin: 0 0 6px; font-size: 16px; font-weight: 600; color: var(--lv-ink); }
 .lv-muted { margin: 0 0 14px; color: var(--lv-muted); font-size: 14px; }
@@ -142,3 +142,18 @@
 .lv-switch:focus-visible span { outline: 2px solid var(--lv-accent); outline-offset: 2px; }
 .lv-code { display: inline-block; padding: 8px 12px; border-radius: 10px; background: var(--lv-panel); border: 1px solid var(--lv-line); font-size: 14px; color: var(--lv-ink); user-select: all; }
 @media (prefers-reduced-motion: reduce) { .lv-switch span, .lv-switch span::after { transition: none; } }
+
+/* Full screen on the plugin page (body class from Menu::body_class): WordPress's content
+   area becomes a column exactly as tall as the window below the admin bar. Admin notices
+   keep their place on top, the app takes the rest and scrolls inside. Footer hidden. */
+@media (min-width: 783px) {
+  .listenly-fullscreen #wpfooter { display: none; }
+  .listenly-fullscreen #wpbody-content { box-sizing: border-box; height: calc(100vh - 32px); padding-bottom: 0; display: flex; flex-direction: column; align-items: flex-start; }
+  .listenly-fullscreen #wpbody-content > * { flex-shrink: 0; }
+  .listenly-fullscreen #wpbody-content > .notice, .listenly-fullscreen #wpbody-content > .error, .listenly-fullscreen #wpbody-content > .updated { align-self: stretch; margin-right: 20px; }
+  .listenly-fullscreen .listenly-app { align-self: stretch; flex: 1 1 0; min-height: 420px; margin: 16px 20px 20px 0; display: flex; flex-direction: column; }
+  .listenly-fullscreen .lv-frame, .listenly-fullscreen .lv-wizard { flex: 1 1 0; min-height: 0; }
+  .listenly-fullscreen .lv-frame { flex-wrap: nowrap; }
+  .listenly-fullscreen .lv-main, .listenly-fullscreen .lv-wizard { overflow-y: auto; }
+  .listenly-fullscreen .lv-top { position: sticky; top: 0; z-index: 1; }
+}
