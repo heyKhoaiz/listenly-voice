@@ -1,6 +1,8 @@
 // One player. Browser voice → speechSynthesis, one sentence at a time with read-along highlighting;
 // a ready audio file (data.file, filled by extensions) → plays it;
-// server voices → MP3 parts from /wp-json/listenly/v1/audio/{post}/{part}.
+// server voices → MP3 parts from /wp-json/listenly/v1/audio/{post}/{part}, or with read-along on,
+// /{part}/timed: the same audio as JSON plus when each sentence starts.
+import { alignMarks, markAt, type Mark } from './marks'
 import { collectSentences, type Sentence } from './sentences'
 
 type Data = { post: number; clientSide: boolean; file?: string; audioUrl: string; speed: number; highlight: string; position: string; lang: string }
@@ -22,6 +24,8 @@ function articleOf(root: HTMLElement): HTMLElement {
 export function mount(root: HTMLElement): void {
   const data = JSON.parse(root.dataset.listenly ?? '{}') as Data
   const synth = (globalThis as { speechSynthesis?: SpeechSynthesis }).speechSynthesis
+  // True for the browser voice, or after live audio failed and we switched to it.
+  let local = data.clientSide
   let speed = data.speed || 1
   let playing = false
   let part = 0
@@ -51,7 +55,7 @@ export function mount(root: HTMLElement): void {
   bar.append(play, label, rate)
   root.append(bar)
 
-  const unsupported = data.clientSide && !synth
+  const unsupported = local && !synth
 
   const render = () => {
     play.setAttribute('aria-label', playing ? t('Pause') : t('Play article'))
@@ -101,16 +105,76 @@ export function mount(root: HTMLElement): void {
     })
   }
 
+  // play() rejects when the source fails; the 'error' event below handles that.
+  const start = () => void audio.play().catch(() => {})
+
+  // Read-along for server voices: each timed part says when its sentences start, matched to
+  // the page's sentences by text. `cursor` keeps the matching moving forward across parts.
+  const timed = data.highlight !== 'off' && highlights() !== null
+  let marks: Mark[] = []
+  let targets: (Sentence | null)[] = []
+  let cursor = 0
+  let blobUrl = ''
+
+  const loadTimed = (n: number) => {
+    marks = []
+    return fetch(`${data.audioUrl}${n}/timed`)
+      .then((r) => {
+        if (!r.ok) throw new Error(String(r.status))
+        return r.json() as Promise<{ audio: string; marks?: Mark[]; parts?: number }>
+      })
+      .then((j) => {
+        parts = Number(j.parts) || 1
+        sentences ??= collectSentences(articleOf(root))
+        const aligned = alignMarks(Array.isArray(j.marks) ? j.marks : [], sentences, cursor)
+        marks = Array.isArray(j.marks) ? j.marks : []
+        targets = aligned.targets
+        cursor = aligned.cursor
+        const bytes = Uint8Array.from(atob(j.audio), (c) => c.charCodeAt(0))
+        if (blobUrl) URL.revokeObjectURL(blobUrl)
+        blobUrl = URL.createObjectURL(new Blob([bytes], { type: 'audio/mpeg' }))
+        audio.src = blobUrl
+        audio.playbackRate = speed
+        if (playing) start()
+      })
+      .catch(() => failed())
+  }
   const loadPart = (n: number) => {
+    if (timed) return void loadTimed(n)
     audio.src = `${data.audioUrl}${n}`
     audio.playbackRate = speed
-    void audio.play()
+    start()
   }
+  audio.addEventListener('timeupdate', () => {
+    if (!marks.length) return
+    const i = markAt(marks, audio.currentTime)
+    mark(i >= 0 ? (targets[i] ?? null) : null)
+  })
+
+  // A live part failed: rate limited (429) or a provider error (502). Before anything was
+  // heard, switch to the browser voice; mid-article, stop rather than change voice.
+  const failed = () => {
+    if (!playing || local) return
+    audio.removeAttribute('src')
+    if (part === 0 && synth) {
+      local = true
+      label.textContent = t("Playing with your browser's voice.")
+      speakFrom(0)
+      return
+    }
+    playing = false
+    label.textContent = t("Audio isn't available right now. Try again in a few minutes.")
+    render()
+  }
+  audio.addEventListener('error', failed)
   audio.addEventListener('ended', () => {
     if (part + 1 < parts) loadPart(++part)
     else {
       playing = false
       part = 0
+      cursor = 0
+      marks = []
+      mark(null)
       render()
     }
   })
@@ -128,17 +192,19 @@ export function mount(root: HTMLElement): void {
 
   play.addEventListener('click', () => {
     playing = !playing
-    if (data.clientSide && synth) {
+    if (playing && !local) label.textContent = t('Listen to this article')
+    if (local && synth) {
       if (!playing) synth.pause()
       else if (synth.paused) synth.resume()
       else speakFrom(index)
     } else if (playing) {
-      if (audio.src) void audio.play()
+      if (audio.src) start()
       else if (data.file) {
         audio.src = data.file
         audio.playbackRate = speed
-        void audio.play()
-      } else void fetchParts().then(() => loadPart(0))
+        start()
+      } else if (timed) loadPart(part)
+      else void fetchParts().then(() => loadPart(part))
     } else {
       audio.pause()
     }
@@ -147,7 +213,7 @@ export function mount(root: HTMLElement): void {
   rate.addEventListener('click', () => {
     speed = SPEEDS[(SPEEDS.indexOf(speed) + 1) % SPEEDS.length] ?? 1
     audio.playbackRate = speed
-    if (data.clientSide && playing) speakFrom(index)
+    if (local && playing) speakFrom(index)
     render()
   })
 

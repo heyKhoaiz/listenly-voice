@@ -7,11 +7,13 @@
 
 namespace ListenlyVoice\Rest;
 
+use ListenlyVoice\Hooks;
 use ListenlyVoice\Player\Text;
 use ListenlyVoice\Plugin;
 use ListenlyVoice\Support\Settings;
 use ListenlyVoice\Support\Setup;
 use ListenlyVoice\Tts\GoogleProvider;
+use ListenlyVoice\Tts\LiveAudio;
 use ListenlyVoice\Tts\Preview;
 
 defined( 'ABSPATH' ) || exit;
@@ -121,6 +123,17 @@ final class SettingsController {
 				'permission_callback' => array( $this, 'is_public_post' ),
 			)
 		);
+
+		// The same chunk as JSON with sentence timings, for read-along highlighting.
+		register_rest_route(
+			self::NAMESPACE,
+			'/audio/(?P<id>\\d+)/(?P<part>\\d+)/timed',
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( $this, 'timed' ),
+				'permission_callback' => array( $this, 'is_public_post' ),
+			)
+		);
 	}
 
 	/**
@@ -190,9 +203,50 @@ final class SettingsController {
 	 * Streams one MP3 chunk.
 	 *
 	 * @param \WP_REST_Request $request Request.
-	 * @return \WP_Error|void
+	 * @return \WP_REST_Response|\WP_Error|void
 	 */
 	public function audio( \WP_REST_Request $request ) {
+		$chunk = $this->chunk( $request );
+		if ( $chunk instanceof \WP_REST_Response || is_wp_error( $chunk ) ) {
+			return $chunk;
+		}
+		header( 'Content-Type: audio/mpeg' );
+		header( 'X-Listenly-Parts: ' . $chunk['parts'] );
+		// Browsers and page caches may keep a chunk briefly; an edited post changes the text, not the URL.
+		header( 'Cache-Control: public, max-age=600' );
+		echo $chunk['audio']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Binary MP3.
+		exit;
+	}
+
+	/**
+	 * One chunk as JSON: base64 MP3, when each sentence starts, and the number of parts.
+	 *
+	 * @param \WP_REST_Request $request Request.
+	 * @return \WP_REST_Response|\WP_Error
+	 */
+	public function timed( \WP_REST_Request $request ) {
+		$chunk = $this->chunk( $request );
+		if ( $chunk instanceof \WP_REST_Response || is_wp_error( $chunk ) ) {
+			return $chunk;
+		}
+		$response = rest_ensure_response(
+			array(
+				'audio' => base64_encode( $chunk['audio'] ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode -- Binary MP3 in JSON.
+				'marks' => $chunk['marks'],
+				'parts' => $chunk['parts'],
+			)
+		);
+		$response->header( 'Cache-Control', 'public, max-age=600' );
+		return $response;
+	}
+
+	/**
+	 * The requested chunk's audio and timings, or the error response to send.
+	 *
+	 * @param \WP_REST_Request $request Request.
+	 * @return array{audio: string, marks: array, parts: int}|\WP_REST_Response|\WP_Error
+	 */
+	private function chunk( \WP_REST_Request $request ) {
 		$settings = Settings::all();
 		$provider = Plugin::instance()->providers->get( (string) $settings['provider'] );
 		if ( $provider->is_client_side() ) {
@@ -203,14 +257,25 @@ final class SettingsController {
 		if ( ! isset( $chunks[ $part ] ) ) {
 			return new \WP_Error( 'listenly_no_part', __( 'No such part.', 'listenly-voice' ), array( 'status' => 404 ) );
 		}
-		$audio = $provider->synthesize( $chunks[ $part ], (string) $settings['voice'], (float) $settings['speed'] );
-		if ( is_wp_error( $audio ) ) {
-			$audio->add_data( array( 'status' => 502 ) );
-			return $audio;
+		$result = LiveAudio::get( $provider, $chunks[ $part ], (string) $settings['voice'], (float) $settings['speed'], self::client_ip() );
+		if ( is_wp_error( $result ) ) {
+			$response = rest_convert_error_to_response( $result );
+			$data     = (array) $result->get_error_data();
+			if ( isset( $data['retry_after'] ) ) {
+				$response->header( 'Retry-After', (string) (int) $data['retry_after'] );
+			}
+			return $response;
 		}
-		header( 'Content-Type: audio/mpeg' );
-		header( 'X-Listenly-Parts: ' . count( $chunks ) );
-		echo $audio; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Binary MP3.
-		exit;
+		$result['parts'] = count( $chunks );
+		return $result;
+	}
+
+	/**
+	 * The visitor's address for the rate limit. Only REMOTE_ADDR by default: proxy headers are
+	 * easy to fake. Sites behind a trusted proxy can use the `listenly/client_ip` filter.
+	 */
+	public static function client_ip(): string {
+		$ip = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
+		return (string) apply_filters( Hooks::CLIENT_IP, $ip );
 	}
 }

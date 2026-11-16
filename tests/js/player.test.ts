@@ -152,3 +152,242 @@ describe('browser voice', () => {
     expect(seen).toEqual(['1.25×', '1.5×', '2×', '0.75×', '1×'])
   })
 })
+
+class FakeAudio extends EventTarget {
+  src = ''
+  currentTime = 0
+  playbackRate = 1
+  play = vi.fn(() => Promise.resolve())
+  pause = vi.fn()
+  load = vi.fn()
+  removeAttribute(name: string) {
+    if (name === 'src') this.src = ''
+  }
+}
+
+describe('server voice (live Google audio)', () => {
+  let audios: FakeAudio[]
+  const audio = () => audios[0]
+  const flush = () => new Promise((r) => setTimeout(r, 0))
+  const label = () => document.querySelector('.lvp-label')!.textContent
+
+  beforeEach(() => {
+    audios = []
+    vi.stubGlobal(
+      'Audio',
+      class extends FakeAudio {
+        constructor() {
+          super()
+          audios.push(this)
+        }
+      },
+    )
+    vi.stubGlobal('fetch', vi.fn(() => Promise.resolve({ json: () => Promise.resolve({ parts: 2 }) })))
+  })
+
+  const start = async (data: Record<string, unknown> = {}) => {
+    page({ clientSide: false, highlight: 'off', ...data })
+    playButton().click()
+    await flush()
+  }
+
+  it('plays the first part from the audio route', async () => {
+    await start()
+    expect(audio().src).toBe('/wp-json/listenly/v1/audio/1/0')
+    expect(audio().play).toHaveBeenCalled()
+    expect(spoken).toEqual([])
+  })
+
+  it('moves on to the next part when one ends', async () => {
+    await start()
+    audio().dispatchEvent(new Event('ended'))
+    expect(audio().src).toBe('/wp-json/listenly/v1/audio/1/1')
+  })
+
+  it('falls back to the browser voice when the first part fails (busy or provider error)', async () => {
+    await start()
+    audio().dispatchEvent(new Event('error'))
+    expect(spoken.map((u) => u.text)).toEqual(['Grow tomatoes', 'First they need sun.', 'Then water daily.'])
+    expect(label()).toBe("Playing with your browser's voice.")
+    expect(playButton()).toHaveAttribute('aria-label', 'Pause')
+  })
+
+  it('after falling back, pause and speed act on the browser voice', async () => {
+    await start()
+    audio().dispatchEvent(new Event('error'))
+    playButton().click()
+    expect(synth.pause).toHaveBeenCalled()
+    expect(audio().play).toHaveBeenCalledTimes(1)
+  })
+
+  it('stops with a message when a later part fails, instead of switching voice mid-article', async () => {
+    await start()
+    audio().dispatchEvent(new Event('ended'))
+    audio().dispatchEvent(new Event('error'))
+    expect(spoken).toEqual([])
+    expect(label()).toBe("Audio isn't available right now. Try again in a few minutes.")
+    expect(playButton()).toHaveAttribute('aria-label', 'Play article')
+  })
+
+  it('shows the message when there is no browser voice to fall back to', async () => {
+    vi.stubGlobal('speechSynthesis', undefined)
+    await start()
+    audio().dispatchEvent(new Event('error'))
+    expect(label()).toBe("Audio isn't available right now. Try again in a few minutes.")
+    expect(playButton()).toHaveAttribute('aria-label', 'Play article')
+  })
+
+  it('pressing play again retries the part that failed', async () => {
+    await start()
+    audio().dispatchEvent(new Event('ended'))
+    audio().dispatchEvent(new Event('error'))
+    playButton().click()
+    await flush()
+    expect(audio().src).toBe('/wp-json/listenly/v1/audio/1/1')
+    expect(label()).toBe('Listen to this article')
+  })
+
+  it('ignores an error event while stopped', async () => {
+    page({ clientSide: false, highlight: 'off' })
+    audio().dispatchEvent(new Event('error'))
+    expect(label()).toBe('Listen to this article')
+    expect(spoken).toEqual([])
+  })
+
+  it('a failed play() call does not throw an unhandled rejection', async () => {
+    page({ clientSide: false, highlight: 'off' })
+    audio().play.mockImplementationOnce(() => Promise.reject(new Error('NotSupportedError')))
+    playButton().click()
+    await flush()
+    await flush()
+    expect(audio().play).toHaveBeenCalled()
+  })
+})
+
+describe('server voice with read-along highlighting', () => {
+  let audios: FakeAudio[]
+  let fetchMock: ReturnType<typeof vi.fn>
+  let urls: string[]
+  let revoked: string[]
+  const audio = () => audios[0]
+  const flush = async () => {
+    for (let i = 0; i < 5; i++) await new Promise((r) => setTimeout(r, 0))
+  }
+  const label = () => document.querySelector('.lvp-label')!.textContent
+  const json = (body: unknown, status = 200) => Promise.resolve({ ok: status < 400, status, json: () => Promise.resolve(body) })
+  const part = (marks: { t: number; text: string }[], parts = 1) => ({ audio: btoa('MP3'), marks, parts })
+  const at = (seconds: number) => {
+    audio().currentTime = seconds
+    audio().dispatchEvent(new Event('timeupdate'))
+  }
+
+  beforeEach(() => {
+    audios = []
+    urls = []
+    revoked = []
+    vi.stubGlobal(
+      'Audio',
+      class extends FakeAudio {
+        constructor() {
+          super()
+          audios.push(this)
+        }
+      },
+    )
+    vi.stubGlobal('URL', Object.assign(URL, {
+      createObjectURL: vi.fn(() => {
+        const u = `blob:part-${urls.length}`
+        urls.push(u)
+        return u
+      }),
+      revokeObjectURL: vi.fn((u: string) => revoked.push(u)),
+    }))
+    fetchMock = vi.fn(() =>
+      json(part([{ t: 0, text: 'A balcony guide.' }, { t: 0.8, text: 'First they need sun.' }, { t: 2.1, text: 'Then water daily.' }])),
+    )
+    vi.stubGlobal('fetch', fetchMock)
+  })
+
+  const start = async () => {
+    page({ clientSide: false })
+    playButton().click()
+    await flush()
+  }
+
+  it('fetches the timed part and plays its audio, without a separate parts request', async () => {
+    await start()
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    expect(fetchMock.mock.calls[0][0]).toBe('/wp-json/listenly/v1/audio/1/0/timed')
+    expect(audio().src).toBe('blob:part-0')
+    expect(audio().play).toHaveBeenCalled()
+  })
+
+  it('highlights the sentence being read as the audio plays', async () => {
+    await start()
+    at(1.0)
+    expect(current()).toBe('First they need sun.')
+    at(2.5)
+    expect(current()).toBe('Then water daily.')
+  })
+
+  it('a sentence that is not on the page (the post title) clears the highlight', async () => {
+    await start()
+    at(1.0)
+    at(0.1)
+    expect(current()).toBeUndefined()
+  })
+
+  it('does not highlight when highlighting is turned off', async () => {
+    page({ clientSide: false, highlight: 'off' })
+    vi.stubGlobal('fetch', vi.fn(() => Promise.resolve({ json: () => Promise.resolve({ parts: 1 }) })))
+    playButton().click()
+    await flush()
+    expect(audio().src).toBe('/wp-json/listenly/v1/audio/1/0')
+  })
+
+  it('moves to the next timed part and frees the previous audio', async () => {
+    fetchMock.mockImplementationOnce(() => json(part([{ t: 0, text: 'First they need sun.' }], 2)))
+    fetchMock.mockImplementationOnce(() => json(part([{ t: 0, text: 'Then water daily.' }], 2)))
+    await start()
+    audio().dispatchEvent(new Event('ended'))
+    await flush()
+    expect(fetchMock.mock.calls[1][0]).toBe('/wp-json/listenly/v1/audio/1/1/timed')
+    expect(audio().src).toBe('blob:part-1')
+    expect(revoked).toEqual(['blob:part-0'])
+    at(0.2)
+    expect(current()).toBe('Then water daily.')
+  })
+
+  it('clears the highlight at the end', async () => {
+    await start()
+    at(1.0)
+    audio().dispatchEvent(new Event('ended'))
+    expect(current()).toBeUndefined()
+    expect(playButton()).toHaveAttribute('aria-label', 'Play article')
+  })
+
+  it('falls back to the browser voice when the first timed part is refused (429)', async () => {
+    fetchMock.mockImplementationOnce(() => json({ code: 'listenly_busy' }, 429))
+    await start()
+    expect(label()).toBe("Playing with your browser's voice.")
+    expect(spoken.map((u) => u.text)).toEqual(['Grow tomatoes', 'First they need sun.', 'Then water daily.'])
+  })
+
+  it('stops with a message when a later timed part fails', async () => {
+    fetchMock.mockImplementationOnce(() => json(part([{ t: 0, text: 'First they need sun.' }], 2)))
+    fetchMock.mockImplementationOnce(() => Promise.reject(new Error('offline')))
+    await start()
+    audio().dispatchEvent(new Event('ended'))
+    await flush()
+    expect(label()).toBe("Audio isn't available right now. Try again in a few minutes.")
+    expect(playButton()).toHaveAttribute('aria-label', 'Play article')
+  })
+
+  it('works without the Highlight API (audio still plays)', async () => {
+    vi.stubGlobal('Highlight', undefined)
+    await start()
+    at(1.0)
+    expect(audio().play).toHaveBeenCalled()
+    expect(highlights.size).toBe(0)
+  })
+})

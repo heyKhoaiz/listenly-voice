@@ -34,4 +34,13 @@ final class Hooks {
 
 	/** Filters the text read aloud for a post. */
 	const POST_TEXT = 'listenly/post_text';
+
+	/** Filters how many seconds a live audio chunk stays cached (default 3600; 0 turns the cache off). */
+	const LIVE_CACHE_TTL = 'listenly/live_cache_ttl';
+
+	/** Filters the live audio rate limits: ['visitor' => ['max', 'window'], 'site' => ['max', 'window']]. */
+	const LIVE_RATE_LIMITS = 'listenly/live_rate_limits';
+
+	/** Filters the visitor address used for the rate limit (default REMOTE_ADDR). */
+	const CLIENT_IP = 'listenly/client_ip';
 }

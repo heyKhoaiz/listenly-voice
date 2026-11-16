@@ -30,7 +30,7 @@ export function Player({ settings, onChange }: Props) {
           <span className="lv-switch-text">
             <span id="lv-highlight-label" className="lv-option-name">{__('Highlight the sentence being read', 'listenly-voice')}</span>
             <span className="lv-voice-desc">
-              {__('Helps readers follow along. Works with the browser voice in Chrome, Edge, Safari and Firefox.', 'listenly-voice')}
+              {__('Helps readers follow along, with the browser voice and Google voices. Works in Chrome, Edge, Safari and Firefox.', 'listenly-voice')}
             </span>
           </span>
           <button

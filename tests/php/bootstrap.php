@@ -17,6 +17,9 @@ if ( ! defined( 'LISTENLY_VERSION' ) ) {
 	define( 'LISTENLY_PATH', dirname( __DIR__, 2 ) . '/' );
 }
 
+// After ABSPATH: plugin files exit without it.
+require_once __DIR__ . '/FakeProvider.php';
+
 if ( ! class_exists( 'WP_Error' ) ) {
 	/**
 	 * Just enough of WP_Error for unit tests.

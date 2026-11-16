@@ -71,4 +71,15 @@ final class Text {
 		}
 		return $chunks;
 	}
+
+	/**
+	 * The sentences of a chunk, split the same way chunks() splits text.
+	 *
+	 * @param string $chunk One chunk.
+	 * @return string[]
+	 */
+	public static function sentences( string $chunk ): array {
+		$chunk = trim( $chunk );
+		return '' === $chunk ? array() : array_values( array_filter( (array) preg_split( '/(?<=[.!?])\s+/', $chunk ), 'strlen' ) );
+	}
 }

@@ -9,46 +9,7 @@ namespace ListenlyVoice\Tests\Unit;
 
 use ListenlyVoice\Tests\TestCase;
 use ListenlyVoice\Tts\Preview;
-use ListenlyVoice\Tts\ProviderInterface;
-
-/**
- * A provider that records what it was asked to read.
- */
-final class FakeProvider implements ProviderInterface {
-	/** @var array<int, array<mixed>> */
-	public $calls = array();
-	/** @var string|\WP_Error */
-	private $result;
-	/** @var bool */
-	private $client_side;
-
-	public function __construct( $result, bool $client_side = false ) {
-		$this->result      = $result;
-		$this->client_side = $client_side;
-	}
-	public function id(): string {
-		return 'fake';
-	}
-	public function label(): string {
-		return 'Fake';
-	}
-	public function is_client_side(): bool {
-		return $this->client_side;
-	}
-	public function is_ready(): bool {
-		return true;
-	}
-	public function voices(): array {
-		return array();
-	}
-	public function synthesize( string $text, string $voice, float $speed ) {
-		$this->calls[] = array( $text, $voice, $speed );
-		return $this->result;
-	}
-	public function chunk_limit(): int {
-		return 100;
-	}
-}
+use ListenlyVoice\Tests\FakeProvider;
 
 /**
  * Preview.
