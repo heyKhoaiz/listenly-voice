@@ -7,7 +7,8 @@ export type Settings = {
   speed: number
   post_types: string[]
   position: 'above' | 'below' | 'floating'
-  highlight: 'sentence' | 'off' | 'word'
+  // 'sentence' and 'off' in Free; extensions can add modes (listenly.admin.highlightModes).
+  highlight: 'sentence' | 'off' | (string & {})
 }
 export type Config = {
   restUrl: string

@@ -1,12 +1,15 @@
 import { __ } from '../lib/i18n'
 import type { Settings } from '../lib/config'
 import { PositionPicker, PostTypePicker } from '../components/Placement'
+import { highlightModes } from '../lib/extend'
 
 type Props = { settings: Settings; onChange: (s: Settings) => void }
 
 // Where the player shows and how it reads along. Saved with the top bar's "Save changes".
 export function Player({ settings, onChange }: Props) {
   const highlightOn = settings.highlight !== 'off'
+  const extraModes = highlightModes()
+  const modes = [{ id: 'sentence', label: __('Each sentence', 'listenly-voice'), description: __('Works with every voice.', 'listenly-voice') }, ...extraModes]
 
   return (
     <div className="lv-grid">
@@ -44,6 +47,26 @@ export function Player({ settings, onChange }: Props) {
             <span aria-hidden="true" />
           </button>
         </div>
+        {highlightOn && extraModes.length > 0 && (
+          <div role="radiogroup" aria-label={__('What to highlight', 'listenly-voice')} className="lv-options">
+            {modes.map((m) => (
+              <button
+                key={m.id}
+                type="button"
+                role="radio"
+                aria-checked={settings.highlight === m.id}
+                className="lv-option"
+                onClick={() => onChange({ ...settings, highlight: m.id })}
+              >
+                <span className="lv-radio" aria-hidden="true" />
+                <span className="lv-voice-text">
+                  <span className="lv-option-name">{m.label}</span>
+                  {m.description && <span className="lv-voice-desc">{m.description}</span>}
+                </span>
+              </button>
+            ))}
+          </div>
+        )}
       </section>
 
       <section className="lv-card">

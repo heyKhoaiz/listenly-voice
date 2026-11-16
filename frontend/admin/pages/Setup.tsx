@@ -4,6 +4,7 @@ import { config, type Settings } from '../lib/config'
 import { api } from '../lib/api'
 import { canSpeak, playUrl, SAMPLE_TEXT, speak } from '../lib/sound'
 import { POSITIONS, PositionPicker, PostTypePicker } from '../components/Placement'
+import { providerPanel } from '../lib/extend'
 
 type Props = {
   settings: Settings
@@ -237,6 +238,7 @@ export function Setup({ settings, onChange, onClose }: Props) {
                   )}
                 </div>
               )}
+              {!needsKey && provider && !provider.clientSide && providerPanel(provider, { settings, onChange })}
             </>
           )}
 

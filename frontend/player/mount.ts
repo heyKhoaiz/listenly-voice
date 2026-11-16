@@ -1,15 +1,26 @@
 // One player. Browser voice → speechSynthesis, one sentence at a time with read-along highlighting;
-// a ready audio file (data.file, filled by extensions) → plays it;
+// a ready audio file (data.file, filled by extensions) → plays it, with read-along when the
+// extension also gives data.timingsUrl ({ marks: [{ t, text }] });
 // server voices → MP3 parts from /wp-json/listenly/v1/audio/{post}/{part}, or with read-along on,
 // /{part}/timed: the same audio as JSON plus when each sentence starts.
 import { alignMarks, markAt, normalize, type Mark } from './marks'
 import { collectSentences, type Sentence } from './sentences'
 
-type Data = { post: number; title?: string; clientSide: boolean; file?: string; audioUrl: string; speed: number; highlight: string; position: string; lang: string }
+type Data = { post: number; title?: string; clientSide: boolean; file?: string; timingsUrl?: string; audioUrl: string; speed: number; highlight: string; position: string; lang: string }
 
 const t = (text: string) => (window as unknown as { wp?: { i18n?: { __: (s: string, d: string) => string } } }).wp?.i18n?.__(text, 'listenly-voice') ?? text
 const SPEEDS = [0.75, 1, 1.25, 1.5, 2]
 const HIGHLIGHT = 'listenly-sentence'
+
+// Extensions can narrow or replace the highlighted range (for example to one word):
+//   wp.hooks.addFilter('listenly.player.highlight', ns, (range, { time, index, sentence, marks, timings }) => range)
+type HighlightContext = { time: number; index: number; sentence: Sentence | null; marks: Mark[]; timings: unknown }
+const filterRange = (range: Range | null, ctx: HighlightContext): Range | null => {
+  const hooks = (window as unknown as { wp?: { hooks?: { applyFilters: (n: string, v: unknown, c: unknown) => unknown } } }).wp?.hooks
+  if (!hooks) return range
+  const out = hooks.applyFilters('listenly.player.highlight', range, ctx)
+  return out && typeof out === 'object' && 'startContainer' in out ? (out as Range) : null
+}
 
 type Highlights = { set(name: string, h: unknown): void; delete(name: string): void }
 const highlights = (): Highlights | null => {
@@ -66,13 +77,14 @@ export function mount(root: HTMLElement): void {
     rate.setAttribute('aria-label', `${t('Playback speed')} ${speed}×`)
   }
 
-  const mark = (sentence: Sentence | null) => {
+  const paint = (range: Range | null) => {
     const reg = highlights()
     if (!reg || data.highlight === 'off') return
-    if (!sentence) return reg.delete(HIGHLIGHT)
+    if (!range) return reg.delete(HIGHLIGHT)
     const HighlightCtor = (globalThis as unknown as { Highlight: new (...r: Range[]) => unknown }).Highlight
-    reg.set(HIGHLIGHT, new HighlightCtor(sentence.range))
+    reg.set(HIGHLIGHT, new HighlightCtor(range))
   }
+  const mark = (sentence: Sentence | null) => paint(sentence?.range ?? null)
 
   const finish = () => {
     playing = false
@@ -132,6 +144,28 @@ export function mount(root: HTMLElement): void {
   let targets: (Sentence | null)[] = []
   let cursor = 0
   let blobUrl = ''
+  let timings: unknown = null
+  // Timings for a ready file cover the whole post; they're kept for replays.
+  let fileTimings: { marks: Mark[]; targets: (Sentence | null)[] } | null = null
+
+  const loadFileTimings = () => {
+    if (!data.timingsUrl || data.highlight === 'off' || highlights() === null || fileTimings) return
+    fileTimings = { marks: [], targets: [] }
+    void fetch(data.timingsUrl)
+      .then((r) => {
+        if (!r.ok) throw new Error(String(r.status))
+        return r.json() as Promise<{ marks?: Mark[] }>
+      })
+      .then((j) => {
+        const list = Array.isArray(j.marks) ? j.marks : []
+        sentences ??= collectSentences(articleOf(root))
+        fileTimings = { marks: list, targets: alignMarks(list, sentences, 0).targets }
+        timings = j
+        marks = fileTimings.marks
+        targets = fileTimings.targets
+      })
+      .catch(() => {})
+  }
 
   const loadTimed = (n: number) => {
     marks = []
@@ -142,6 +176,7 @@ export function mount(root: HTMLElement): void {
       })
       .then((j) => {
         parts = Number(j.parts) || 1
+        timings = j
         sentences ??= collectSentences(articleOf(root))
         const aligned = alignMarks(Array.isArray(j.marks) ? j.marks : [], sentences, cursor)
         marks = Array.isArray(j.marks) ? j.marks : []
@@ -164,8 +199,10 @@ export function mount(root: HTMLElement): void {
   }
   audio.addEventListener('timeupdate', () => {
     if (!marks.length) return
-    const i = markAt(marks, audio.currentTime)
-    mark(i >= 0 ? (targets[i] ?? null) : null)
+    const time = audio.currentTime
+    const i = markAt(marks, time)
+    const sentence = i >= 0 ? (targets[i] ?? null) : null
+    paint(filterRange(sentence?.range ?? null, { time, index: i, sentence, marks, timings }))
   })
 
   // A live part failed: rate limited (429) or a provider error (502). Before anything was
@@ -190,7 +227,8 @@ export function mount(root: HTMLElement): void {
       playing = false
       part = 0
       cursor = 0
-      marks = []
+      marks = fileTimings?.marks ?? []
+      targets = fileTimings?.targets ?? []
       mark(null)
       render()
     }
@@ -220,6 +258,7 @@ export function mount(root: HTMLElement): void {
         audio.src = data.file
         audio.playbackRate = speed
         start()
+        loadFileTimings()
       } else if (timed) loadPart(part)
       else void fetchParts().then(() => loadPart(part))
     } else {

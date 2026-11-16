@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { __ } from '../lib/i18n'
 import { config, type Settings } from '../lib/config'
 import { api } from '../lib/api'
+import { providerPanel } from '../lib/extend'
 
 type Props = { settings: Settings; onChange: (s: Settings) => void }
 
@@ -79,6 +80,7 @@ export function Voices({ settings, onChange }: Props) {
           </div>
         </section>
       )}
+      {provider && provider.id !== 'google' && !provider.clientSide && providerPanel(provider, { settings, onChange })}
     </div>
   )
 }
