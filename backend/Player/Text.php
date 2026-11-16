@@ -8,6 +8,7 @@
 namespace ListenlyVoice\Player;
 
 use ListenlyVoice\Hooks;
+use ListenlyVoice\Support\Settings;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -26,13 +27,17 @@ final class Text {
 		if ( ! $post ) {
 			return '';
 		}
-		$content = (string) $post->post_content;
+		$content = (string) apply_filters( Hooks::POST_CONTENT, (string) $post->post_content, $post );
 		$content = preg_replace( '/<!--.*?-->/s', '', $content );
 		$content = strip_shortcodes( (string) $content );
 		$content = wp_strip_all_tags( str_replace( array( '</p>', '</h2>', '</h3>', '</li>' ), ". \n", $content ) );
 		$text    = get_the_title( $post ) . ". \n" . $content;
 		$text    = trim( (string) preg_replace( '/\s+/', ' ', html_entity_decode( $text, ENT_QUOTES, 'UTF-8' ) ) );
 		$text    = (string) preg_replace( '/\.\s*\./', '.', $text );
+		$text    = Say::apply( $text, Settings::get( 'say' ) );
+		if ( apply_filters( Hooks::READ_NUMBERS, Spoken::applies( (string) get_bloginfo( 'language' ) ), $post ) ) {
+			$text = Spoken::numbers( $text );
+		}
 		return (string) apply_filters( Hooks::POST_TEXT, $text, $post );
 	}
 

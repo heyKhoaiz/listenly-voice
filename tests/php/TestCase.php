@@ -34,6 +34,12 @@ abstract class TestCase extends PolyfillTestCase {
 			}
 		);
 		Functions\when( 'wp_json_encode' )->alias( 'json_encode' );
+		// An English site, unless a test says otherwise.
+		Functions\when( 'get_bloginfo' )->alias(
+			static function ( $show = '' ) {
+				return 'language' === $show ? 'en-US' : '';
+			}
+		);
 
 		// A tiny in-memory options table.
 		$this->options = array();

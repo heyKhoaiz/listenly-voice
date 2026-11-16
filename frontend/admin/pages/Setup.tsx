@@ -5,6 +5,7 @@ import { api } from '../lib/api'
 import { canSpeak, playUrl, SAMPLE_TEXT, speak } from '../lib/sound'
 import { POSITIONS, PositionPicker, PostTypePicker } from '../components/Placement'
 import { providerPanel } from '../lib/extend'
+import { GoogleKeyGuide, KeyProblemNotice, keyProblem, type KeyProblem } from '../components/GoogleKeyGuide'
 
 type Props = {
   settings: Settings
@@ -36,7 +37,8 @@ export function Setup({ settings, onChange, onClose }: Props) {
   const cfg = config()
   const [step, setStep] = useState(1)
   const [busy, setBusy] = useState(false)
-  const [error, setError] = useState('')
+  // Plain text, or a Google key problem with a link to its fix.
+  const [error, setError] = useState<string | KeyProblem>('')
   const [key, setKey] = useState('')
   const [keyWorks, setKeyWorks] = useState(cfg.googleKeySet)
   const [keyBusy, setKeyBusy] = useState(false)
@@ -62,7 +64,11 @@ export function Setup({ settings, onChange, onClose }: Props) {
     const p = cfg.providers.find((x) => x.id === id)
     if (!p) return
     if (p.clientSide) {
-      await speak(SAMPLE_TEXT)
+      try {
+        await speak(SAMPLE_TEXT)
+      } catch (e) {
+        setError((e as Error).message)
+      }
       return
     }
     try {
@@ -70,7 +76,7 @@ export function Setup({ settings, onChange, onClose }: Props) {
       const res = await api<{ audio: string }>('preview', { method: 'POST', body: { provider: id, voice } })
       await playUrl(res.audio)
     } catch (e) {
-      setError(`${__('Google said:', 'listenly-voice')} ${(e as Error).message}`)
+      setError(keyProblem(e))
     }
   }
 
@@ -85,7 +91,7 @@ export function Setup({ settings, onChange, onClose }: Props) {
       await playUrl(res.audio).catch(() => {})
     } catch (e) {
       setKeyWorks(false)
-      setError(`${__('Google said:', 'listenly-voice')} ${(e as Error).message}`)
+      setError(keyProblem(e))
     } finally {
       setKeyBusy(false)
     }
@@ -165,11 +171,12 @@ export function Setup({ settings, onChange, onClose }: Props) {
         </ol>
 
         <section className="lv-card lv-wizard-card">
-          {error && (
+          {error && typeof error === 'string' && (
             <p className="lv-error lv-wizard-error" role="alert">
               {error}
             </p>
           )}
+          {error && typeof error !== 'string' && <KeyProblemNotice problem={error} className="lv-error lv-wizard-error" />}
 
           {step === 1 && (
             <>
@@ -221,9 +228,7 @@ export function Setup({ settings, onChange, onClose }: Props) {
                           {keyBusy ? __('Connecting…', 'listenly-voice') : __('Connect and play a sample', 'listenly-voice')}
                         </button>
                       </div>
-                      <a href="https://cloud.google.com/text-to-speech/docs/before-you-begin" target="_blank" rel="noreferrer">
-                        {__('How to get a key (opens in a new tab)', 'listenly-voice')}
-                      </a>
+                      <GoogleKeyGuide />
                     </>
                   )}
                   {provider.voices.length > 0 && (

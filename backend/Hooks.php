@@ -32,6 +32,9 @@ final class Hooks {
 	/** Filters the allowed read-along highlight modes. Free: sentence, off. */
 	const HIGHLIGHT_MODES = 'listenly/highlight_modes';
 
+	/** Filters one row of the admin Home's recent posts: ['id', 'title', 'date', 'viewUrl', 'editUrl', 'status' => ['id', 'label']]. */
+	const RECENT_POST = 'listenly/recent_post';
+
 	/** Filters the text read aloud for a post. */
 	const POST_TEXT = 'listenly/post_text';
 
@@ -43,4 +46,25 @@ final class Hooks {
 
 	/** Filters the visitor address used for the rate limit (default REMOTE_ADDR). */
 	const CLIENT_IP = 'listenly/client_ip';
+
+	/** Filters a post's raw content before it becomes the text read aloud. Receives ( string $content, WP_Post $post ). */
+	const POST_CONTENT = 'listenly/post_content';
+
+	/** Filters whether audio is off for a post. Receives ( bool $disabled, int $post_id ). */
+	const POST_DISABLED = 'listenly/post_disabled';
+
+	/** Filters whether the player is added to a post's content automatically. Receives ( bool $insert, WP_Post $post ). */
+	const AUTO_INSERT = 'listenly/auto_insert';
+
+	/** Fires after a play is counted. Receives ( int $post_id, int $plays ). */
+	const PLAY = 'listenly/play';
+
+	/** Filters how many pronunciation pairs can be saved (default 10). */
+	const SAY_LIMIT = 'listenly/say_limit';
+
+	/** Filters whether money and number shorthand is spelled out ("$12.7bn" → "12.7 billion dollars"). Receives ( bool $on, WP_Post $post ); default on for English sites. */
+	const READ_NUMBERS = 'listenly/read_numbers';
+
+	/** Filters the plugin name shown in the admin menu and app header. */
+	const BRAND = 'listenly/brand';
 }

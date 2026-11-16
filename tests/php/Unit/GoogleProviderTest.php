@@ -133,7 +133,64 @@ final class GoogleProviderTest extends TestCase {
 
 		$result = ( new GoogleProvider() )->synthesize_timed( array( 'One.' ), 'en-US-Neural2-F', 1.0 );
 		$this->assertInstanceOf( \WP_Error::class, $result );
-		$this->assertSame( 'API key not valid.', $result->get_error_message() );
+		$this->assertSame( 'listenly_google_key_invalid', $result->get_error_code() );
+		$this->assertSame( 'API key not valid.', $result->data['google'] );
+	}
+
+	/**
+	 * Real Google error bodies and the code each one maps to.
+	 *
+	 * @return array<string, array{0: int, 1: array, 2: string, 3: string}>
+	 */
+	public function google_errors(): array {
+		$info = static function ( string $reason ): array {
+			return array(
+				array(
+					'@type'  => 'type.googleapis.com/google.rpc.ErrorInfo',
+					'reason' => $reason,
+				),
+			);
+		};
+		return array(
+			'invalid key'     => array( 400, array( 'message' => 'API key not valid. Please pass a valid API key.', 'status' => 'INVALID_ARGUMENT', 'details' => $info( 'API_KEY_INVALID' ) ), 'listenly_google_key_invalid', 'apis/credentials' ),
+			'api off'         => array( 403, array( 'message' => 'Cloud Text-to-Speech API has not been used in project 123 before or it is disabled.', 'status' => 'PERMISSION_DENIED', 'details' => $info( 'SERVICE_DISABLED' ) ), 'listenly_google_api_disabled', 'texttospeech.googleapis.com' ),
+			'api off, text'   => array( 403, array( 'message' => 'Cloud Text-to-Speech API has not been used in project 123 before or it is disabled.' ), 'listenly_google_api_disabled', 'texttospeech.googleapis.com' ),
+			'billing off'     => array( 403, array( 'message' => 'This API method requires billing to be enabled.', 'details' => $info( 'BILLING_DISABLED' ) ), 'listenly_google_billing', 'billing' ),
+			'website limited' => array( 403, array( 'message' => 'Requests from referer <empty> are blocked.', 'details' => $info( 'API_KEY_HTTP_REFERRER_BLOCKED' ) ), 'listenly_google_key_restricted', 'apis/credentials' ),
+			'api limited'     => array( 403, array( 'message' => 'Requests to this API texttospeech method are blocked.', 'details' => $info( 'API_KEY_SERVICE_BLOCKED' ) ), 'listenly_google_key_restricted', 'apis/credentials' ),
+			'quota'           => array( 429, array( 'message' => 'Quota exceeded for quota metric.', 'status' => 'RESOURCE_EXHAUSTED' ), 'listenly_google_quota', 'quotas' ),
+		);
+	}
+
+	/**
+	 * @dataProvider google_errors
+	 */
+	public function test_each_google_error_gets_a_code_and_a_link_to_the_fix( int $status, array $error, string $code, string $fix ): void {
+		$result = GoogleProvider::explain( $status, array( 'error' => $error ) );
+		$this->assertSame( $code, $result->get_error_code() );
+		$this->assertStringContainsString( $fix, $result->data['fix'] );
+		$this->assertNotSame( $error['message'], $result->get_error_message(), 'The message says what to do, not just what Google said.' );
+	}
+
+	public function test_an_unknown_google_error_keeps_googles_words(): void {
+		$result = GoogleProvider::explain( 400, array( 'error' => array( 'message' => 'Voice name xx-XX is not supported.' ) ) );
+		$this->assertSame( 'listenly_google', $result->get_error_code() );
+		$this->assertSame( 'Voice name xx-XX is not supported.', $result->get_error_message() );
+		$this->assertSame( '', $result->data['fix'] );
+	}
+
+	public function test_the_key_never_appears_in_an_error(): void {
+		$result = GoogleProvider::explain( 400, array( 'error' => array( 'message' => 'Bad request for key AIza-secret.' ) ), 'AIza-secret' );
+		$this->assertStringNotContainsString( 'AIza-secret', $result->get_error_message() );
+		$this->assertStringNotContainsString( 'AIza-secret', $result->data['google'] );
+	}
+
+	public function test_a_network_failure_says_the_server_could_not_reach_google(): void {
+		Functions\when( 'wp_remote_post' )->justReturn( new \WP_Error( 'http_request_failed', 'cURL error 28: timed out for ?key=AIza-test' ) );
+
+		$result = ( new GoogleProvider() )->synthesize( 'One.', 'en-US-Neural2-F', 1.0 );
+		$this->assertSame( 'listenly_google_network', $result->get_error_code() );
+		$this->assertStringNotContainsString( 'AIza-test', $result->data['google'] );
 	}
 
 	public function test_ssml_over_googles_5000_byte_limit_is_refused_without_a_request(): void {

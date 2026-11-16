@@ -25,7 +25,12 @@ final class PlayerTest extends TestCase {
 		Functions\when( 'is_singular' )->justReturn( true );
 		Functions\when( 'in_the_loop' )->justReturn( true );
 		Functions\when( 'is_main_query' )->justReturn( true );
-		Functions\when( 'get_post' )->justReturn( (object) array( 'ID' => 7, 'post_type' => 'post' ) );
+		Functions\when( 'get_post' )->justReturn(
+			(object) array(
+				'ID'        => 7,
+				'post_type' => 'post',
+			)
+		);
 		Functions\when( 'get_post_meta' )->justReturn( '' );
 		Functions\when( 'rest_url' )->returnArg();
 		Functions\when( 'esc_url_raw' )->returnArg();
@@ -94,5 +99,71 @@ final class PlayerTest extends TestCase {
 		$this->settings( array() );
 		Functions\when( 'is_singular' )->justReturn( false );
 		$this->assertSame( self::CONTENT, $this->render() );
+	}
+
+	private function footer( Player $player ): string {
+		$post            = new \WP_Post();
+		$post->ID        = 7;
+		$post->post_type = 'post';
+		Functions\when( 'get_queried_object' )->justReturn( $post );
+		ob_start();
+		$player->footer();
+		return (string) ob_get_clean();
+	}
+
+	public function test_a_floating_player_the_theme_never_placed_goes_in_the_footer(): void {
+		$this->settings( array( 'position' => 'floating' ) );
+		$this->options[ Player::MISS_OPTION ] = array(
+			'post'   => 7,
+			'reason' => 'content',
+			'time'   => time(),
+		);
+		$html                                 = $this->footer( new Player( new Registry() ) );
+		$this->assertStringContainsString( 'listenly-player--floating', $html );
+		$this->assertArrayNotHasKey( Player::MISS_OPTION, $this->options );
+	}
+
+	public function test_a_missed_top_player_is_recorded_not_printed(): void {
+		$this->settings( array( 'position' => 'above' ) );
+		$this->assertSame( '', $this->footer( new Player( new Registry() ) ) );
+		$this->assertSame( 7, $this->options[ Player::MISS_OPTION ]['post'] );
+		$this->assertSame( 'content', $this->options[ Player::MISS_OPTION ]['reason'] );
+	}
+
+	public function test_content_shown_outside_the_main_loop_is_recorded_as_loop(): void {
+		$this->settings( array( 'position' => 'above' ) );
+		Functions\when( 'in_the_loop' )->justReturn( false );
+		Functions\when( 'get_the_ID' )->justReturn( 7 );
+		Functions\when( 'get_queried_object_id' )->justReturn( 7 );
+		$player = new Player( new Registry() );
+		$this->assertSame( self::CONTENT, $player->add_player( self::CONTENT ) );
+		$this->footer( $player );
+		$this->assertSame( 'loop', $this->options[ Player::MISS_OPTION ]['reason'] );
+	}
+
+	public function test_a_placed_player_prints_nothing_more_and_clears_the_miss(): void {
+		$this->settings( array( 'position' => 'above' ) );
+		$this->options[ Player::MISS_OPTION ] = array(
+			'post'   => 7,
+			'reason' => 'content',
+			'time'   => time(),
+		);
+		$player                               = new Player( new Registry() );
+		$player->add_player( self::CONTENT );
+		$this->assertSame( '', $this->footer( $player ) );
+		$this->assertArrayNotHasKey( Player::MISS_OPTION, $this->options );
+	}
+
+	public function test_the_same_miss_is_written_once_a_day(): void {
+		$this->options[ Player::MISS_OPTION ] = array(
+			'post'   => 7,
+			'reason' => 'content',
+			'time'   => 123 + time() - 60,
+		);
+		$before                               = $this->options[ Player::MISS_OPTION ];
+		Player::record_miss( 7, 'content' );
+		$this->assertSame( $before, $this->options[ Player::MISS_OPTION ] );
+		Player::record_miss( 7, 'loop' );
+		$this->assertSame( 'loop', $this->options[ Player::MISS_OPTION ]['reason'] );
 	}
 }

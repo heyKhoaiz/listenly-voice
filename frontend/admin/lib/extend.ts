@@ -7,7 +7,9 @@ import type { ReactNode } from 'react'
 import type { Provider, Settings } from './config'
 
 export type PageContext = { settings: Settings; onChange: (s: Settings) => void }
-export type AdminPage = { id: string; label: string; render: (ctx: PageContext) => ReactNode }
+// hideSave: the page saves on its own, so the top bar's Save button is hidden.
+// description: one line on the Home tile; icon: an Icon name ('page' when missing).
+export type AdminPage = { id: string; label: string; description?: string; icon?: string; render: (ctx: PageContext) => ReactNode; hideSave?: boolean }
 export type HighlightMode = { id: string; label: string; description: string }
 
 type Hooks = { applyFilters: (name: string, value: unknown, ...args: unknown[]) => unknown }

@@ -9,7 +9,12 @@ export type Settings = {
   position: 'above' | 'below' | 'floating'
   // 'sentence' and 'off' in Free; extensions can add modes (listenly.admin.highlightModes).
   highlight: 'sentence' | 'off' | (string & {})
+  // Player colours. 'auto' follows the page behind the player.
+  theme: 'auto' | 'light' | 'dark'
+  /** Pronunciation: [written, said as] pairs, at most Config.sayLimit. */
+  say: [string, string][]
 }
+export type RecentPost = { id: number; title: string; date: string; viewUrl: string; editUrl: string; plays?: number; status: { id: string; label: string } }
 export type Config = {
   restUrl: string
   nonce: string
@@ -20,7 +25,19 @@ export type Config = {
   googleKeySet: boolean
   setupDone: boolean
   postTypes: { id: string; label: string }[]
+  recentPosts: RecentPost[]
+  userName: string
   pro: boolean
+  /** Plays across the site. */
+  plays?: number
+  /** The plugin name in the header (white-label sites can change it). */
+  brand?: string
+  /** The last post where the player should have shown but didn't: 'loop' = shown outside the main loop, 'content' = the theme or builder skipped the content filter. */
+  insertMiss?: { title: string; viewUrl: string; editUrl: string; reason: 'loop' | 'content' } | null
+  /** How many pronunciation pairs can be saved. */
+  sayLimit?: number
+  /** Show the FAQ and forum links. */
+  helpLinks?: boolean
 }
 
 export const config = (): Config => (window as unknown as { listenlyConfig: Config }).listenlyConfig

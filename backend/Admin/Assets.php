@@ -8,7 +8,10 @@
 namespace ListenlyVoice\Admin;
 
 use ListenlyVoice\Hooks;
+use ListenlyVoice\Player\Player;
+use ListenlyVoice\Player\Say;
 use ListenlyVoice\Plugin;
+use ListenlyVoice\Stats\Plays;
 use ListenlyVoice\Support\Settings;
 use ListenlyVoice\Support\Setup;
 use ListenlyVoice\Tts\GoogleProvider;
@@ -101,6 +104,13 @@ final class Assets {
 				'googleKeySet' => '' !== GoogleProvider::key(),
 				'setupDone'    => Setup::is_done(),
 				'postTypes'    => $this->post_types(),
+				'recentPosts'  => RecentPosts::rows( (array) Settings::get( 'post_types' ) ),
+				'userName'     => wp_get_current_user()->display_name,
+				'plays'        => Plays::total(),
+				'brand'        => Menu::brand(),
+				'helpLinks'    => true,
+				'sayLimit'     => Say::limit(),
+				'insertMiss'   => Player::miss(),
 				'pro'          => false,
 			)
 		);

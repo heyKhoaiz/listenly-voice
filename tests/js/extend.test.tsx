@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { App } from '../../frontend/admin/App'
@@ -38,6 +38,8 @@ afterEach(() => {
   delete (window as unknown as { wp?: unknown }).wp
 })
 
+const nav = () => within(screen.getByRole('navigation'))
+
 describe('admin extension points', () => {
   it('adds pages from the listenly.admin.pages filter to the sidebar, and renders them with the settings', async () => {
     addFilter('listenly.admin.pages', (pages) => [
@@ -45,15 +47,15 @@ describe('admin extension points', () => {
       { id: 'library', label: 'Library', render: ({ settings }: { settings: Settings }) => <p>Library for {settings.provider}</p> },
     ])
     render(<App />)
-    await userEvent.click(screen.getByRole('button', { name: 'Library' }))
+    await userEvent.click(nav().getByRole('button', { name: 'Library' }))
     expect(screen.getByText('Library for browser')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Library' })).toHaveAttribute('aria-current', 'page')
+    expect(nav().getByRole('button', { name: 'Library' })).toHaveAttribute('aria-current', 'page')
   })
 
   it('ignores page entries without an id, label and render function, and ids that clash', () => {
     addFilter('listenly.admin.pages', () => [{ id: 'x' }, { label: 'No id', render: () => null }, { id: 'voices', label: 'Clash', render: () => null }, 'junk'])
     render(<App />)
-    expect(screen.getAllByRole('button', { name: /Voices|Player|Clash|No id/ }).map((b) => b.textContent)).toEqual(['Voices', 'Player'])
+    expect(nav().getAllByRole('button', { name: /Voices|Player|Clash|No id/ }).map((b) => b.textContent)).toEqual(['Voices', 'Player'])
   })
 
   it('works without wp.hooks', () => {
@@ -68,6 +70,7 @@ describe('admin extension points', () => {
       return provider.id === 'acme' ? <section aria-label="Acme connection">Connect {provider.label}</section> : panel
     })
     render(<App />)
+    await userEvent.click(nav().getByRole('button', { name: 'Voices' }))
     expect(screen.queryByRole('region', { name: 'Acme connection' })).not.toBeInTheDocument()
     await userEvent.click(screen.getByRole('radio', { name: /Acme Voices/ }))
     expect(screen.getByRole('region', { name: 'Acme connection' })).toHaveTextContent('Connect Acme Voices')
@@ -76,7 +79,7 @@ describe('admin extension points', () => {
   it('offers extra highlight modes on the Player screen and saves the choice', async () => {
     addFilter('listenly.admin.highlightModes', (modes) => [...(modes as unknown[]), { id: 'word', label: 'Each word', description: 'Follows word by word.' }])
     render(<App />)
-    await userEvent.click(screen.getByRole('button', { name: 'Player' }))
+    await userEvent.click(nav().getByRole('button', { name: 'Player' }))
     const group = screen.getByRole('radiogroup', { name: 'What to highlight' })
     expect(group).toBeInTheDocument()
     await userEvent.click(screen.getByRole('radio', { name: /Each word/ }))
@@ -87,7 +90,7 @@ describe('admin extension points', () => {
 
   it('shows no mode choice when there are no extra modes', async () => {
     render(<App />)
-    await userEvent.click(screen.getByRole('button', { name: 'Player' }))
+    await userEvent.click(nav().getByRole('button', { name: 'Player' }))
     expect(screen.queryByRole('radiogroup', { name: 'What to highlight' })).not.toBeInTheDocument()
   })
 
@@ -95,7 +98,7 @@ describe('admin extension points', () => {
     addFilter('listenly.admin.highlightModes', () => [{ id: 'word', label: 'Each word', description: '' }])
     ;(window as unknown as { listenlyConfig: unknown }).listenlyConfig = base({ highlight: 'off' })
     render(<App />)
-    await userEvent.click(screen.getByRole('button', { name: 'Player' }))
+    await userEvent.click(nav().getByRole('button', { name: 'Player' }))
     expect(screen.queryByRole('radiogroup', { name: 'What to highlight' })).not.toBeInTheDocument()
   })
 
@@ -115,5 +118,17 @@ describe('admin extension points', () => {
     expect(screen.queryByRole('region', { name: 'Acme connection' })).not.toBeInTheDocument()
     await userEvent.click(screen.getByRole('radio', { name: /Acme Voices/ }))
     expect(screen.getByRole('region', { name: 'Acme connection' })).toBeInTheDocument()
+  })
+
+  it('hides the top Save button on extension pages that save on their own', async () => {
+    addFilter('listenly.admin.pages', () => [
+      { id: 'own', label: 'Own save', render: () => <p>Own</p>, hideSave: true },
+      { id: 'shared', label: 'Shared', render: () => <p>Shared</p> },
+    ])
+    render(<App />)
+    await userEvent.click(nav().getByRole('button', { name: 'Own save' }))
+    expect(screen.queryByRole('button', { name: 'Save changes' })).not.toBeInTheDocument()
+    await userEvent.click(nav().getByRole('button', { name: 'Shared' }))
+    expect(screen.getByRole('button', { name: 'Save changes' })).toBeInTheDocument()
   })
 })

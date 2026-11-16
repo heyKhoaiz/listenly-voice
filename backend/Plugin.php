@@ -9,7 +9,9 @@ namespace ListenlyVoice;
 
 use ListenlyVoice\Admin\Assets;
 use ListenlyVoice\Admin\Menu;
+use ListenlyVoice\Editor\Block;
 use ListenlyVoice\Editor\PostToggle;
+use ListenlyVoice\Integrations\Elementor;
 use ListenlyVoice\Player\Player;
 use ListenlyVoice\Rest\SettingsController;
 use ListenlyVoice\Support\Setup;
@@ -67,6 +69,8 @@ final class Plugin {
 		( new Setup() )->register();
 		( new PostToggle() )->register();
 		( new Player( $this->providers ) )->register();
+		( new Block() )->register();
+		( new Elementor() )->register();
 
 		add_action(
 			'rest_api_init',

@@ -36,6 +36,13 @@ final class PreviewTest extends TestCase {
 		$this->assertSame( 502, $result->data['status'] );
 	}
 
+	public function test_keeps_the_provider_error_data_next_to_the_status(): void {
+		$error  = new \WP_Error( 'listenly_google_key_invalid', 'Copy it again.', array( 'fix' => 'https://console.cloud.google.com/apis/credentials' ) );
+		$result = Preview::run( new FakeProvider( $error ), 'v' );
+		$this->assertSame( 'https://console.cloud.google.com/apis/credentials', $result->data['fix'] );
+		$this->assertSame( 502, $result->data['status'] );
+	}
+
 	public function test_refuses_a_browser_voice(): void {
 		$provider = new FakeProvider( 'x', true );
 		$result   = Preview::run( $provider, '' );
