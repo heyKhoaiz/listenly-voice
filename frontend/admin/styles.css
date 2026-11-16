@@ -35,7 +35,7 @@
 .lv-btn:disabled { opacity: 0.55; cursor: default; }
 .lv-btn:focus-visible { outline: 2px solid var(--lv-accent); outline-offset: 2px; }
 .lv-body { padding: 20px 24px 32px; display: flex; flex-direction: column; gap: 16px; }
-.lv-grid { display: flex; flex-direction: column; gap: 16px; max-width: 860px; }
+.lv-grid { display: flex; flex-direction: column; gap: 16px; }
 .lv-card { background: var(--lv-card); border-radius: 18px; padding: 20px; }
 .lv-card h2 { margin: 0 0 6px; font-size: 16px; font-weight: 600; color: var(--lv-ink); }
 .lv-muted { margin: 0 0 14px; color: var(--lv-muted); font-size: 14px; }
@@ -142,3 +142,118 @@
 .lv-switch:focus-visible span { outline: 2px solid var(--lv-accent); outline-offset: 2px; }
 .lv-code { display: inline-block; padding: 8px 12px; border-radius: 10px; background: var(--lv-panel); border: 1px solid var(--lv-line); font-size: 14px; color: var(--lv-ink); user-select: all; }
 @media (prefers-reduced-motion: reduce) { .lv-switch span, .lv-switch span::after { transition: none; } }
+
+/* Full screen on the plugin page (body class from Menu::body_class): WordPress's content
+   area becomes a column exactly as tall as the window below the admin bar. Admin notices
+   keep their place on top, the app takes the rest and scrolls inside. Footer hidden. */
+@media (min-width: 783px) {
+  .listenly-fullscreen #wpfooter { display: none; }
+  .listenly-fullscreen #wpbody-content { box-sizing: border-box; height: calc(100vh - 32px); padding-bottom: 0; display: flex; flex-direction: column; align-items: flex-start; }
+  .listenly-fullscreen #wpbody-content > * { flex-shrink: 0; }
+  .listenly-fullscreen #wpcontent { padding-left: 0; }
+  .listenly-fullscreen #wpbody-content > .notice, .listenly-fullscreen #wpbody-content > .error, .listenly-fullscreen #wpbody-content > .updated, .listenly-fullscreen #wpbody-content > .update-nag { align-self: stretch; margin: 12px 20px 0; }
+  .listenly-fullscreen .listenly-app { align-self: stretch; flex: 1 1 0; min-height: 420px; margin: 0; display: flex; flex-direction: column; }
+  .listenly-fullscreen .lv-frame, .listenly-fullscreen .lv-wizard { flex: 1 1 0; min-height: 0; border-radius: 0; }
+  .listenly-fullscreen #wpbody-content > :is(.notice, .error, .updated, .update-nag) ~ .listenly-app { margin-top: 12px; }
+  .listenly-fullscreen .lv-frame { flex-wrap: nowrap; }
+  .listenly-fullscreen .lv-main, .listenly-fullscreen .lv-wizard { overflow-y: auto; }
+  .listenly-fullscreen .lv-top { position: sticky; top: 0; z-index: 1; }
+}
+
+/* Home (screen 0), sidebar icons and help card. */
+.lv-card { border: 1px solid var(--lv-line); }
+.lv-nav { gap: 10px; min-height: 44px; }
+.lv-nav .lv-icon { color: var(--lv-muted); flex-shrink: 0; }
+.lv-nav[aria-current='page'] .lv-icon { color: var(--lv-accent); }
+.lv-nav-label { margin: 18px 12px 6px; font-size: 13px; color: var(--lv-muted); }
+.lv-help { margin-top: auto; display: flex; flex-direction: column; gap: 6px; padding: 14px; border-radius: 14px; background: var(--lv-panel); border: 1px solid var(--lv-line); }
+.lv-help-title { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; }
+.lv-help-text { font-size: 13px; line-height: 1.45; color: var(--lv-muted); }
+.lv-help-links { display: flex; flex-wrap: wrap; gap: 4px 14px; }
+.lv-help-links a { display: inline-flex; align-items: center; min-height: 44px; font-size: 13px; color: var(--lv-ink); text-decoration: underline; }
+.lv-help-links a:hover { color: var(--lv-accent-text); }
+.lv-help-links a:focus-visible { outline: 2px solid var(--lv-accent); outline-offset: 2px; box-shadow: none; border-radius: 4px; }
+.lv-home { display: flex; flex-direction: column; gap: 16px; }
+.lv-welcome { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; justify-content: space-between; padding: 4px 0 4px; }
+.lv-welcome h1 { margin: 0 0 6px; padding: 0; font-size: 26px; line-height: 1.25; font-weight: 600; color: var(--lv-ink); }
+.lv-welcome .lv-muted { margin: 0; font-size: 15px; }
+.lv-btn .lv-icon, .lv-btn-link .lv-icon { margin-left: 8px; }
+.lv-home-top { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: 16px; }
+.lv-card-head { display: flex; gap: 12px; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.lv-card-head h2 { margin: 0; }
+.lv-voice-card { display: flex; flex-direction: column; gap: 16px; }
+.lv-voice-card .lv-card-head { margin-bottom: 0; }
+.lv-facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 0; padding: 14px; border-radius: 14px; background: var(--lv-panel); }
+.lv-facts dt { font-size: 13px; color: var(--lv-muted); }
+.lv-facts dd { margin: 2px 0 0; font-size: 14px; font-weight: 500; overflow-wrap: anywhere; }
+.lv-btn-play { display: inline-flex; align-items: center; gap: 10px; padding-left: 6px; }
+.lv-play-dot { width: 32px; height: 32px; border-radius: 50%; background: var(--lv-accent); color: #fff; display: inline-flex; align-items: center; justify-content: center; }
+.lv-play-dot .lv-icon { margin: 0 0 0 2px; fill: currentColor; }
+.lv-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+.lv-pill { display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; font-size: 13px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--lv-line-strong); background: var(--lv-card); color: var(--lv-text); }
+.lv-pill::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: #a8a29e; }
+.lv-pill-ok::before { background: var(--lv-ok); }
+.lv-pill-warn::before { background: var(--lv-accent); }
+.lv-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-top: 14px; }
+.lv-tile { all: unset; box-sizing: border-box; display: flex; flex-direction: column; gap: 4px; padding: 14px; border-radius: 14px; background: var(--lv-panel); border: 1px solid var(--lv-line); cursor: pointer; min-height: 120px; }
+.lv-tile:hover { border-color: var(--lv-line-strong); background: var(--lv-card); }
+.lv-tile:focus-visible { outline: 2px solid var(--lv-accent); outline-offset: 2px; }
+.lv-tile-icon { width: 40px; height: 40px; border-radius: 10px; background: var(--lv-card); border: 1px solid var(--lv-line); display: inline-flex; align-items: center; justify-content: center; color: var(--lv-ink); margin-bottom: 8px; }
+.lv-tile-label { font-size: 15px; font-weight: 600; color: var(--lv-ink); }
+.lv-tile-desc { font-size: 13px; line-height: 1.4; color: var(--lv-muted); }
+.lv-posts { list-style: none; margin: 0; padding: 0; }
+.lv-post { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; padding: 10px 0; border-top: 1px solid var(--lv-line); margin: 0; }
+.lv-post:first-child { border-top: 0; padding-top: 0; }
+.lv-post-text { flex: 1 1 240px; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.lv-post-title { font-size: 15px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lv-post-date { font-size: 13px; color: var(--lv-muted); }
+.lv-post-actions { display: flex; gap: 8px; }
+.lv-btn-small { display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; font-size: 13px; text-decoration: none; }
+.lv-btn-small:hover { border-color: var(--lv-ink); color: var(--lv-ink); }
+.lv-empty { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.lv-empty .lv-muted { margin: 0; }
+.lv-side .lv-help { margin-left: 0; margin-right: 0; }
+@media (max-width: 1100px) {
+  .lv-home-top { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 782px) {
+  .lv-help { margin-top: 12px; width: 100%; }
+  .lv-nav-label { width: 100%; margin: 8px 12px 2px; }
+}
+
+/* Player colours (Player screen): three option cards, each with a mini player swatch. */
+.lv-themes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.lv-theme { flex-direction: column; align-items: stretch; gap: 10px; padding: 12px; }
+.lv-theme .lv-option-name { display: flex; align-items: center; gap: 8px; }
+.lv-swatch { position: relative; overflow: hidden; height: 52px; border-radius: 10px; border: 1px solid var(--lv-line-strong); background: #f7f7f5; display: flex; align-items: center; padding: 0 12px; }
+.lv-swatch b { position: relative; z-index: 1; width: 22px; height: 22px; border-radius: 50%; background: #1c1917; box-shadow: 30px 0 0 -6px #d6d3d1, 58px 0 0 -6px #d6d3d1; }
+.lv-swatch-dark { background: #292524; border-color: #57534e; }
+.lv-swatch-dark b { background: #fafaf9; box-shadow: 30px 0 0 -6px #57534e, 58px 0 0 -6px #57534e; }
+.lv-swatch-auto::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 50%; background: #292524; }
+@media (max-width: 600px) {
+  .lv-themes { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Google key: step-by-step guide and key test problems. */
+.lv-guide { border-top: 1px solid var(--lv-line); padding-top: 4px; }
+.lv-guide summary { display: flex; align-items: center; min-height: 44px; cursor: pointer; font-size: 14px; font-weight: 600; color: var(--lv-ink); }
+.lv-guide summary:focus-visible { outline: 2px solid var(--lv-accent); outline-offset: 2px; border-radius: 6px; }
+.lv-guide ol { margin: 4px 0 8px; padding-left: 22px; display: flex; flex-direction: column; gap: 8px; font-size: 14px; line-height: 1.5; }
+.lv-guide a, .lv-key-fix { color: var(--lv-ink); text-decoration: underline; text-underline-offset: 2px; }
+.lv-key-problem { display: flex; flex-direction: column; gap: 6px; }
+.lv-key-problem p { margin: 0; }
+.lv-key-fix { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; }
+
+/* Pronunciation rows: written, said as, remove. */
+.lv-say-row .lv-field { display: flex; flex-direction: column; gap: 4px; font-size: 13px; font-weight: 500; }
+.lv-say-row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; align-items: end; }
+.lv-say-row input { width: 100%; min-height: 44px; padding: 0 14px; border: 1px solid var(--lv-line-strong); border-radius: 12px; box-sizing: border-box; }
+.lv-say-row .lv-btn { min-height: 44px; }
+@media (max-width: 600px) { .lv-say-row { grid-template-columns: 1fr; } }
+
+/* Home: the player didn't show on a post. */
+.lv-miss { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; padding: 16px 18px; }
+.lv-miss h2 { margin: 0; font-size: 16px; }
+.lv-miss p, .lv-miss ul { margin: 0; }
+.lv-miss ul { padding-left: 20px; list-style: disc; }
+.lv-miss a:not(.lv-btn) { color: var(--lv-ink); text-decoration: underline; }

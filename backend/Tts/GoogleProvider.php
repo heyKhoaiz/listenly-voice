@@ -157,17 +157,107 @@ final class GoogleProvider implements TimedProviderInterface {
 			)
 		);
 		if ( is_wp_error( $response ) ) {
-			return $response;
+			return self::network_error( $response, $key );
 		}
 		$body = json_decode( (string) wp_remote_retrieve_body( $response ), true );
 		if ( 200 !== wp_remote_retrieve_response_code( $response ) || empty( $body['audioContent'] ) ) {
-			$message = $body['error']['message'] ?? __( 'Google Cloud did not return audio.', 'listenly-voice' );
-			return new \WP_Error( 'listenly_google', (string) $message );
+			return self::explain( (int) wp_remote_retrieve_response_code( $response ), is_array( $body ) ? $body : array(), $key );
 		}
 		return array(
 			'audio' => (string) base64_decode( (string) $body['audioContent'] ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode -- The API returns base64 audio.
 			'raw'   => $body,
 		);
+	}
+
+	/**
+	 * A plain error for a failed Google response: what went wrong and how to fix it.
+	 *
+	 * The code is stable (the admin app reads it) and `data.fix` links to the Google Cloud page
+	 * where the fix is made. Google's own text is kept only for errors not recognised here.
+	 *
+	 * @param int    $status HTTP status.
+	 * @param array  $body   Decoded response body.
+	 * @param string $key    The API key, removed from any text that is passed on.
+	 */
+	public static function explain( int $status, array $body, string $key = '' ): \WP_Error {
+		$error   = is_array( $body['error'] ?? null ) ? $body['error'] : array();
+		$message = (string) ( $error['message'] ?? '' );
+		$reasons = array();
+		foreach ( (array) ( $error['details'] ?? array() ) as $detail ) {
+			if ( is_array( $detail ) && isset( $detail['reason'] ) ) {
+				$reasons[] = (string) $detail['reason'];
+			}
+		}
+		$has = static function ( array $needles ) use ( $reasons, $message ): bool {
+			foreach ( $needles as $needle ) {
+				if ( in_array( $needle, $reasons, true ) || false !== stripos( $message, $needle ) ) {
+					return true;
+				}
+			}
+			return false;
+		};
+
+		$console = 'https://console.cloud.google.com/';
+		if ( $has( array( 'API_KEY_INVALID', 'API key not valid', 'API_KEY_EXPIRED', 'expired' ) ) ) {
+			$code = 'listenly_google_key_invalid';
+			$text = __( 'Google doesn\'t recognise this key. Copy it again from Credentials in Google Cloud (it starts with "AIza") and paste the whole key.', 'listenly-voice' );
+			$fix  = $console . 'apis/credentials';
+		} elseif ( $has( array( 'BILLING_DISABLED', 'billing' ) ) ) {
+			$code = 'listenly_google_billing';
+			$text = __( 'Billing is off for this Google Cloud project. Turn it on under Billing; Google still gives a free monthly allowance, and you pay only past it.', 'listenly-voice' );
+			$fix  = $console . 'billing';
+		} elseif ( $has( array( 'SERVICE_DISABLED', 'has not been used in project', 'is disabled' ) ) ) {
+			$code = 'listenly_google_api_disabled';
+			$text = __( 'The Cloud Text-to-Speech API is off for this project. Open it in Google Cloud, press Enable, wait a minute, then test again.', 'listenly-voice' );
+			$fix  = $console . 'apis/library/texttospeech.googleapis.com';
+		} elseif ( $has( array( 'API_KEY_HTTP_REFERRER_BLOCKED', 'API_KEY_IP_ADDRESS_BLOCKED', 'API_KEY_SERVICE_BLOCKED', 'referer', 'referrer', 'are blocked' ) ) ) {
+			$code = 'listenly_google_key_restricted';
+			$text = __( 'This key is restricted so it can\'t be used here. In Credentials, edit the key: set "Application restrictions" to None and allow the Cloud Text-to-Speech API under "API restrictions".', 'listenly-voice' );
+			$fix  = $console . 'apis/credentials';
+		} elseif ( 429 === $status || $has( array( 'RESOURCE_EXHAUSTED', 'RATE_LIMIT_EXCEEDED', 'quota' ) ) ) {
+			$code = 'listenly_google_quota';
+			$text = __( 'Google says this project hit its quota or rate limit. Wait a few minutes and test again, or check the quotas for the Text-to-Speech API.', 'listenly-voice' );
+			$fix  = $console . 'apis/api/texttospeech.googleapis.com/quotas';
+		} else {
+			$code = 'listenly_google';
+			$text = '' !== $message ? $message : __( 'Google Cloud did not return audio.', 'listenly-voice' );
+			$fix  = '';
+		}
+		return new \WP_Error(
+			$code,
+			self::without_key( $text, $key ),
+			array(
+				'fix'    => $fix,
+				'google' => self::without_key( $message, $key ),
+			)
+		);
+	}
+
+	/**
+	 * A plain error when Google couldn't be reached at all.
+	 *
+	 * @param \WP_Error $error The HTTP API error.
+	 * @param string    $key   The API key, removed from the detail.
+	 */
+	public static function network_error( \WP_Error $error, string $key = '' ): \WP_Error {
+		return new \WP_Error(
+			'listenly_google_network',
+			__( 'Your server couldn\'t reach Google Cloud. Try again in a minute; if it keeps failing, ask your host whether outgoing connections to texttospeech.googleapis.com are allowed.', 'listenly-voice' ),
+			array(
+				'fix'    => '',
+				'google' => self::without_key( $error->get_error_message(), $key ),
+			)
+		);
+	}
+
+	/**
+	 * The text with the key taken out, in case an error ever repeats the request URL.
+	 *
+	 * @param string $text Text.
+	 * @param string $key  API key.
+	 */
+	private static function without_key( string $text, string $key ): string {
+		return '' === $key ? $text : str_replace( array( $key, rawurlencode( $key ) ), '[key]', $text );
 	}
 
 	/** {@inheritDoc} */

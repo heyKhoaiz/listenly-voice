@@ -87,4 +87,14 @@ final class SettingsTest extends TestCase {
 		Filters\expectApplied( 'listenly/highlight_modes' )->andReturn( array( 'sentence', 'off', 'word' ) );
 		$this->assertSame( 'word', Settings::save( array( 'highlight' => 'word' ) )['highlight'] );
 	}
+
+	public function test_player_colours_default_to_auto(): void {
+		$this->assertSame( 'auto', Settings::all()['theme'] );
+	}
+
+	public function test_saves_light_and_dark_and_rejects_other_colours(): void {
+		$this->assertSame( 'dark', Settings::save( array( 'theme' => 'dark' ) )['theme'] );
+		$this->assertSame( 'light', Settings::save( array( 'theme' => 'light' ) )['theme'] );
+		$this->assertSame( 'light', Settings::save( array( 'theme' => 'purple' ) )['theme'] );
+	}
 }

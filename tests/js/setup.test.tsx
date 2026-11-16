@@ -172,6 +172,35 @@ describe('step 1: voice', () => {
     expect(screen.getByRole('heading', { level: 1, name: 'How should your posts sound?' })).toBeInTheDocument()
   })
 
+  it('names the fix when Google says the API is off, with a link to turn it on', async () => {
+    routes['preview POST'] = {
+      status: 502,
+      body: {
+        code: 'listenly_google_api_disabled',
+        message: 'The Cloud Text-to-Speech API is off for this project. Open it in Google Cloud, press Enable, wait a minute, then test again.',
+        data: { status: 502, fix: 'https://console.cloud.google.com/apis/library/texttospeech.googleapis.com' },
+      },
+    }
+    render(<App />)
+    const u = user()
+    await u.click(screen.getByRole('radio', { name: /Natural voice/ }))
+    await u.type(screen.getByLabelText('Paste your Google Cloud API key'), 'AIza-test')
+    await u.click(screen.getByRole('button', { name: 'Connect and play a sample' }))
+    const alert = await screen.findByRole('alert')
+    expect(alert).toHaveTextContent('The Cloud Text-to-Speech API is off for this project.')
+    expect(alert).not.toHaveTextContent('Google said:')
+    expect(within(alert).getByRole('link', { name: /Open the fix in Google Cloud/ })).toHaveAttribute('href', 'https://console.cloud.google.com/apis/library/texttospeech.googleapis.com')
+  })
+
+  it('offers a step-by-step guide to getting a key', async () => {
+    render(<App />)
+    const u = user()
+    await u.click(screen.getByRole('radio', { name: /Natural voice/ }))
+    await u.click(screen.getByText(/How to get a Google Cloud key/))
+    expect(screen.getByRole('link', { name: 'Open the Cloud Text-to-Speech API' })).toHaveAttribute('href', 'https://console.cloud.google.com/apis/library/texttospeech.googleapis.com')
+    expect(screen.getByText(/Leave "Application restrictions" on None/)).toBeInTheDocument()
+  })
+
   it('needs a key before connecting', async () => {
     render(<App />)
     const u = user()
@@ -346,6 +375,7 @@ describe('skip and run again', () => {
     await u.click(screen.getByRole('radio', { name: 'End of the post' }))
     await u.click(screen.getByRole('button', { name: 'Turn on the player' }))
     await u.click(await screen.findByRole('button', { name: 'Fine-tune settings' }))
+    await u.click(within(screen.getByRole('navigation')).getByRole('button', { name: 'Player' }))
     await u.click(screen.getByRole('button', { name: 'Save changes' }))
     const saves = calls.filter((c) => c.path === 'settings')
     const lastSave = saves[saves.length - 1]?.body as Record<string, unknown>

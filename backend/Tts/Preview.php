@@ -34,7 +34,9 @@ final class Preview {
 		}
 		$audio = $provider->synthesize( self::sample_text(), $voice, 1.0 );
 		if ( is_wp_error( $audio ) ) {
-			$audio->add_data( array( 'status' => 502 ) );
+			// Keep the provider's data (for example the link to the fix); only add the HTTP status.
+			$data = $audio->get_error_data();
+			$audio->add_data( array_merge( is_array( $data ) ? $data : array(), array( 'status' => 502 ) ) );
 			return $audio;
 		}
 		if ( '' === (string) $audio ) {

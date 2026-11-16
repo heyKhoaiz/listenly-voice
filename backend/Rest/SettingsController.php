@@ -7,9 +7,11 @@
 
 namespace ListenlyVoice\Rest;
 
+use ListenlyVoice\Editor\PostToggle;
 use ListenlyVoice\Hooks;
 use ListenlyVoice\Player\Text;
 use ListenlyVoice\Plugin;
+use ListenlyVoice\Stats\Plays;
 use ListenlyVoice\Support\Settings;
 use ListenlyVoice\Support\Setup;
 use ListenlyVoice\Tts\GoogleProvider;
@@ -124,6 +126,17 @@ final class SettingsController {
 			)
 		);
 
+		// Counts a play. Public: the player calls it on a visitor's first play of a page view.
+		register_rest_route(
+			self::NAMESPACE,
+			'/play/(?P<id>\\d+)',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'play' ),
+				'permission_callback' => array( $this, 'is_public_post' ),
+			)
+		);
+
 		// The same chunk as JSON with sentence timings, for read-along highlighting.
 		register_rest_route(
 			self::NAMESPACE,
@@ -186,6 +199,19 @@ final class SettingsController {
 	public function is_public_post( \WP_REST_Request $request ): bool {
 		$post = get_post( (int) $request['id'] );
 		return $post && 'publish' === $post->post_status && empty( $post->post_password );
+	}
+
+	/**
+	 * Counts a play of a post that shows the player.
+	 *
+	 * @param \WP_REST_Request $request Request.
+	 */
+	public function play( \WP_REST_Request $request ): \WP_REST_Response {
+		$post_id  = (int) $request['id'];
+		$counted  = ! PostToggle::is_disabled( $post_id ) && Plays::record( $post_id, self::client_ip() );
+		$response = rest_ensure_response( array( 'counted' => $counted ) );
+		$response->header( 'Cache-Control', 'no-store' );
+		return $response;
 	}
 
 	/**

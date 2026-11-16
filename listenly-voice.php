@@ -1,12 +1,12 @@
 <?php
 /**
- * Plugin Name:       Listenly Voice – Text to Speech & Audio Player
- * Plugin URI:        https://listenly.example
+ * Plugin Name:       Listenly Voice
  * Description:       Let visitors listen to your posts with natural voices, an accessible audio player and read-along highlighting.
  * Version:           0.1.0
  * Requires at least: 6.3
  * Requires PHP:      7.4
  * Author:            Listenly
+ * Author URI:        https://profiles.wordpress.org/shaikhkhoaiz/
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       listenly-voice

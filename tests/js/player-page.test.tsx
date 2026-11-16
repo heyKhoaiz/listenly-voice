@@ -81,4 +81,30 @@ describe('Player screen', () => {
     const box = screen.getByRole('heading', { name: 'Place it by hand' }).closest('section')!
     expect(within(box).getByText('[listenly_player]')).toBeInTheDocument()
   })
+
+  it('offers light, dark and auto colours, auto by default, and saves the choice', async () => {
+    const u = await openPlayer()
+    const group = within(screen.getByRole('radiogroup', { name: 'Player colours' }))
+    expect(group.getByRole('radio', { name: /Auto/ })).toHaveAttribute('aria-checked', 'true')
+    await u.click(group.getByRole('radio', { name: /^Dark/ }))
+    expect(group.getByRole('radio', { name: /^Dark/ })).toHaveAttribute('aria-checked', 'true')
+    await u.click(screen.getByRole('button', { name: 'Save changes' }))
+    expect(saved).toMatchObject({ theme: 'dark' })
+  })
+
+  it('adds pronunciation words, saves them and stops at the limit', async () => {
+    ;(window as unknown as { listenlyConfig: { sayLimit: number } }).listenlyConfig.sayLimit = 2
+    const u = await openPlayer()
+    expect(screen.getByText(/No words yet/)).toBeInTheDocument()
+    await u.click(screen.getByRole('button', { name: 'Add a word' }))
+    const row = screen.getByRole('group', { name: 'Word 1' })
+    await u.type(within(row).getByLabelText('Written'), 'WP')
+    await u.type(within(row).getByLabelText('Said as'), 'WordPress')
+    await u.click(screen.getByRole('button', { name: 'Add a word' }))
+    expect(screen.getByRole('button', { name: 'Add a word' })).toBeDisabled()
+    expect(screen.getByText('2 / 2')).toBeInTheDocument()
+    await u.click(screen.getByRole('button', { name: 'Remove word 2' }))
+    await u.click(screen.getByRole('button', { name: 'Save changes' }))
+    expect(saved?.say).toEqual([['WP', 'WordPress']])
+  })
 })

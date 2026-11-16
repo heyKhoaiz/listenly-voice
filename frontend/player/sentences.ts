@@ -73,10 +73,20 @@ function blockOf(node: Node, root: HTMLElement): Element {
  * Sentences of an article in reading order. Text in separate blocks (paragraphs, headings,
  * list items) never joins into one sentence.
  */
-export function collectSentences(root: HTMLElement, max = 280): Sentence[] {
+export function collectSentences(root: HTMLElement, max = 280, skip = ''): Sentence[] {
   const doc = root.ownerDocument
+  let selector = SKIP
+  if (skip.trim()) {
+    // An invalid selector from settings must not break reading: ignore it.
+    try {
+      doc.createDocumentFragment().querySelector(skip)
+      selector = `${SKIP}, ${skip}`
+    } catch {
+      selector = SKIP
+    }
+  }
   const walker = doc.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
-    acceptNode: (node) => (node.parentElement?.closest(SKIP) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT),
+    acceptNode: (node) => (node.parentElement?.closest(selector) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT),
   })
 
   // Group text nodes by their block, keeping each node's offset in the group's text.

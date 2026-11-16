@@ -8,6 +8,8 @@
 namespace ListenlyVoice\Support;
 
 use ListenlyVoice\Hooks;
+use ListenlyVoice\Player\Player;
+use ListenlyVoice\Player\Say;
 use ListenlyVoice\Plugin;
 use ListenlyVoice\Tts\Registry;
 
@@ -24,6 +26,9 @@ final class Settings {
 	/** Where the player goes: top of the post, end of the post, or a floating button. */
 	const POSITIONS = array( 'above', 'below', 'floating' );
 
+	/** Player colours: follow the page, or force one. */
+	const THEMES = array( 'auto', 'light', 'dark' );
+
 	/**
 	 * Defaults: the browser voice on posts, above the content, so the player works with no setup.
 	 *
@@ -37,6 +42,8 @@ final class Settings {
 			'post_types' => array( 'post' ),
 			'position'   => 'above',
 			'highlight'  => 'sentence',
+			'theme'      => 'auto',
+			'say'        => array(),
 		);
 	}
 
@@ -91,11 +98,24 @@ final class Settings {
 			$clean['position'] = $input['position'];
 		}
 
+		if ( isset( $input['theme'] ) && in_array( $input['theme'], self::THEMES, true ) ) {
+			$clean['theme'] = $input['theme'];
+		}
+
+		if ( isset( $input['say'] ) ) {
+			$clean['say'] = Say::sanitize( $input['say'] );
+		}
+
 		if ( isset( $input['highlight'] ) ) {
 			$modes = (array) apply_filters( Hooks::HIGHLIGHT_MODES, array( 'sentence', 'off' ) );
 			if ( in_array( $input['highlight'], $modes, true ) ) {
 				$clean['highlight'] = $input['highlight'];
 			}
+		}
+
+		if ( $clean['position'] !== $current['position'] || $clean['post_types'] !== $current['post_types'] ) {
+			// A new placement gets a fresh check on the next visit.
+			Player::clear_miss();
 		}
 
 		update_option( self::OPTION, $clean );

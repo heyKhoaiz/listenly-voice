@@ -7,6 +7,7 @@
 
 namespace ListenlyVoice\Editor;
 
+use ListenlyVoice\Hooks;
 use ListenlyVoice\Support\Settings;
 
 defined( 'ABSPATH' ) || exit;
@@ -39,7 +40,7 @@ final class PostToggle {
 	 * @param int $post_id Post ID.
 	 */
 	public static function is_disabled( int $post_id ): bool {
-		return (bool) get_post_meta( $post_id, self::META, true );
+		return (bool) apply_filters( Hooks::POST_DISABLED, (bool) get_post_meta( $post_id, self::META, true ), $post_id );
 	}
 
 	/**

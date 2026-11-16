@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { mount } from '../../frontend/player/mount'
 
 type U = { text: string; rate: number; lang: string; onstart: (() => void) | null; onend: (() => void) | null }
@@ -420,5 +420,111 @@ describe('server voice with read-along highlighting', () => {
     at(1.0)
     expect(audio().play).toHaveBeenCalled()
     expect(highlights.size).toBe(0)
+  })
+})
+
+describe('ready audio file with timings (from an extension)', () => {
+  let audios: FakeAudio[]
+  let fetchMock: ReturnType<typeof vi.fn>
+  const audio = () => audios[0]
+  const flush = async () => {
+    for (let i = 0; i < 5; i++) await new Promise((r) => setTimeout(r, 0))
+  }
+  const at = (seconds: number) => {
+    audio().currentTime = seconds
+    audio().dispatchEvent(new Event('timeupdate'))
+  }
+  const timings = { marks: [{ t: 0, text: 'Grow tomatoes.' }, { t: 1, text: 'First they need sun.' }, { t: 2, text: 'Then water daily.' }] }
+
+  beforeEach(() => {
+    audios = []
+    vi.stubGlobal(
+      'Audio',
+      class extends FakeAudio {
+        constructor() {
+          super()
+          audios.push(this)
+        }
+      },
+    )
+    fetchMock = vi.fn(() => Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(timings) }))
+    vi.stubGlobal('fetch', fetchMock)
+  })
+
+  afterEach(() => {
+    delete (window as unknown as { wp?: unknown }).wp
+  })
+
+  const start = async (data: Record<string, unknown> = {}) => {
+    page({ clientSide: false, file: '/uploads/listenly/1-abc.mp3', timingsUrl: '/uploads/listenly/1-abc.json', ...data })
+    playButton().click()
+    await flush()
+  }
+
+  it('plays the file and fetches its timings once', async () => {
+    await start()
+    expect(audio().src).toBe('/uploads/listenly/1-abc.mp3')
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    expect(fetchMock.mock.calls[0][0]).toBe('/uploads/listenly/1-abc.json')
+  })
+
+  it('highlights the sentence being read in the file', async () => {
+    await start()
+    at(1.2)
+    expect(current()).toBe('First they need sun.')
+    at(2.4)
+    expect(current()).toBe('Then water daily.')
+  })
+
+  it('still plays without highlighting when the timings fail to load', async () => {
+    fetchMock.mockImplementationOnce(() => Promise.resolve({ ok: false, status: 404, json: () => Promise.resolve({}) }))
+    await start()
+    at(1.2)
+    expect(audio().play).toHaveBeenCalled()
+    expect(current()).toBeUndefined()
+  })
+
+  it('does not fetch timings when highlighting is off', async () => {
+    await start({ highlight: 'off' })
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
+
+  it('plays a file without timings as before', async () => {
+    await start({ timingsUrl: undefined })
+    expect(fetchMock).not.toHaveBeenCalled()
+    expect(audio().play).toHaveBeenCalled()
+  })
+
+  it('lets an extension narrow the highlight through listenly.player.highlight', async () => {
+    const seen: unknown[] = []
+    ;(window as unknown as { wp: unknown }).wp = {
+      hooks: {
+        applyFilters: (name: string, range: Range | null, ctx: { time: number; index: number; sentence: { range: Range } | null; timings: unknown }) => {
+          if (name !== 'listenly.player.highlight') return range
+          seen.push({ time: ctx.time, index: ctx.index, hasTimings: !!ctx.timings })
+          if (!ctx.sentence) return range
+          const word = document.createRange()
+          const node = ctx.sentence.range.startContainer
+          word.setStart(node, ctx.sentence.range.startOffset)
+          word.setEnd(node, ctx.sentence.range.startOffset + 5)
+          return word
+        },
+      },
+    }
+    await start()
+    at(1.2)
+    expect(current()).toBe('First')
+    expect(seen[seen.length - 1]).toEqual({ time: 1.2, index: 1, hasTimings: true })
+  })
+
+  it('the filter also applies to live timed parts', async () => {
+    ;(window as unknown as { wp: unknown }).wp = { hooks: { applyFilters: () => null } }
+    fetchMock.mockImplementation(() => Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve({ audio: btoa('MP3'), marks: timings.marks, parts: 1 }) }))
+    vi.stubGlobal('URL', Object.assign(URL, { createObjectURL: vi.fn(() => 'blob:x'), revokeObjectURL: vi.fn() }))
+    page({ clientSide: false })
+    playButton().click()
+    await flush()
+    at(1.2)
+    expect(current()).toBeUndefined()
   })
 })

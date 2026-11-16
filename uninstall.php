@@ -13,6 +13,9 @@ delete_option( \ListenlyVoice\Support\Settings::OPTION );
 delete_option( \ListenlyVoice\Support\Settings::SETUP_OPTION );
 delete_post_meta_by_key( '_listenly_disabled' );
 delete_option( 'listenly_google_key' );
+delete_post_meta_by_key( '_listenly_plays' );
+delete_option( 'listenly_plays_total' );
+delete_option( 'listenly_insert_miss' );
 
 // Cached live audio and rate-limit counters.
 global $wpdb;
