@@ -110,7 +110,7 @@ export function Player({ settings, onChange }: Props) {
 }
 
 function SayRows({ pairs, onChange }: { pairs: [string, string][]; onChange: (pairs: [string, string][]) => void }) {
-  const limit = config().sayLimit ?? 10
+  const limit = config().sayLimit ?? 200
   const update = (i: number, col: 0 | 1, value: string) => onChange(pairs.map((p, j) => (j === i ? (col === 0 ? [value, p[1]] : [p[0], value]) : p)))
   return (
     <div className="lv-stack">

@@ -17,8 +17,8 @@ defined( 'ABSPATH' ) || exit;
  */
 final class Say {
 
-	/** Pairs kept, unless an extension raises it through listenly/say_limit. */
-	const LIMIT = 10;
+	/** Pairs kept: a sanity cap, not a paywall (filterable through listenly/say_limit). */
+	const LIMIT = 200;
 
 	/**
 	 * How many pairs can be saved.

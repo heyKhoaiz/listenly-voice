@@ -6,7 +6,7 @@ import react from '@vitejs/plugin-react'
 // so build/ does not contain a second copy. The dev server uses React from node_modules.
 const wpReact = (file: string) => fileURLToPath(new URL(`frontend/admin/react/${file}`, import.meta.url))
 
-// The admin app is loaded by backend/Admin/Assets.php from build/.vite/manifest.json.
+// The admin app is loaded by backend/Admin/Assets.php from build/manifest.json.
 export default defineConfig(({ command }) => ({
   plugins: [react()],
   base: './',
@@ -28,7 +28,8 @@ export default defineConfig(({ command }) => ({
     outDir: 'build',
     // A watch build keeps build/player/ and build/editor/ (their own configs) while they all watch.
     emptyOutDir: !process.argv.includes('--watch'),
-    manifest: true,
+    // Not build/.vite/: the plugin directory rejects hidden folders.
+    manifest: 'manifest.json',
     rollupOptions: { input: 'frontend/admin/main.tsx' },
   },
   server: {

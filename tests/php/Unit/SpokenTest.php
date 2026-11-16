@@ -41,8 +41,10 @@ final class SpokenTest extends TestCase {
 		for ( $i = 0; $i < 20; $i++ ) {
 			$raw[] = array( "w$i", "word $i" );
 		}
+		self::assertSame( 200, Say::LIMIT );
+		\Brain\Monkey\Filters\expectApplied( 'listenly/say_limit' )->andReturn( 5 );
 		$clean = Say::sanitize( $raw );
-		self::assertCount( Say::LIMIT, $clean );
+		self::assertCount( 5, $clean );
 		self::assertSame( array( 'WP', 'WordPress' ), $clean[0] );
 	}
 }
