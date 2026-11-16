@@ -136,10 +136,10 @@ final class Assets {
 	}
 
 	/**
-	 * The entry chunk from `build/.vite/manifest.json`.
+	 * The entry chunk from `build/manifest.json`.
 	 */
 	private function manifest_entry(): ?array {
-		$file     = LISTENLY_PATH . 'build/.vite/manifest.json';
+		$file     = LISTENLY_PATH . 'build/manifest.json';
 		$manifest = is_readable( $file ) ? json_decode( (string) file_get_contents( $file ), true ) : array(); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 		return is_array( $manifest ) && isset( $manifest[ self::ENTRY ] ) ? $manifest[ self::ENTRY ] : null;
 	}

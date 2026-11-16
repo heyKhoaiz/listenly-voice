@@ -59,7 +59,7 @@ final class Hooks {
 	/** Fires after a play is counted. Receives ( int $post_id, int $plays ). */
 	const PLAY = 'listenly/play';
 
-	/** Filters how many pronunciation pairs can be saved (default 10). */
+	/** Filters how many pronunciation pairs can be saved (default 200). */
 	const SAY_LIMIT = 'listenly/say_limit';
 
 	/** Filters whether money and number shorthand is spelled out ("$12.7bn" → "12.7 billion dollars"). Receives ( bool $on, WP_Post $post ); default on for English sites. */

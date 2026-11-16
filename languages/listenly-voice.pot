@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-16T17:11:21+00:00\n"
+"POT-Creation-Date: 2026-11-16T18:44:04+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: listenly-voice\n"
@@ -145,587 +145,587 @@ msgstr ""
 msgid "The voice service returned no audio."
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "This browser has no voice installed, so it cannot read aloud. Try another browser, or pick a Google voice."
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "The browser voice failed:"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Google said:"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Open the fix in Google Cloud (new tab)"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "How to get a Google Cloud key (about 5 minutes)"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Create a Google Cloud project"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "or pick one you already have. Google asks for billing details, but there is a free monthly allowance and most blogs stay inside it."
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Open the Cloud Text-to-Speech API"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "and press Enable."
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Go to"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Credentials"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "choose \"Create credentials\", then \"API key\"."
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Edit the key: under \"API restrictions\" allow only the Cloud Text-to-Speech API. Leave \"Application restrictions\" on None: your server makes the requests, not visitors' browsers."
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Copy the key (it starts with \"AIza\"), paste it here and test it. It stays on your server."
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Voice provider"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Who reads your posts. You pay the provider directly; Listenly adds nothing on top."
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "No setup"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Your key"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Google Cloud connection"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "API key"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Save and test"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Testing…"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Test voice"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "It works. You should hear a sample; the key stays on your server."
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Key saved. It stays on your server."
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Not connected yet."
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Voice"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Default speed"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Top of the post"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "at the top of every"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "End of the post"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "at the end of every"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Floating button"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "as a floating button on every"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Show on"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Player position"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Placement"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Done"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Natural voice (recommended)"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Google Cloud voices. Free for most blogs with your own key; takes about 2 minutes to set up."
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Works now with no setup. Each visitor hears their own device voice, so it sounds different on phones."
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Uses your own API key."
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Connect a working Google key first, or choose the browser voice."
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Choose at least one place to show the player."
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "The player is on"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "post."
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "item in:"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Skip setup"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Setup steps"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Step 1 of 3 · about 1 minute"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "How should your posts sound?"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "You can change this any time. Play each sample before you choose."
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Play sample of"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Sample"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "This browser has no built-in voice to play a sample."
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Connected. Your key works and stays on your server."
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Paste your Google Cloud API key"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Connecting…"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Connect and play a sample"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Google voice"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Step 2 of 3"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Where should the player appear?"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Your posts can be heard now"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Open one to hear it."
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "View a post"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Fine-tune settings"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Back"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Continue"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Saving…"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Turn on the player"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Each sentence"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Works with every voice."
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Where it shows"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Pick the post types and where the player sits on them."
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "The player is off everywhere. Tick a post type, or add [listenly_player] where you want it."
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Read along"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Highlight the sentence being read"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Helps readers follow along, with the browser voice and Google voices. Works in Chrome, Edge, Safari and Firefox."
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "What to highlight"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Colours"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Auto picks light or dark to match the page behind the player, and follows themes that switch at night."
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Player colours"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Pronunciation"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Tell the voices how to say names, brands and abbreviations. Whole words only; capitals don’t matter."
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Place it by hand"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Put this shortcode in any post, page or widget to show the player there."
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "No words yet. Example: “WP” said as “WordPress”."
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Word"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Written"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Said as"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Remove word"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Remove"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Add a word"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Auto (recommended)"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Matches your theme"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Light"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Always light"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Dark"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Always dark"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Each visitor's device voice"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Default voice"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Welcome back,"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Welcome back"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Your posts, read aloud in the voice you choose."
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "(opens in a new tab)"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Your voice"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Ready"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Needs a key"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Provider"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Speed"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Player"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Plays"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Playing…"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Play a sample"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Change voice"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Add your key"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Recent posts"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "The player isn't shown on any post type yet."
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Choose where it shows"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "No published posts yet. The player appears on them as soon as they go live."
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "(no title)"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "1 play"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "plays"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "View"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Edit"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "The player didn’t show on a post"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "is shown by your theme or page builder outside the usual post layout, so the player had no place to go."
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "is built by your theme or page builder without the usual post content, so the player had no place to go."
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Any one of these fixes it:"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Choose Floating: it always shows, whatever builds the page."
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Add the Listenly player block, the Elementor widget or [listenly_player] to the post or its template."
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Change where it shows"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Edit the post"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Settings saved."
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Home"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Voices"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Provider, voice and speed"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Where it shows and how it looks"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Settings"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Need a hand?"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Answers to common questions, or ask on the forum."
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "FAQ"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Support forum"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Free"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Run setup"
 msgstr ""
 
-#: build/assets/main-ClP87yOE.js:1
+#: build/assets/main-CA462ip9.js:1
 msgid "Save changes"
 msgstr ""
 

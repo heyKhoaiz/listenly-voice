@@ -1,4 +1,4 @@
-=== Listenly Voice – Text to Speech & Audio Player ===
+=== Listenly Voice ===
 Contributors: shaikhkhoaiz
 Tags: text to speech, tts, audio, accessibility, read aloud
 Requires at least: 6.3
@@ -107,6 +107,12 @@ Deleting the plugin from the Plugins screen removes its settings, your Google ke
 When you choose Google Cloud as the voice, the text of a post is sent to Google Cloud Text-to-Speech (https://texttospeech.googleapis.com) to make the audio when a visitor presses play. The request goes to the service's v1beta1 address, which also returns when each sentence starts, for read-along highlighting; if that fails, the plugin asks the v1 address instead. Each part is kept on your server for an hour, so repeat plays in that hour don't send the text again. Nothing is sent while the browser voice is selected. When an admin connects a key, presses "Sample" in the setup wizard, or presses "Save and test" or "Test voice" on the Voices screen, one short fixed sentence is sent to the same service to check the key and play a sample.
 Google Cloud terms: https://cloud.google.com/terms — privacy: https://policies.google.com/privacy
 
+== Source code and credits ==
+
+The JavaScript and CSS in `build/` are compiled from the TypeScript and CSS in `frontend/`, which ship with the plugin together with `package.json`, `pnpm-lock.yaml` and the Vite configs. To rebuild: `pnpm install && pnpm build`. The full source, with tests, is on GitHub: https://github.com/heyKhoaiz/listenly-voice
+
+The admin screens use the Geist font (copyright The Geist Project Authors, SIL Open Font License 1.1, licence in `build/assets/geist-font-license.txt`), bundled through Fontsource. Nothing is loaded from a font CDN.
+
 == Changelog ==
 
 = 0.1.0 =
@@ -120,7 +126,7 @@ Google Cloud terms: https://cloud.google.com/terms — privacy: https://policies
 * One-hour cache and rate limits for Google audio.
 * "Listenly player" block and Elementor widget.
 * Play counts per post and for the site, on the Home screen.
-* Pronunciation list: tell the voices how to say up to 10 names, brands or abbreviations.
+* Pronunciation list: tell the voices how to say names, brands and abbreviations (up to 200 words).
 * English sites: money and number shorthand is read the way people say it ("$12.7bn" as "12.7 billion dollars", "3–5" as "3 to 5").
 * If your theme or page builder leaves no place for the player, Home says which post and how to fix it; a floating player is added anyway.
 * Google key setup guide, and key tests that say exactly what to fix in Google Cloud.
