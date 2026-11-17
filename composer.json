@@ -1,5 +1,5 @@
 {
-  "name": "listenly/listenly-voice",
+  "name": "postaloud/postaloud",
   "description": "Text to speech and an accessible audio player for WordPress posts.",
   "type": "wordpress-plugin",
   "license": "GPL-2.0-or-later",
@@ -16,7 +16,7 @@
   },
   "autoload": {
     "psr-4": {
-      "ListenlyVoice\\": "backend/"
+      "PostAloud\\": "backend/"
     }
   },
   "config": {

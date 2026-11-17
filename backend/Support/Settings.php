@@ -2,16 +2,16 @@
 /**
  * Plugin settings.
  *
- * @package ListenlyVoice
+ * @package PostAloud
  */
 
-namespace ListenlyVoice\Support;
+namespace PostAloud\Support;
 
-use ListenlyVoice\Hooks;
-use ListenlyVoice\Player\Player;
-use ListenlyVoice\Player\Say;
-use ListenlyVoice\Plugin;
-use ListenlyVoice\Tts\Registry;
+use PostAloud\Hooks;
+use PostAloud\Player\Player;
+use PostAloud\Player\Say;
+use PostAloud\Plugin;
+use PostAloud\Tts\Registry;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -20,13 +20,13 @@ defined( 'ABSPATH' ) || exit;
  */
 final class Settings {
 
-	const OPTION       = 'listenly_settings';
-	const SETUP_OPTION = 'listenly_setup_done';
+	const OPTION       = 'postaloud_settings';
+	const SETUP_OPTION = 'postaloud_setup_done';
 
 	/** Where the player goes: top of the post, end of the post, or a floating button. */
 	const POSITIONS = array( 'above', 'below', 'floating' );
 
-	/** Player colours: follow the page, or force one. */
+	/** Player colors: follow the page, or force one. */
 	const THEMES = array( 'auto', 'light', 'dark' );
 
 	/**

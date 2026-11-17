@@ -2,12 +2,12 @@
 /**
  * Tests for the text chunker.
  *
- * @package ListenlyVoice
+ * @package PostAloud
  */
 
-namespace ListenlyVoice\Tests\Unit;
+namespace PostAloud\Tests\Unit;
 
-use ListenlyVoice\Player\Text;
+use PostAloud\Player\Text;
 use PHPUnit\Framework\TestCase;
 
 /**

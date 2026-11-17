@@ -2,15 +2,15 @@
 /**
  * Tests for saving settings.
  *
- * @package ListenlyVoice
+ * @package PostAloud
  */
 
-namespace ListenlyVoice\Tests\Unit;
+namespace PostAloud\Tests\Unit;
 
 use Brain\Monkey\Filters;
 use Brain\Monkey\Functions;
-use ListenlyVoice\Support\Settings;
-use ListenlyVoice\Tests\TestCase;
+use PostAloud\Support\Settings;
+use PostAloud\Tests\TestCase;
 
 /**
  * Settings::save().
@@ -84,15 +84,15 @@ final class SettingsTest extends TestCase {
 	}
 
 	public function test_an_extension_can_add_a_highlight_mode(): void {
-		Filters\expectApplied( 'listenly/highlight_modes' )->andReturn( array( 'sentence', 'off', 'word' ) );
+		Filters\expectApplied( 'postaloud/highlight_modes' )->andReturn( array( 'sentence', 'off', 'word' ) );
 		$this->assertSame( 'word', Settings::save( array( 'highlight' => 'word' ) )['highlight'] );
 	}
 
-	public function test_player_colours_default_to_auto(): void {
+	public function test_player_colors_default_to_auto(): void {
 		$this->assertSame( 'auto', Settings::all()['theme'] );
 	}
 
-	public function test_saves_light_and_dark_and_rejects_other_colours(): void {
+	public function test_saves_light_and_dark_and_rejects_other_colors(): void {
 		$this->assertSame( 'dark', Settings::save( array( 'theme' => 'dark' ) )['theme'] );
 		$this->assertSame( 'light', Settings::save( array( 'theme' => 'light' ) )['theme'] );
 		$this->assertSame( 'light', Settings::save( array( 'theme' => 'purple' ) )['theme'] );

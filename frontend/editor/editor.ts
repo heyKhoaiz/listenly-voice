@@ -1,10 +1,10 @@
 // Block editor sidebar panel: a switch that turns the player off for one post by saving
-// `_listenly_disabled` (registered in backend/Editor/PostToggle.php). Uses the editor's own
+// `_postaloud_disabled` (registered in backend/Editor/PostToggle.php). Uses the editor's own
 // window.wp packages, so the build has no React or WordPress code of its own.
 
 import type { ComponentType, ReactNode } from 'react'
 
-export const META = '_listenly_disabled'
+export const META = '_postaloud_disabled'
 
 type Meta = Record<string, unknown>
 type Panel = ComponentType<{ name: string; title: string; className?: string; children?: ReactNode }>
@@ -39,10 +39,10 @@ export function registerPostToggle(wp: WpGlobals | undefined): boolean {
     const on = !meta[META]
     return el(
       Slot,
-      { name: 'listenly-voice', title: __('Listenly Voice', 'listenly-voice'), className: 'listenly-voice-panel' },
+      { name: 'postaloud', title: __('PostAloud', 'postaloud'), className: 'postaloud-panel' },
       el(ToggleControl, {
-        label: __('Audio player on this post', 'listenly-voice'),
-        help: on ? __('Readers can listen to this post.', 'listenly-voice') : __("Readers won't see the player on this post.", 'listenly-voice'),
+        label: __('Audio player on this post', 'postaloud'),
+        help: on ? __('Readers can listen to this post.', 'postaloud') : __("Readers won't see the player on this post.", 'postaloud'),
         checked: on,
         onChange: (value: boolean) => editPost({ meta: { [META]: !value } }),
         __nextHasNoMarginBottom: true,
@@ -50,6 +50,6 @@ export function registerPostToggle(wp: WpGlobals | undefined): boolean {
     )
   }
 
-  wp.plugins.registerPlugin('listenly-voice', { render: AudioPanel, icon: null })
+  wp.plugins.registerPlugin('postaloud', { render: AudioPanel, icon: null })
   return true
 }

@@ -4,9 +4,9 @@ import { config, type Settings } from '../lib/config'
 type Position = Settings['position']
 
 export const POSITIONS = (): { id: Position; name: string; done: string }[] => [
-  { id: 'above', name: __('Top of the post', 'listenly-voice'), done: __('at the top of every', 'listenly-voice') },
-  { id: 'below', name: __('End of the post', 'listenly-voice'), done: __('at the end of every', 'listenly-voice') },
-  { id: 'floating', name: __('Floating button', 'listenly-voice'), done: __('as a floating button on every', 'listenly-voice') },
+  { id: 'above', name: __('Top of the post', 'postaloud'), done: __('at the top of every', 'postaloud') },
+  { id: 'below', name: __('End of the post', 'postaloud'), done: __('at the end of every', 'postaloud') },
+  { id: 'floating', name: __('Floating button', 'postaloud'), done: __('as a floating button on every', 'postaloud') },
 ]
 
 type Props = { settings: Settings; onChange: (s: Settings) => void }
@@ -20,7 +20,7 @@ export function PostTypePicker({ settings, onChange }: Props) {
   }
   return (
     <fieldset className="lv-fieldset">
-      <legend>{__('Show on', 'listenly-voice')}</legend>
+      <legend>{__('Show on', 'postaloud')}</legend>
       {cfg.postTypes.map((t) => (
         <label key={t.id} className="lv-check">
           <input type="checkbox" checked={settings.post_types.includes(t.id)} onChange={(e) => toggle(t.id, e.target.checked)} />
@@ -34,7 +34,7 @@ export function PostTypePicker({ settings, onChange }: Props) {
 /** Three placement cards with a small drawing of each. */
 export function PositionPicker({ settings, onChange }: Props) {
   return (
-    <div role="radiogroup" aria-label={__('Player position', 'listenly-voice')} className="lv-positions">
+    <div role="radiogroup" aria-label={__('Player position', 'postaloud')} className="lv-positions">
       {POSITIONS().map((p) => (
         <button
           key={p.id}

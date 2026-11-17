@@ -2,13 +2,13 @@
 /**
  * Short cache and rate limit in front of live server-side audio.
  *
- * @package ListenlyVoice
+ * @package PostAloud
  */
 
-namespace ListenlyVoice\Tts;
+namespace PostAloud\Tts;
 
-use ListenlyVoice\Hooks;
-use ListenlyVoice\Player\Text;
+use PostAloud\Hooks;
+use PostAloud\Player\Text;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -19,8 +19,8 @@ defined( 'ABSPATH' ) || exit;
  */
 final class LiveAudio {
 
-	const CACHE_PREFIX = 'listenly_a_';
-	const LIMIT_PREFIX = 'listenly_rl_';
+	const CACHE_PREFIX = 'postaloud_a_';
+	const LIMIT_PREFIX = 'postaloud_rl_';
 
 	/**
 	 * One chunk of audio, from the cache or the provider, with when each sentence starts if the
@@ -46,8 +46,8 @@ final class LiveAudio {
 		$wait = self::take( $ip, $now );
 		if ( $wait > 0 ) {
 			return new \WP_Error(
-				'listenly_busy',
-				__( 'Too many people are listening right now. Try again in a few minutes.', 'listenly-voice' ),
+				'postaloud_busy',
+				__( 'Too many people are listening right now. Try again in a few minutes.', 'postaloud' ),
 				array(
 					'status'      => 429,
 					'retry_after' => $wait,
@@ -61,7 +61,7 @@ final class LiveAudio {
 			return $result;
 		}
 		if ( '' === $result['audio'] ) {
-			return new \WP_Error( 'listenly_empty_audio', __( 'The voice provider returned no audio.', 'listenly-voice' ), array( 'status' => 502 ) );
+			return new \WP_Error( 'postaloud_empty_audio', __( 'The voice provider returned no audio.', 'postaloud' ), array( 'status' => 502 ) );
 		}
 
 		$ttl = self::ttl();

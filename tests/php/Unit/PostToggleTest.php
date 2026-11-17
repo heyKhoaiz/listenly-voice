@@ -2,17 +2,17 @@
 /**
  * Tests for the per-post "audio on/off" switch.
  *
- * @package ListenlyVoice
+ * @package PostAloud
  */
 
-namespace ListenlyVoice\Tests\Unit;
+namespace PostAloud\Tests\Unit;
 
 use Brain\Monkey\Functions;
-use ListenlyVoice\Editor\PostToggle;
-use ListenlyVoice\Player\Player;
-use ListenlyVoice\Support\Settings;
-use ListenlyVoice\Tests\TestCase;
-use ListenlyVoice\Tts\Registry;
+use PostAloud\Editor\PostToggle;
+use PostAloud\Player\Player;
+use PostAloud\Support\Settings;
+use PostAloud\Tests\TestCase;
+use PostAloud\Tts\Registry;
 
 /**
  * PostToggle and how the player honours it.
@@ -47,7 +47,7 @@ final class PostToggleTest extends TestCase {
 		( new PostToggle() )->register_meta();
 
 		$args = $this->registered[ PostToggle::META ];
-		$this->assertSame( '_listenly_disabled', PostToggle::META );
+		$this->assertSame( '_postaloud_disabled', PostToggle::META );
 		$this->assertSame( 'boolean', $args['type'] );
 		$this->assertTrue( $args['single'] );
 		$this->assertFalse( $args['default'] );
@@ -155,7 +155,7 @@ final class PostToggleTest extends TestCase {
 		$toggle->add_meta_box( 'page' );
 
 		$this->assertSame( array( 'post' ), array_keys( $added ) );
-		$this->assertSame( 'listenly-voice', $added['post'][0] );
+		$this->assertSame( 'postaloud', $added['post'][0] );
 		$this->assertSame( 'side', $added['post'][1] );
 		$this->assertTrue( $added['post'][2]['__back_compat_meta_box'], 'The block editor has its own panel, so hide the box there.' );
 	}
@@ -177,9 +177,9 @@ final class PostToggleTest extends TestCase {
 		( new PostToggle() )->render_meta_box( (object) array( 'ID' => 7 ) );
 		$html = (string) ob_get_clean();
 
-		$this->assertStringContainsString( 'name="listenly_audio_on" value="1" checked="checked"', $html );
+		$this->assertStringContainsString( 'name="postaloud_audio_on" value="1" checked="checked"', $html );
 		$this->assertStringContainsString( 'Audio player on this post', $html );
-		$this->assertStringContainsString( 'name="listenly_toggle_nonce"', $html );
+		$this->assertStringContainsString( 'name="postaloud_toggle_nonce"', $html );
 	}
 
 	public function test_the_box_is_unticked_when_audio_is_off(): void {
@@ -215,12 +215,12 @@ final class PostToggleTest extends TestCase {
 
 	public function test_unticking_the_box_turns_audio_off(): void {
 		Functions\expect( 'update_post_meta' )->once()->with( 7, PostToggle::META, true );
-		$this->submit( array( 'listenly_toggle_nonce' => 'n' ) );
+		$this->submit( array( 'postaloud_toggle_nonce' => 'n' ) );
 	}
 
 	public function test_ticking_the_box_turns_audio_back_on(): void {
 		Functions\expect( 'delete_post_meta' )->once()->with( 7, PostToggle::META );
-		$this->submit( array( 'listenly_toggle_nonce' => 'n', 'listenly_audio_on' => '1' ) );
+		$this->submit( array( 'postaloud_toggle_nonce' => 'n', 'postaloud_audio_on' => '1' ) );
 	}
 
 	public function test_saves_from_elsewhere_without_the_box_change_nothing(): void {
@@ -231,16 +231,16 @@ final class PostToggleTest extends TestCase {
 
 	public function test_a_bad_nonce_changes_nothing(): void {
 		Functions\expect( 'update_post_meta' )->never();
-		$this->submit( array( 'listenly_toggle_nonce' => 'forged' ), false );
+		$this->submit( array( 'postaloud_toggle_nonce' => 'forged' ), false );
 	}
 
 	public function test_someone_who_cannot_edit_the_post_changes_nothing(): void {
 		Functions\expect( 'update_post_meta' )->never();
-		$this->submit( array( 'listenly_toggle_nonce' => 'n' ), true, false );
+		$this->submit( array( 'postaloud_toggle_nonce' => 'n' ), true, false );
 	}
 
 	public function test_an_autosave_changes_nothing(): void {
 		Functions\expect( 'update_post_meta' )->never();
-		$this->submit( array( 'listenly_toggle_nonce' => 'n' ), true, true, true );
+		$this->submit( array( 'postaloud_toggle_nonce' => 'n' ), true, true, true );
 	}
 }

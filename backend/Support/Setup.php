@@ -2,12 +2,12 @@
 /**
  * First-run setup state and the redirect to the wizard after activation.
  *
- * @package ListenlyVoice
+ * @package PostAloud
  */
 
-namespace ListenlyVoice\Support;
+namespace PostAloud\Support;
 
-use ListenlyVoice\Admin\Menu;
+use PostAloud\Admin\Menu;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) || exit;
  */
 final class Setup {
 
-	const REDIRECT_TRANSIENT = 'listenly_setup_redirect';
+	const REDIRECT_TRANSIENT = 'postaloud_setup_redirect';
 
 	/**
 	 * Registers hooks.

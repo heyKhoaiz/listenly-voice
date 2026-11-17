@@ -2,14 +2,14 @@
 /**
  * Money and number shorthand.
  *
- * @package ListenlyVoice
+ * @package PostAloud
  */
 
-namespace ListenlyVoice\Tests\Unit;
+namespace PostAloud\Tests\Unit;
 
-use ListenlyVoice\Player\Say;
-use ListenlyVoice\Player\Spoken;
-use ListenlyVoice\Tests\TestCase;
+use PostAloud\Player\Say;
+use PostAloud\Player\Spoken;
+use PostAloud\Tests\TestCase;
 use Brain\Monkey\Functions;
 
 /**
@@ -42,7 +42,7 @@ final class SpokenTest extends TestCase {
 			$raw[] = array( "w$i", "word $i" );
 		}
 		self::assertSame( 200, Say::LIMIT );
-		\Brain\Monkey\Filters\expectApplied( 'listenly/say_limit' )->andReturn( 5 );
+		\Brain\Monkey\Filters\expectApplied( 'postaloud/say_limit' )->andReturn( 5 );
 		$clean = Say::sanitize( $raw );
 		self::assertCount( 5, $clean );
 		self::assertSame( array( 'WP', 'WordPress' ), $clean[0] );

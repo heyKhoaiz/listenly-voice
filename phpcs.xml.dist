@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<ruleset name="ListenlyVoice">
-	<file>./listenly-voice.php</file>
+<ruleset name="PostAloud">
+	<file>./postaloud.php</file>
 	<file>./uninstall.php</file>
 	<file>./backend</file>
 	<arg name="extensions" value="php"/>
@@ -13,7 +13,7 @@
 	</rule>
 	<rule ref="WordPress.WP.I18n">
 		<properties>
-			<property name="text_domain" type="array" value="listenly-voice"/>
+			<property name="text_domain" type="array" value="postaloud"/>
 		</properties>
 	</rule>
 	<rule ref="PHPCompatibilityWP"/>

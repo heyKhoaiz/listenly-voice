@@ -18,8 +18,8 @@ class FakeUtterance {
 
 function page(data: Record<string, unknown> = {}, body = '<h2>Grow tomatoes</h2><p>First they need sun. <span class="ad">Buy seeds now.</span> Then water daily.</p>') {
   const json = JSON.stringify({ post: 1, clientSide: true, audioUrl: '/a/1/', playUrl: '/play/1', speed: 1, highlight: 'off', position: 'above', lang: 'en-US', ...data })
-  document.body.innerHTML = `<article><div class="listenly-player" data-listenly='${json}'></div>${body}</article>`
-  const root = document.querySelector<HTMLElement>('.listenly-player')!
+  document.body.innerHTML = `<article><div class="postaloud-player" data-postaloud='${json}'></div>${body}</article>`
+  const root = document.querySelector<HTMLElement>('.postaloud-player')!
   mount(root)
   return root
 }

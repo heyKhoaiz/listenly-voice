@@ -2,24 +2,24 @@
 /**
  * Play counts: how many times visitors pressed play.
  *
- * @package ListenlyVoice
+ * @package PostAloud
  */
 
-namespace ListenlyVoice\Stats;
+namespace PostAloud\Stats;
 
-use ListenlyVoice\Hooks;
+use PostAloud\Hooks;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * The player calls POST /listenly/v1/play/{id} on the first play of a page view. Each visitor
+ * The player calls POST /postaloud/v1/play/{id} on the first play of a page view. Each visitor
  * counts once per post per half hour. Nothing about the visitor is stored: the address is hashed
  * into a short-lived transient key and forgotten when it expires.
  */
 final class Plays {
 
-	const META   = '_listenly_plays';
-	const OPTION = 'listenly_plays_total';
+	const META   = '_postaloud_plays';
+	const OPTION = 'postaloud_plays_total';
 	// One play per visitor per post in this many seconds.
 	const WINDOW = 1800;
 
@@ -31,7 +31,7 @@ final class Plays {
 	 * @return bool Whether the play was counted.
 	 */
 	public static function record( int $post_id, string $ip ): bool {
-		$key = 'listenly_play_' . substr( md5( $ip . '|' . $post_id . '|' . wp_salt( 'nonce' ) ), 0, 16 );
+		$key = 'postaloud_play_' . substr( md5( $ip . '|' . $post_id . '|' . wp_salt( 'nonce' ) ), 0, 16 );
 		if ( get_transient( $key ) ) {
 			return false;
 		}

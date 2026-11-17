@@ -26,16 +26,16 @@ class FakeHighlight {
 }
 
 function page(data: Record<string, unknown> = {}) {
-  const json = JSON.stringify({ post: 1, clientSide: true, audioUrl: '/wp-json/listenly/v1/audio/1/', speed: 1, highlight: 'sentence', position: 'above', lang: 'en-US', ...data })
-  document.body.innerHTML = `<article><div class="listenly-player" data-listenly='${json}'></div><h2>Grow tomatoes</h2><p>First they need sun. Then water daily.</p></article>`
-  const root = document.querySelector<HTMLElement>('.listenly-player')!
+  const json = JSON.stringify({ post: 1, clientSide: true, audioUrl: '/wp-json/postaloud/v1/audio/1/', speed: 1, highlight: 'sentence', position: 'above', lang: 'en-US', ...data })
+  document.body.innerHTML = `<article><div class="postaloud-player" data-postaloud='${json}'></div><h2>Grow tomatoes</h2><p>First they need sun. Then water daily.</p></article>`
+  const root = document.querySelector<HTMLElement>('.postaloud-player')!
   mount(root)
   return root
 }
 
 const playButton = () => document.querySelector<HTMLButtonElement>('.lvp-play')!
 const speedButton = () => document.querySelector<HTMLButtonElement>('.lvp-speed')!
-const current = () => highlights.get('listenly-sentence')?.ranges[0]?.toString()
+const current = () => highlights.get('postaloud-sentence')?.ranges[0]?.toString()
 
 beforeEach(() => {
   spoken = []
@@ -100,7 +100,7 @@ describe('browser voice', () => {
     const last = spoken[spoken.length - 1]
     last.onstart?.()
     last.onend?.()
-    expect(highlights.has('listenly-sentence')).toBe(false)
+    expect(highlights.has('postaloud-sentence')).toBe(false)
     expect(playButton()).toHaveAttribute('aria-label', 'Play article')
   })
 
@@ -127,7 +127,7 @@ describe('browser voice', () => {
     expect(speedButton()).toHaveAttribute('aria-label', 'Playback speed 1.25×')
   })
 
-  it('a cancelled sentence does not end the session', () => {
+  it('a canceled sentence does not end the session', () => {
     page()
     playButton().click()
     const first = spoken[0]
@@ -166,8 +166,8 @@ describe('browser voice', () => {
   })
 
   it('reads the title of a post with no other text, then finishes', () => {
-    document.body.innerHTML = `<article><div class="listenly-player" data-listenly='${JSON.stringify({ post: 1, clientSide: true, audioUrl: '/a/', speed: 1, highlight: 'sentence', position: 'above', lang: 'en-US', title: 'Just a title' })}'></div></article>`
-    mount(document.querySelector<HTMLElement>('.listenly-player')!)
+    document.body.innerHTML = `<article><div class="postaloud-player" data-postaloud='${JSON.stringify({ post: 1, clientSide: true, audioUrl: '/a/', speed: 1, highlight: 'sentence', position: 'above', lang: 'en-US', title: 'Just a title' })}'></div></article>`
+    mount(document.querySelector<HTMLElement>('.postaloud-player')!)
     playButton().click()
     expect(spoken.map((u) => u.text)).toEqual(['Just a title'])
     spoken[0].onend?.()
@@ -224,7 +224,7 @@ describe('server voice (live Google audio)', () => {
 
   it('plays the first part from the audio route', async () => {
     await start()
-    expect(audio().src).toBe('/wp-json/listenly/v1/audio/1/0')
+    expect(audio().src).toBe('/wp-json/postaloud/v1/audio/1/0')
     expect(audio().play).toHaveBeenCalled()
     expect(spoken).toEqual([])
   })
@@ -232,7 +232,7 @@ describe('server voice (live Google audio)', () => {
   it('moves on to the next part when one ends', async () => {
     await start()
     audio().dispatchEvent(new Event('ended'))
-    expect(audio().src).toBe('/wp-json/listenly/v1/audio/1/1')
+    expect(audio().src).toBe('/wp-json/postaloud/v1/audio/1/1')
   })
 
   it('falls back to the browser voice when the first part fails (busy or provider error)', async () => {
@@ -274,7 +274,7 @@ describe('server voice (live Google audio)', () => {
     audio().dispatchEvent(new Event('error'))
     playButton().click()
     await flush()
-    expect(audio().src).toBe('/wp-json/listenly/v1/audio/1/1')
+    expect(audio().src).toBe('/wp-json/postaloud/v1/audio/1/1')
     expect(label()).toBe('Listen to this article')
   })
 
@@ -348,7 +348,7 @@ describe('server voice with read-along highlighting', () => {
   it('fetches the timed part and plays its audio, without a separate parts request', async () => {
     await start()
     expect(fetchMock).toHaveBeenCalledTimes(1)
-    expect(fetchMock.mock.calls[0][0]).toBe('/wp-json/listenly/v1/audio/1/0/timed')
+    expect(fetchMock.mock.calls[0][0]).toBe('/wp-json/postaloud/v1/audio/1/0/timed')
     expect(audio().src).toBe('blob:part-0')
     expect(audio().play).toHaveBeenCalled()
   })
@@ -373,7 +373,7 @@ describe('server voice with read-along highlighting', () => {
     vi.stubGlobal('fetch', vi.fn(() => Promise.resolve({ json: () => Promise.resolve({ parts: 1 }) })))
     playButton().click()
     await flush()
-    expect(audio().src).toBe('/wp-json/listenly/v1/audio/1/0')
+    expect(audio().src).toBe('/wp-json/postaloud/v1/audio/1/0')
   })
 
   it('moves to the next timed part and frees the previous audio', async () => {
@@ -382,7 +382,7 @@ describe('server voice with read-along highlighting', () => {
     await start()
     audio().dispatchEvent(new Event('ended'))
     await flush()
-    expect(fetchMock.mock.calls[1][0]).toBe('/wp-json/listenly/v1/audio/1/1/timed')
+    expect(fetchMock.mock.calls[1][0]).toBe('/wp-json/postaloud/v1/audio/1/1/timed')
     expect(audio().src).toBe('blob:part-1')
     expect(revoked).toEqual(['blob:part-0'])
     at(0.2)
@@ -398,7 +398,7 @@ describe('server voice with read-along highlighting', () => {
   })
 
   it('falls back to the browser voice when the first timed part is refused (429)', async () => {
-    fetchMock.mockImplementationOnce(() => json({ code: 'listenly_busy' }, 429))
+    fetchMock.mockImplementationOnce(() => json({ code: 'postaloud_busy' }, 429))
     await start()
     expect(label()).toBe("Playing with your browser's voice.")
     expect(spoken.map((u) => u.text)).toEqual(['Grow tomatoes', 'First they need sun.', 'Then water daily.'])
@@ -456,16 +456,16 @@ describe('ready audio file with timings (from an extension)', () => {
   })
 
   const start = async (data: Record<string, unknown> = {}) => {
-    page({ clientSide: false, file: '/uploads/listenly/1-abc.mp3', timingsUrl: '/uploads/listenly/1-abc.json', ...data })
+    page({ clientSide: false, file: '/uploads/postaloud/1-abc.mp3', timingsUrl: '/uploads/postaloud/1-abc.json', ...data })
     playButton().click()
     await flush()
   }
 
   it('plays the file and fetches its timings once', async () => {
     await start()
-    expect(audio().src).toBe('/uploads/listenly/1-abc.mp3')
+    expect(audio().src).toBe('/uploads/postaloud/1-abc.mp3')
     expect(fetchMock).toHaveBeenCalledTimes(1)
-    expect(fetchMock.mock.calls[0][0]).toBe('/uploads/listenly/1-abc.json')
+    expect(fetchMock.mock.calls[0][0]).toBe('/uploads/postaloud/1-abc.json')
   })
 
   it('highlights the sentence being read in the file', async () => {
@@ -495,12 +495,12 @@ describe('ready audio file with timings (from an extension)', () => {
     expect(audio().play).toHaveBeenCalled()
   })
 
-  it('lets an extension narrow the highlight through listenly.player.highlight', async () => {
+  it('lets an extension narrow the highlight through postaloud.player.highlight', async () => {
     const seen: unknown[] = []
     ;(window as unknown as { wp: unknown }).wp = {
       hooks: {
         applyFilters: (name: string, range: Range | null, ctx: { time: number; index: number; sentence: { range: Range } | null; timings: unknown }) => {
-          if (name !== 'listenly.player.highlight') return range
+          if (name !== 'postaloud.player.highlight') return range
           seen.push({ time: ctx.time, index: ctx.index, hasTimings: !!ctx.timings })
           if (!ctx.sentence) return range
           const word = document.createRange()

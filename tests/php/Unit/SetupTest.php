@@ -2,14 +2,14 @@
 /**
  * Tests for the first-run setup state and activation redirect.
  *
- * @package ListenlyVoice
+ * @package PostAloud
  */
 
-namespace ListenlyVoice\Tests\Unit;
+namespace PostAloud\Tests\Unit;
 
 use Brain\Monkey\Functions;
-use ListenlyVoice\Support\Setup;
-use ListenlyVoice\Tests\TestCase;
+use PostAloud\Support\Setup;
+use PostAloud\Tests\TestCase;
 
 /**
  * Setup.

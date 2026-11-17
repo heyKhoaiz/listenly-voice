@@ -6,9 +6,9 @@ import { App } from '../../frontend/admin/App'
 vi.mock('../../frontend/admin/lib/sound', () => ({ SAMPLE_TEXT: 'Hello.', canSpeak: () => true, speak: vi.fn(async () => {}), playUrl: vi.fn(async () => {}) }))
 
 const base = (extra: Record<string, unknown> = {}) => ({
-  restUrl: '/wp-json/listenly/v1/',
+  restUrl: '/wp-json/postaloud/v1/',
   nonce: 'n',
-  pageUrl: '/wp-admin/admin.php?page=listenly-voice',
+  pageUrl: '/wp-admin/admin.php?page=postaloud',
   version: '0.1.0',
   settings: { provider: 'browser', voice: '', speed: 1.25, post_types: ['post'], position: 'below', highlight: 'sentence' },
   providers: [
@@ -27,7 +27,7 @@ const base = (extra: Record<string, unknown> = {}) => ({
   ...extra,
 })
 const setConfig = (extra: Record<string, unknown> = {}) => {
-  ;(window as unknown as { listenlyConfig: unknown }).listenlyConfig = base(extra)
+  ;(window as unknown as { postaloudConfig: unknown }).postaloudConfig = base(extra)
 }
 
 beforeEach(() => setConfig())

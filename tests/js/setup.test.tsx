@@ -16,10 +16,10 @@ let routes: Record<string, Route | ((body: unknown) => Route)>
 let calls: { path: string; method: string; body: unknown }[]
 
 function config(overrides: Record<string, unknown> = {}) {
-  ;(window as unknown as { listenlyConfig: unknown }).listenlyConfig = {
-    restUrl: '/wp-json/listenly/v1/',
+  ;(window as unknown as { postaloudConfig: unknown }).postaloudConfig = {
+    restUrl: '/wp-json/postaloud/v1/',
     nonce: 'n',
-    pageUrl: '/wp-admin/admin.php?page=listenly-voice',
+    pageUrl: '/wp-admin/admin.php?page=postaloud',
     version: '0.1.0',
     settings: { provider: 'browser', voice: '', speed: 1, post_types: ['post'], position: 'above', highlight: 'sentence' },
     providers: [
@@ -58,7 +58,7 @@ beforeEach(() => {
   vi.stubGlobal(
     'fetch',
     vi.fn(async (url: string, init: RequestInit = {}) => {
-      const path = url.replace('/wp-json/listenly/v1/', '')
+      const path = url.replace('/wp-json/postaloud/v1/', '')
       const method = init.method ?? 'GET'
       const body = init.body ? JSON.parse(String(init.body)) : undefined
       calls.push({ path, method, body })
@@ -176,7 +176,7 @@ describe('step 1: voice', () => {
     routes['preview POST'] = {
       status: 502,
       body: {
-        code: 'listenly_google_api_disabled',
+        code: 'postaloud_google_api_disabled',
         message: 'The Cloud Text-to-Speech API is off for this project. Open it in Google Cloud, press Enable, wait a minute, then test again.',
         data: { status: 502, fix: 'https://console.cloud.google.com/apis/library/texttospeech.googleapis.com' },
       },

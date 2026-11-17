@@ -2,8 +2,8 @@ import { afterEach, describe, expect, it } from 'vitest'
 import { applyTheme, luminance, pageIsDark, watchTheme } from '../../frontend/player/theme'
 
 const setup = (bg: string) => {
-  document.body.innerHTML = `<main style="background-color: ${bg}"><div class="listenly-player"></div></main>`
-  return document.querySelector<HTMLElement>('.listenly-player')!
+  document.body.innerHTML = `<main style="background-color: ${bg}"><div class="postaloud-player"></div></main>`
+  return document.querySelector<HTMLElement>('.postaloud-player')!
 }
 
 afterEach(() => {
@@ -12,8 +12,8 @@ afterEach(() => {
   document.body.removeAttribute('style')
 })
 
-describe('player colours', () => {
-  it('measures colours and ignores see-through ones', () => {
+describe('player colors', () => {
+  it('measures colors and ignores see-through ones', () => {
     expect(luminance('rgb(255, 255, 255)')).toBeCloseTo(1)
     expect(luminance('rgb(0, 0, 0)')).toBe(0)
     expect(luminance('rgba(0, 0, 0, 0)')).toBeNull()
@@ -26,42 +26,42 @@ describe('player colours', () => {
   })
 
   it('treats a page with no background as light', () => {
-    document.body.innerHTML = '<div class="listenly-player"></div>'
-    expect(pageIsDark(document.querySelector<HTMLElement>('.listenly-player')!)).toBe(false)
+    document.body.innerHTML = '<div class="postaloud-player"></div>'
+    expect(pageIsDark(document.querySelector<HTMLElement>('.postaloud-player')!)).toBe(false)
   })
 
   it('auto switches the player and the read-along highlight to dark on a dark page', () => {
     const root = setup('rgb(18, 18, 18)')
     watchTheme(root, 'auto')
-    expect(root).toHaveClass('listenly-player--dark')
-    expect(document.documentElement).toHaveClass('listenly-dark')
+    expect(root).toHaveClass('postaloud-player--dark')
+    expect(document.documentElement).toHaveClass('postaloud-dark')
   })
 
   it('follows a theme that switches to dark later', async () => {
-    document.body.innerHTML = '<div class="listenly-player"></div>'
-    const root = document.querySelector<HTMLElement>('.listenly-player')!
+    document.body.innerHTML = '<div class="postaloud-player"></div>'
+    const root = document.querySelector<HTMLElement>('.postaloud-player')!
     watchTheme(root, 'auto')
-    expect(root).not.toHaveClass('listenly-player--dark')
+    expect(root).not.toHaveClass('postaloud-player--dark')
     document.body.style.backgroundColor = 'rgb(10, 10, 10)'
     await new Promise((r) => setTimeout(r, 0))
-    expect(root).toHaveClass('listenly-player--dark')
+    expect(root).toHaveClass('postaloud-player--dark')
   })
 
   it('keeps a forced choice whatever the page looks like', () => {
     const root = setup('rgb(18, 18, 18)')
     watchTheme(root, 'light')
-    expect(root).not.toHaveClass('listenly-player--dark')
+    expect(root).not.toHaveClass('postaloud-player--dark')
     const light = setup('rgb(255, 255, 255)')
     watchTheme(light, 'dark')
-    expect(light).toHaveClass('listenly-player--dark')
+    expect(light).toHaveClass('postaloud-player--dark')
   })
 
   it('removes dark again', () => {
     const root = setup('rgb(255, 255, 255)')
     applyTheme(root, true)
     applyTheme(root, false)
-    expect(root).not.toHaveClass('listenly-player--dark')
-    expect(document.documentElement).not.toHaveClass('listenly-dark')
+    expect(root).not.toHaveClass('postaloud-player--dark')
+    expect(document.documentElement).not.toHaveClass('postaloud-dark')
   })
 
   it('settles when two players on one page disagree', async () => {
@@ -72,7 +72,7 @@ describe('player colours', () => {
     watchTheme(b, 'auto')
     document.body.style.color = 'red'
     await new Promise((r) => setTimeout(r, 20))
-    expect(a).toHaveClass('listenly-player--dark')
-    expect(b).not.toHaveClass('listenly-player--dark')
+    expect(a).toHaveClass('postaloud-player--dark')
+    expect(b).not.toHaveClass('postaloud-player--dark')
   })
 })

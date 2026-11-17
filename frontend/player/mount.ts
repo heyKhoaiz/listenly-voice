@@ -1,15 +1,15 @@
 // One player. Browser voice → speechSynthesis, one sentence at a time with read-along highlighting;
 // a ready audio file (data.file, filled by extensions) → plays it, with read-along when the
 // extension also gives data.timingsUrl ({ marks: [{ t, text }] });
-// server voices → MP3 parts from /wp-json/listenly/v1/audio/{post}/{part}, or with read-along on,
+// server voices → MP3 parts from /wp-json/postaloud/v1/audio/{post}/{part}, or with read-along on,
 // /{part}/timed: the same audio as JSON plus when each sentence starts.
 //
-// Optional data that extensions can fill (listenly/player_data):
+// Optional data that extensions can fill (postaloud/player_data):
 //   classes   extra classes on the player root      vars    CSS custom properties (--lvp-*)
 //   download  a link to download the audio          skip    extra CSS selector the browser voice skips
 //   say       [[word, spoken], …] for the browser voice
 //   tracks    [{ label, file, timingsUrl? }, …]: other recordings the visitor can switch to
-// Events, for extensions: wp.hooks.doAction('listenly.player.event', name, detail, data) with
+// Events, for extensions: wp.hooks.doAction('postaloud.player.event', name, detail, data) with
 // name play | pause | progress ({ fraction }) | speed ({ speed }) | ended | painted ({ range }) | track ({ index }).
 import { alignMarks, markAt, normalize, type Mark } from './marks'
 import { collectSentences, type Sentence } from './sentences'
@@ -40,17 +40,17 @@ type Data = {
   tracks?: Track[]
 }
 
-const t = (text: string) => (window as unknown as { wp?: { i18n?: { __: (s: string, d: string) => string } } }).wp?.i18n?.__(text, 'listenly-voice') ?? text
+const t = (text: string) => (window as unknown as { wp?: { i18n?: { __: (s: string, d: string) => string } } }).wp?.i18n?.__(text, 'postaloud') ?? text
 const SPEEDS = [0.75, 1, 1.25, 1.5, 2]
-const HIGHLIGHT = 'listenly-sentence'
+const HIGHLIGHT = 'postaloud-sentence'
 
 // Extensions can narrow or replace the highlighted range (for example to one word):
-//   wp.hooks.addFilter('listenly.player.highlight', ns, (range, { time, index, sentence, marks, timings }) => range)
+//   wp.hooks.addFilter('postaloud.player.highlight', ns, (range, { time, index, sentence, marks, timings }) => range)
 type HighlightContext = { time: number; index: number; sentence: Sentence | null; marks: Mark[]; timings: unknown }
 const filterRange = (range: Range | null, ctx: HighlightContext): Range | null => {
   const hooks = (window as unknown as { wp?: { hooks?: { applyFilters: (n: string, v: unknown, c: unknown) => unknown } } }).wp?.hooks
   if (!hooks) return range
-  const out = hooks.applyFilters('listenly.player.highlight', range, ctx)
+  const out = hooks.applyFilters('postaloud.player.highlight', range, ctx)
   return out && typeof out === 'object' && 'startContainer' in out ? (out as Range) : null
 }
 
@@ -81,7 +81,7 @@ function articleOf(root: HTMLElement): HTMLElement {
 }
 
 export function mount(root: HTMLElement): void {
-  const data = JSON.parse(root.dataset.listenly ?? '{}') as Data
+  const data = JSON.parse(root.dataset.postaloud ?? '{}') as Data
   const synth = (globalThis as { speechSynthesis?: SpeechSynthesis }).speechSynthesis
   // True for the browser voice, or after live audio failed and we switched to it.
   let local = data.clientSide
@@ -92,14 +92,14 @@ export function mount(root: HTMLElement): void {
   const audio = new Audio()
 
   // Browser voice state: the sentence list, where we are, and a generation counter so
-  // callbacks from a cancelled queue are ignored.
+  // callbacks from a canceled queue are ignored.
   let sentences: Sentence[] | null = null
   let index = 0
   let generation = 0
 
   const emit = (name: string, detail: Record<string, unknown> = {}) => {
     try {
-      emitter()?.doAction?.('listenly.player.event', name, detail, data)
+      emitter()?.doAction?.('postaloud.player.event', name, detail, data)
     } catch {
       // A broken listener must not stop playback.
     }

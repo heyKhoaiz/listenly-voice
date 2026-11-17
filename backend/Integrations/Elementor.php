@@ -2,15 +2,15 @@
 /**
  * Elementor support.
  *
- * @package ListenlyVoice
+ * @package PostAloud
  */
 
-namespace ListenlyVoice\Integrations;
+namespace PostAloud\Integrations;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Adds the "Listenly player" widget when Elementor is active. The widget class extends
+ * Adds the "PostAloud player" widget when Elementor is active. The widget class extends
  * Elementor's base class, so it's only loaded once Elementor asks for widgets.
  */
 final class Elementor {

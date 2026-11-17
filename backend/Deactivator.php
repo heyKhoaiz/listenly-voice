@@ -2,10 +2,10 @@
 /**
  * Deactivation.
  *
- * @package ListenlyVoice
+ * @package PostAloud
  */
 
-namespace ListenlyVoice;
+namespace PostAloud;
 
 defined( 'ABSPATH' ) || exit;
 

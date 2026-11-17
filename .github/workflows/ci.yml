@@ -1,4 +1,4 @@
-# Free plugin checks on its own. The parent repo (listenly-voice-docker) also builds both
+# Free plugin checks on its own. The parent repo (postaloud-docker) also builds both
 # plugins, runs assert-no-pro and makes the zips.
 name: CI
 

@@ -12,7 +12,7 @@ export class ApiError extends Error {
   }
 }
 
-// fetch() against /wp-json/listenly/v1/ with the REST nonce.
+// fetch() against /wp-json/postaloud/v1/ with the REST nonce.
 export async function api<T>(path: string, init: { method?: string; body?: unknown } = {}): Promise<T> {
   const { restUrl, nonce } = config()
   const res = await fetch(restUrl + path, {

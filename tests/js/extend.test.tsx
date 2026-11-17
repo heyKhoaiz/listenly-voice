@@ -10,9 +10,9 @@ let filters: Record<string, Fn[]>
 const addFilter = (name: string, fn: Fn) => (filters[name] ??= []).push(fn)
 
 const base = (over: Partial<Settings> = {}) => ({
-  restUrl: '/wp-json/listenly/v1/',
+  restUrl: '/wp-json/postaloud/v1/',
   nonce: 'n',
-  pageUrl: '/wp-admin/admin.php?page=listenly-voice',
+  pageUrl: '/wp-admin/admin.php?page=postaloud',
   version: '0.1.0',
   settings: { provider: 'browser', voice: '', speed: 1, post_types: ['post'], position: 'above', highlight: 'sentence', ...over },
   providers: [
@@ -31,7 +31,7 @@ beforeEach(() => {
   ;(window as unknown as { wp: unknown }).wp = {
     hooks: { applyFilters: (name: string, value: unknown, ...args: unknown[]) => (filters[name] ?? []).reduce((v, fn) => fn(v, ...args), value) },
   }
-  ;(window as unknown as { listenlyConfig: unknown }).listenlyConfig = base()
+  ;(window as unknown as { postaloudConfig: unknown }).postaloudConfig = base()
 })
 
 afterEach(() => {
@@ -41,8 +41,8 @@ afterEach(() => {
 const nav = () => within(screen.getByRole('navigation'))
 
 describe('admin extension points', () => {
-  it('adds pages from the listenly.admin.pages filter to the sidebar, and renders them with the settings', async () => {
-    addFilter('listenly.admin.pages', (pages) => [
+  it('adds pages from the postaloud.admin.pages filter to the sidebar, and renders them with the settings', async () => {
+    addFilter('postaloud.admin.pages', (pages) => [
       ...(pages as unknown[]),
       { id: 'library', label: 'Library', render: ({ settings }: { settings: Settings }) => <p>Library for {settings.provider}</p> },
     ])
@@ -53,7 +53,7 @@ describe('admin extension points', () => {
   })
 
   it('ignores page entries without an id, label and render function, and ids that clash', () => {
-    addFilter('listenly.admin.pages', () => [{ id: 'x' }, { label: 'No id', render: () => null }, { id: 'voices', label: 'Clash', render: () => null }, 'junk'])
+    addFilter('postaloud.admin.pages', () => [{ id: 'x' }, { label: 'No id', render: () => null }, { id: 'voices', label: 'Clash', render: () => null }, 'junk'])
     render(<App />)
     expect(nav().getAllByRole('button', { name: /Voices|Player|Clash|No id/ }).map((b) => b.textContent)).toEqual(['Voices', 'Player'])
   })
@@ -65,7 +65,7 @@ describe('admin extension points', () => {
   })
 
   it('shows the connection panel an extension gives for a provider other than Google', async () => {
-    addFilter('listenly.admin.providerPanel', (panel, ctx) => {
+    addFilter('postaloud.admin.providerPanel', (panel, ctx) => {
       const { provider } = ctx as { provider: { id: string; label: string } }
       return provider.id === 'acme' ? <section aria-label="Acme connection">Connect {provider.label}</section> : panel
     })
@@ -77,7 +77,7 @@ describe('admin extension points', () => {
   })
 
   it('offers extra highlight modes on the Player screen and saves the choice', async () => {
-    addFilter('listenly.admin.highlightModes', (modes) => [...(modes as unknown[]), { id: 'word', label: 'Each word', description: 'Follows word by word.' }])
+    addFilter('postaloud.admin.highlightModes', (modes) => [...(modes as unknown[]), { id: 'word', label: 'Each word', description: 'Follows word by word.' }])
     render(<App />)
     await userEvent.click(nav().getByRole('button', { name: 'Player' }))
     const group = screen.getByRole('radiogroup', { name: 'What to highlight' })
@@ -95,25 +95,25 @@ describe('admin extension points', () => {
   })
 
   it('hides the mode choice while highlighting is off', async () => {
-    addFilter('listenly.admin.highlightModes', () => [{ id: 'word', label: 'Each word', description: '' }])
-    ;(window as unknown as { listenlyConfig: unknown }).listenlyConfig = base({ highlight: 'off' })
+    addFilter('postaloud.admin.highlightModes', () => [{ id: 'word', label: 'Each word', description: '' }])
+    ;(window as unknown as { postaloudConfig: unknown }).postaloudConfig = base({ highlight: 'off' })
     render(<App />)
     await userEvent.click(nav().getByRole('button', { name: 'Player' }))
     expect(screen.queryByRole('radiogroup', { name: 'What to highlight' })).not.toBeInTheDocument()
   })
 
   it('lets an extension name the edition in the header', () => {
-    addFilter('listenly.admin.edition', () => 'Plus · v2.0.0')
+    addFilter('postaloud.admin.edition', () => 'Plus · v2.0.0')
     render(<App />)
     expect(screen.getByText('Plus · v2.0.0')).toBeInTheDocument()
   })
 
   it('shows the extension’s connection panel in the setup wizard too', async () => {
-    addFilter('listenly.admin.providerPanel', (panel, ctx) => {
+    addFilter('postaloud.admin.providerPanel', (panel, ctx) => {
       const { provider } = ctx as { provider: { id: string } }
       return provider.id === 'acme' ? <section aria-label="Acme connection">Connect</section> : panel
     })
-    ;(window as unknown as { listenlyConfig: Record<string, unknown> }).listenlyConfig = { ...base(), setupDone: false }
+    ;(window as unknown as { postaloudConfig: Record<string, unknown> }).postaloudConfig = { ...base(), setupDone: false }
     render(<App />)
     expect(screen.queryByRole('region', { name: 'Acme connection' })).not.toBeInTheDocument()
     await userEvent.click(screen.getByRole('radio', { name: /Acme Voices/ }))
@@ -121,7 +121,7 @@ describe('admin extension points', () => {
   })
 
   it('hides the top Save button on extension pages that save on their own', async () => {
-    addFilter('listenly.admin.pages', () => [
+    addFilter('postaloud.admin.pages', () => [
       { id: 'own', label: 'Own save', render: () => <p>Own</p>, hideSave: true },
       { id: 'shared', label: 'Shared', render: () => <p>Shared</p> },
     ])

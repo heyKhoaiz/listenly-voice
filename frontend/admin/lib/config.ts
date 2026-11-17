@@ -1,4 +1,4 @@
-// window.listenlyConfig, printed by backend/Admin/Assets.php. It never holds API keys.
+// window.postaloudConfig, printed by backend/Admin/Assets.php. It never holds API keys.
 export type Voice = { id: string; label: string; language: string }
 export type Provider = { id: string; label: string; ready: boolean; clientSide: boolean; voices: Voice[] }
 export type Settings = {
@@ -7,9 +7,9 @@ export type Settings = {
   speed: number
   post_types: string[]
   position: 'above' | 'below' | 'floating'
-  // 'sentence' and 'off' in Free; extensions can add modes (listenly.admin.highlightModes).
+  // 'sentence' and 'off' in Free; extensions can add modes (postaloud.admin.highlightModes).
   highlight: 'sentence' | 'off' | (string & {})
-  // Player colours. 'auto' follows the page behind the player.
+  // Player colors. 'auto' follows the page behind the player.
   theme: 'auto' | 'light' | 'dark'
   /** Pronunciation: [written, said as] pairs, at most Config.sayLimit. */
   say: [string, string][]
@@ -40,4 +40,4 @@ export type Config = {
   helpLinks?: boolean
 }
 
-export const config = (): Config => (window as unknown as { listenlyConfig: Config }).listenlyConfig
+export const config = (): Config => (window as unknown as { postaloudConfig: Config }).postaloudConfig

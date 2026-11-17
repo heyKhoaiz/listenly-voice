@@ -2,19 +2,19 @@
 /**
  * Admin app assets.
  *
- * @package ListenlyVoice
+ * @package PostAloud
  */
 
-namespace ListenlyVoice\Admin;
+namespace PostAloud\Admin;
 
-use ListenlyVoice\Hooks;
-use ListenlyVoice\Player\Player;
-use ListenlyVoice\Player\Say;
-use ListenlyVoice\Plugin;
-use ListenlyVoice\Stats\Plays;
-use ListenlyVoice\Support\Settings;
-use ListenlyVoice\Support\Setup;
-use ListenlyVoice\Tts\GoogleProvider;
+use PostAloud\Hooks;
+use PostAloud\Player\Player;
+use PostAloud\Player\Say;
+use PostAloud\Plugin;
+use PostAloud\Stats\Plays;
+use PostAloud\Support\Settings;
+use PostAloud\Support\Setup;
+use PostAloud\Tts\GoogleProvider;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -24,7 +24,7 @@ defined( 'ABSPATH' ) || exit;
  */
 final class Assets {
 
-	const HANDLE = 'listenly-admin';
+	const HANDLE = 'postaloud-admin';
 	const ENTRY  = 'frontend/admin/main.tsx';
 
 	/**
@@ -49,13 +49,13 @@ final class Assets {
 			add_action( 'admin_notices', array( $this, 'missing_build_notice' ) );
 			return;
 		}
-		wp_enqueue_script( self::HANDLE, LISTENLY_URL . 'build/' . $entry['file'], $deps, null, true ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- The file name has a content hash.
+		wp_enqueue_script( self::HANDLE, POSTALOUD_URL . 'build/' . $entry['file'], $deps, null, true ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- The file name has a content hash.
 		foreach ( (array) ( $entry['css'] ?? array() ) as $i => $css ) {
-			wp_enqueue_style( self::HANDLE . '-' . $i, LISTENLY_URL . 'build/' . $css, array(), LISTENLY_VERSION );
+			wp_enqueue_style( self::HANDLE . '-' . $i, POSTALOUD_URL . 'build/' . $css, array(), POSTALOUD_VERSION );
 		}
 
-		wp_add_inline_script( self::HANDLE, 'window.listenlyConfig = ' . wp_json_encode( $this->config() ) . ';', 'before' );
-		wp_set_script_translations( self::HANDLE, 'listenly-voice', LISTENLY_PATH . 'languages' );
+		wp_add_inline_script( self::HANDLE, 'window.postaloudConfig = ' . wp_json_encode( $this->config() ) . ';', 'before' );
+		wp_set_script_translations( self::HANDLE, 'postaloud', POSTALOUD_PATH . 'languages' );
 	}
 
 	/**
@@ -75,11 +75,11 @@ final class Assets {
 	 * Shown when `build/` is missing.
 	 */
 	public function missing_build_notice(): void {
-		echo '<div class="notice notice-error"><p>' . esc_html__( 'Listenly Voice cannot find its built files. Run the build, then reload this page.', 'listenly-voice' ) . '</p></div>';
+		echo '<div class="notice notice-error"><p>' . esc_html__( 'PostAloud cannot find its built files. Run the build, then reload this page.', 'postaloud' ) . '</p></div>';
 	}
 
 	/**
-	 * Data for `window.listenlyConfig`. Never includes API keys.
+	 * Data for `window.postaloudConfig`. Never includes API keys.
 	 */
 	private function config(): array {
 		$providers = array();
@@ -95,10 +95,10 @@ final class Assets {
 		return apply_filters(
 			Hooks::ADMIN_CONFIG,
 			array(
-				'restUrl'      => esc_url_raw( rest_url( 'listenly/v1/' ) ),
+				'restUrl'      => esc_url_raw( rest_url( 'postaloud/v1/' ) ),
 				'nonce'        => wp_create_nonce( 'wp_rest' ),
 				'pageUrl'      => esc_url_raw( Menu::url() ),
-				'version'      => LISTENLY_VERSION,
+				'version'      => POSTALOUD_VERSION,
 				'settings'     => Settings::all(),
 				'providers'    => $providers,
 				'googleKeySet' => '' !== GoogleProvider::key(),
@@ -139,7 +139,7 @@ final class Assets {
 	 * The entry chunk from `build/manifest.json`.
 	 */
 	private function manifest_entry(): ?array {
-		$file     = LISTENLY_PATH . 'build/manifest.json';
+		$file     = POSTALOUD_PATH . 'build/manifest.json';
 		$manifest = is_readable( $file ) ? json_decode( (string) file_get_contents( $file ), true ) : array(); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 		return is_array( $manifest ) && isset( $manifest[ self::ENTRY ] ) ? $manifest[ self::ENTRY ] : null;
 	}

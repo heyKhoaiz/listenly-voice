@@ -2,16 +2,16 @@
 /**
  * Tests for the visitor address used by the live audio rate limit.
  *
- * @package ListenlyVoice
+ * @package PostAloud
  */
 
-namespace ListenlyVoice\Tests\Unit;
+namespace PostAloud\Tests\Unit;
 
 use Brain\Monkey\Filters;
 use Brain\Monkey\Functions;
-use ListenlyVoice\Hooks;
-use ListenlyVoice\Rest\SettingsController;
-use ListenlyVoice\Tests\TestCase;
+use PostAloud\Hooks;
+use PostAloud\Rest\SettingsController;
+use PostAloud\Tests\TestCase;
 
 /**
  * SettingsController::client_ip().

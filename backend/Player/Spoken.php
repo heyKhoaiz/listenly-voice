@@ -2,10 +2,10 @@
 /**
  * Written forms that voices misread, rewritten the way people say them.
  *
- * @package ListenlyVoice
+ * @package PostAloud
  */
 
-namespace ListenlyVoice\Player;
+namespace PostAloud\Player;
 
 defined( 'ABSPATH' ) || exit;
 
