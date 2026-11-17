@@ -2,12 +2,12 @@
 /**
  * Pronunciation: how the voices say particular words.
  *
- * @package ListenlyVoice
+ * @package PostAloud
  */
 
-namespace ListenlyVoice\Player;
+namespace PostAloud\Player;
 
-use ListenlyVoice\Hooks;
+use PostAloud\Hooks;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
  */
 final class Say {
 
-	/** Pairs kept: a sanity cap, not a paywall (filterable through listenly/say_limit). */
+	/** Pairs kept: a sanity cap, not a paywall (filterable through postaloud/say_limit). */
 	const LIMIT = 200;
 
 	/**

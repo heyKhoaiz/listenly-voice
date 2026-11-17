@@ -2,12 +2,12 @@
 /**
  * Test double for voice providers.
  *
- * @package ListenlyVoice
+ * @package PostAloud
  */
 
-namespace ListenlyVoice\Tests;
+namespace PostAloud\Tests;
 
-use ListenlyVoice\Tts\ProviderInterface;
+use PostAloud\Tts\ProviderInterface;
 
 /**
  * A provider that records what it was asked to read.
@@ -51,7 +51,7 @@ final class FakeProvider implements ProviderInterface {
 /**
  * A provider that also returns sentence timings, like Google with SSML marks.
  */
-final class FakeTimedProvider implements \ListenlyVoice\Tts\TimedProviderInterface {
+final class FakeTimedProvider implements \PostAloud\Tts\TimedProviderInterface {
 	/** @var array<int, array<mixed>> */
 	public $calls = array();
 	/** @var array<int, array<mixed>> */

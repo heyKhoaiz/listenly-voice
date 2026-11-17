@@ -14,22 +14,22 @@ type Props = {
   onClose: () => void
 }
 
-const STEP_NAMES = () => [__('Voice', 'listenly-voice'), __('Placement', 'listenly-voice'), __('Done', 'listenly-voice')]
+const STEP_NAMES = () => [__('Voice', 'postaloud'), __('Placement', 'postaloud'), __('Done', 'postaloud')]
 
 function voiceCopy(id: string, label: string): { name: string; desc: string } {
   if (id === 'google') {
     return {
-      name: __('Natural voice (recommended)', 'listenly-voice'),
-      desc: __('Google Cloud voices. Free for most blogs with your own key; takes about 2 minutes to set up.', 'listenly-voice'),
+      name: __('Natural voice (recommended)', 'postaloud'),
+      desc: __('Google Cloud voices. Free for most blogs with your own key; takes about 2 minutes to set up.', 'postaloud'),
     }
   }
   if (id === 'browser') {
     return {
       name: label,
-      desc: __('Works now with no setup. Each visitor hears their own device voice, so it sounds different on phones.', 'listenly-voice'),
+      desc: __('Works now with no setup. Each visitor hears their own device voice, so it sounds different on phones.', 'postaloud'),
     }
   }
-  return { name: label, desc: __('Uses your own API key.', 'listenly-voice') }
+  return { name: label, desc: __('Uses your own API key.', 'postaloud') }
 }
 
 // First-run wizard: voice → placement → done. Design: docs/ui.md screen 3.
@@ -101,7 +101,7 @@ export function Setup({ settings, onChange, onClose }: Props) {
     setError('')
     if (step === 1) {
       if (needsKey && !keyWorks) {
-        setError(__('Connect a working Google key first, or choose the browser voice.', 'listenly-voice'))
+        setError(__('Connect a working Google key first, or choose the browser voice.', 'postaloud'))
         return
       }
       setStep(2)
@@ -111,7 +111,7 @@ export function Setup({ settings, onChange, onClose }: Props) {
   const finish = async () => {
     setError('')
     if (settings.post_types.length === 0) {
-      setError(__('Choose at least one place to show the player.', 'listenly-voice'))
+      setError(__('Choose at least one place to show the player.', 'postaloud'))
       return
     }
     setBusy(true)
@@ -141,8 +141,8 @@ export function Setup({ settings, onChange, onClose }: Props) {
   const typeLabels = cfg.postTypes.filter((t) => settings.post_types.includes(t.id)).map((t) => t.label)
   const doneText =
     settings.post_types.length === 1 && settings.post_types[0] === 'post'
-      ? `${__('The player is on', 'listenly-voice')} ${where} ${__('post.', 'listenly-voice')}`
-      : `${__('The player is on', 'listenly-voice')} ${where} ${__('item in:', 'listenly-voice')} ${typeLabels.join(', ')}.`
+      ? `${__('The player is on', 'postaloud')} ${where} ${__('post.', 'postaloud')}`
+      : `${__('The player is on', 'postaloud')} ${where} ${__('item in:', 'postaloud')} ${typeLabels.join(', ')}.`
 
   return (
     <div className="lv-wizard">
@@ -152,16 +152,16 @@ export function Setup({ settings, onChange, onClose }: Props) {
             <span className="lv-logo" aria-hidden="true">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M4 10v4M8 7v10M12 4v16M16 8v8M20 11v2" /></svg>
             </span>
-            Listenly Voice
+            PostAloud
           </span>
           {step < 3 && (
             <button type="button" className="lv-link" onClick={skip}>
-              {__('Skip setup', 'listenly-voice')}
+              {__('Skip setup', 'postaloud')}
             </button>
           )}
         </div>
 
-        <ol className="lv-steps" aria-label={__('Setup steps', 'listenly-voice')}>
+        <ol className="lv-steps" aria-label={__('Setup steps', 'postaloud')}>
           {STEP_NAMES().map((name, i) => (
             <li key={name} aria-current={i + 1 === step ? 'step' : undefined} className={i + 1 <= step ? 'is-reached' : undefined}>
               <span className="lv-step-bar" aria-hidden="true" />
@@ -181,11 +181,11 @@ export function Setup({ settings, onChange, onClose }: Props) {
           {step === 1 && (
             <>
               <div>
-                <p className="lv-step-meta">{__('Step 1 of 3 · about 1 minute', 'listenly-voice')}</p>
-                <h1 ref={heading} tabIndex={-1}>{__('How should your posts sound?', 'listenly-voice')}</h1>
-                <p className="lv-muted">{__('You can change this any time. Play each sample before you choose.', 'listenly-voice')}</p>
+                <p className="lv-step-meta">{__('Step 1 of 3 · about 1 minute', 'postaloud')}</p>
+                <h1 ref={heading} tabIndex={-1}>{__('How should your posts sound?', 'postaloud')}</h1>
+                <p className="lv-muted">{__('You can change this any time. Play each sample before you choose.', 'postaloud')}</p>
               </div>
-              <div role="radiogroup" aria-label={__('Voice', 'listenly-voice')} className="lv-voice-list">
+              <div role="radiogroup" aria-label={__('Voice', 'postaloud')} className="lv-voice-list">
                 {cfg.providers.map((p) => {
                   const copy = voiceCopy(p.id, p.label)
                   const checked = settings.provider === p.id
@@ -202,30 +202,30 @@ export function Setup({ settings, onChange, onClose }: Props) {
                       <button
                         type="button"
                         className="lv-btn lv-sample"
-                        aria-label={`${__('Play sample of', 'listenly-voice')} ${copy.name}`}
+                        aria-label={`${__('Play sample of', 'postaloud')} ${copy.name}`}
                         disabled={sampleOff}
                         onClick={() => playSample(p.id)}
                       >
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" /></svg>
-                        {__('Sample', 'listenly-voice')}
+                        {__('Sample', 'postaloud')}
                       </button>
                     </div>
                   )
                 })}
               </div>
-              {!canSpeak() && <p className="lv-muted">{__('This browser has no built-in voice to play a sample.', 'listenly-voice')}</p>}
+              {!canSpeak() && <p className="lv-muted">{__('This browser has no built-in voice to play a sample.', 'postaloud')}</p>}
 
               {needsKey && (
                 <div className="lv-panel">
                   {keyWorks ? (
-                    <p className="lv-ok">{__('Connected. Your key works and stays on your server.', 'listenly-voice')}</p>
+                    <p className="lv-ok">{__('Connected. Your key works and stays on your server.', 'postaloud')}</p>
                   ) : (
                     <>
-                      <label htmlFor="lv-wizard-key">{__('Paste your Google Cloud API key', 'listenly-voice')}</label>
+                      <label htmlFor="lv-wizard-key">{__('Paste your Google Cloud API key', 'postaloud')}</label>
                       <div className="lv-row">
                         <input id="lv-wizard-key" type="password" autoComplete="off" placeholder="AIza…" value={key} onChange={(e) => setKey(e.target.value)} />
                         <button type="button" className="lv-btn" onClick={connect} disabled={!key.trim() || keyBusy}>
-                          {keyBusy ? __('Connecting…', 'listenly-voice') : __('Connect and play a sample', 'listenly-voice')}
+                          {keyBusy ? __('Connecting…', 'postaloud') : __('Connect and play a sample', 'postaloud')}
                         </button>
                       </div>
                       <GoogleKeyGuide />
@@ -233,7 +233,7 @@ export function Setup({ settings, onChange, onClose }: Props) {
                   )}
                   {provider.voices.length > 0 && (
                     <label className="lv-field">
-                      {__('Google voice', 'listenly-voice')}
+                      {__('Google voice', 'postaloud')}
                       <select value={settings.voice} onChange={(e) => onChange({ ...settings, voice: e.target.value })}>
                         {provider.voices.map((v) => (
                           <option key={v.id} value={v.id}>{v.label}</option>
@@ -250,8 +250,8 @@ export function Setup({ settings, onChange, onClose }: Props) {
           {step === 2 && (
             <>
               <div>
-                <p className="lv-step-meta">{__('Step 2 of 3', 'listenly-voice')}</p>
-                <h1 ref={heading} tabIndex={-1}>{__('Where should the player appear?', 'listenly-voice')}</h1>
+                <p className="lv-step-meta">{__('Step 2 of 3', 'postaloud')}</p>
+                <h1 ref={heading} tabIndex={-1}>{__('Where should the player appear?', 'postaloud')}</h1>
               </div>
               <PostTypePicker settings={settings} onChange={(s) => { setError(''); onChange(s) }} />
               <PositionPicker settings={settings} onChange={onChange} />
@@ -264,17 +264,17 @@ export function Setup({ settings, onChange, onClose }: Props) {
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12l5 5 9-10" /></svg>
               </span>
               <div>
-                <h1 ref={heading} tabIndex={-1}>{__('Your posts can be heard now', 'listenly-voice')}</h1>
+                <h1 ref={heading} tabIndex={-1}>{__('Your posts can be heard now', 'postaloud')}</h1>
                 <p className="lv-muted">
-                  {`${doneText} ${__('Open one to hear it.', 'listenly-voice')}`}
+                  {`${doneText} ${__('Open one to hear it.', 'postaloud')}`}
                 </p>
               </div>
               <div className="lv-row">
                 <a className="lv-btn lv-btn-dark lv-btn-link" href={viewUrl}>
-                  {__('View a post', 'listenly-voice')}
+                  {__('View a post', 'postaloud')}
                 </a>
                 <button type="button" className="lv-btn" onClick={onClose}>
-                  {__('Fine-tune settings', 'listenly-voice')}
+                  {__('Fine-tune settings', 'postaloud')}
                 </button>
               </div>
             </>
@@ -284,16 +284,16 @@ export function Setup({ settings, onChange, onClose }: Props) {
             <div className={`lv-wizard-nav${step === 1 ? ' is-first' : ''}`}>
               {step > 1 && (
                 <button type="button" className="lv-btn" onClick={() => { setError(''); setStep(step - 1) }}>
-                  {__('Back', 'listenly-voice')}
+                  {__('Back', 'postaloud')}
                 </button>
               )}
               {step === 1 ? (
                 <button type="button" className="lv-btn lv-btn-dark" onClick={next}>
-                  {__('Continue', 'listenly-voice')}
+                  {__('Continue', 'postaloud')}
                 </button>
               ) : (
                 <button type="button" className="lv-btn lv-btn-dark" onClick={finish} disabled={busy}>
-                  {busy ? __('Saving…', 'listenly-voice') : __('Turn on the player', 'listenly-voice')}
+                  {busy ? __('Saving…', 'postaloud') : __('Turn on the player', 'postaloud')}
                 </button>
               )}
             </div>

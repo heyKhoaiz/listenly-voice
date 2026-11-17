@@ -2,15 +2,15 @@
 /**
  * Tests for Google Cloud voices: plain synthesis and sentence timings from SSML marks.
  *
- * @package ListenlyVoice
+ * @package PostAloud
  */
 
-namespace ListenlyVoice\Tests\Unit;
+namespace PostAloud\Tests\Unit;
 
 use Brain\Monkey\Functions;
-use ListenlyVoice\Player\Text;
-use ListenlyVoice\Tests\TestCase;
-use ListenlyVoice\Tts\GoogleProvider;
+use PostAloud\Player\Text;
+use PostAloud\Tests\TestCase;
+use PostAloud\Tts\GoogleProvider;
 
 /**
  * GoogleProvider.
@@ -133,7 +133,7 @@ final class GoogleProviderTest extends TestCase {
 
 		$result = ( new GoogleProvider() )->synthesize_timed( array( 'One.' ), 'en-US-Neural2-F', 1.0 );
 		$this->assertInstanceOf( \WP_Error::class, $result );
-		$this->assertSame( 'listenly_google_key_invalid', $result->get_error_code() );
+		$this->assertSame( 'postaloud_google_key_invalid', $result->get_error_code() );
 		$this->assertSame( 'API key not valid.', $result->data['google'] );
 	}
 
@@ -152,13 +152,13 @@ final class GoogleProviderTest extends TestCase {
 			);
 		};
 		return array(
-			'invalid key'     => array( 400, array( 'message' => 'API key not valid. Please pass a valid API key.', 'status' => 'INVALID_ARGUMENT', 'details' => $info( 'API_KEY_INVALID' ) ), 'listenly_google_key_invalid', 'apis/credentials' ),
-			'api off'         => array( 403, array( 'message' => 'Cloud Text-to-Speech API has not been used in project 123 before or it is disabled.', 'status' => 'PERMISSION_DENIED', 'details' => $info( 'SERVICE_DISABLED' ) ), 'listenly_google_api_disabled', 'texttospeech.googleapis.com' ),
-			'api off, text'   => array( 403, array( 'message' => 'Cloud Text-to-Speech API has not been used in project 123 before or it is disabled.' ), 'listenly_google_api_disabled', 'texttospeech.googleapis.com' ),
-			'billing off'     => array( 403, array( 'message' => 'This API method requires billing to be enabled.', 'details' => $info( 'BILLING_DISABLED' ) ), 'listenly_google_billing', 'billing' ),
-			'website limited' => array( 403, array( 'message' => 'Requests from referer <empty> are blocked.', 'details' => $info( 'API_KEY_HTTP_REFERRER_BLOCKED' ) ), 'listenly_google_key_restricted', 'apis/credentials' ),
-			'api limited'     => array( 403, array( 'message' => 'Requests to this API texttospeech method are blocked.', 'details' => $info( 'API_KEY_SERVICE_BLOCKED' ) ), 'listenly_google_key_restricted', 'apis/credentials' ),
-			'quota'           => array( 429, array( 'message' => 'Quota exceeded for quota metric.', 'status' => 'RESOURCE_EXHAUSTED' ), 'listenly_google_quota', 'quotas' ),
+			'invalid key'     => array( 400, array( 'message' => 'API key not valid. Please pass a valid API key.', 'status' => 'INVALID_ARGUMENT', 'details' => $info( 'API_KEY_INVALID' ) ), 'postaloud_google_key_invalid', 'apis/credentials' ),
+			'api off'         => array( 403, array( 'message' => 'Cloud Text-to-Speech API has not been used in project 123 before or it is disabled.', 'status' => 'PERMISSION_DENIED', 'details' => $info( 'SERVICE_DISABLED' ) ), 'postaloud_google_api_disabled', 'texttospeech.googleapis.com' ),
+			'api off, text'   => array( 403, array( 'message' => 'Cloud Text-to-Speech API has not been used in project 123 before or it is disabled.' ), 'postaloud_google_api_disabled', 'texttospeech.googleapis.com' ),
+			'billing off'     => array( 403, array( 'message' => 'This API method requires billing to be enabled.', 'details' => $info( 'BILLING_DISABLED' ) ), 'postaloud_google_billing', 'billing' ),
+			'website limited' => array( 403, array( 'message' => 'Requests from referer <empty> are blocked.', 'details' => $info( 'API_KEY_HTTP_REFERRER_BLOCKED' ) ), 'postaloud_google_key_restricted', 'apis/credentials' ),
+			'api limited'     => array( 403, array( 'message' => 'Requests to this API texttospeech method are blocked.', 'details' => $info( 'API_KEY_SERVICE_BLOCKED' ) ), 'postaloud_google_key_restricted', 'apis/credentials' ),
+			'quota'           => array( 429, array( 'message' => 'Quota exceeded for quota metric.', 'status' => 'RESOURCE_EXHAUSTED' ), 'postaloud_google_quota', 'quotas' ),
 		);
 	}
 
@@ -174,7 +174,7 @@ final class GoogleProviderTest extends TestCase {
 
 	public function test_an_unknown_google_error_keeps_googles_words(): void {
 		$result = GoogleProvider::explain( 400, array( 'error' => array( 'message' => 'Voice name xx-XX is not supported.' ) ) );
-		$this->assertSame( 'listenly_google', $result->get_error_code() );
+		$this->assertSame( 'postaloud_google', $result->get_error_code() );
 		$this->assertSame( 'Voice name xx-XX is not supported.', $result->get_error_message() );
 		$this->assertSame( '', $result->data['fix'] );
 	}
@@ -189,7 +189,7 @@ final class GoogleProviderTest extends TestCase {
 		Functions\when( 'wp_remote_post' )->justReturn( new \WP_Error( 'http_request_failed', 'cURL error 28: timed out for ?key=AIza-test' ) );
 
 		$result = ( new GoogleProvider() )->synthesize( 'One.', 'en-US-Neural2-F', 1.0 );
-		$this->assertSame( 'listenly_google_network', $result->get_error_code() );
+		$this->assertSame( 'postaloud_google_network', $result->get_error_code() );
 		$this->assertStringNotContainsString( 'AIza-test', $result->data['google'] );
 	}
 
@@ -198,7 +198,7 @@ final class GoogleProviderTest extends TestCase {
 		$sentences = array_fill( 0, 400, 'Tiny bit.' );
 
 		$result = ( new GoogleProvider() )->synthesize_timed( $sentences, 'en-US-Neural2-F', 1.0 );
-		$this->assertSame( 'listenly_ssml_too_long', $result->get_error_code() );
+		$this->assertSame( 'postaloud_ssml_too_long', $result->get_error_code() );
 	}
 
 	public function test_a_full_chunk_of_ordinary_sentences_fits_with_its_marks(): void {
@@ -215,6 +215,6 @@ final class GoogleProviderTest extends TestCase {
 		Functions\expect( 'wp_remote_post' )->never();
 
 		$result = ( new GoogleProvider() )->synthesize_timed( array( 'One.' ), 'en-US-Neural2-F', 1.0 );
-		$this->assertSame( 'listenly_no_key', $result->get_error_code() );
+		$this->assertSame( 'postaloud_no_key', $result->get_error_code() );
 	}
 }

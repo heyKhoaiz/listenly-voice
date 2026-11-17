@@ -2,13 +2,13 @@
 /**
  * The text read aloud.
  *
- * @package ListenlyVoice
+ * @package PostAloud
  */
 
-namespace ListenlyVoice\Player;
+namespace PostAloud\Player;
 
-use ListenlyVoice\Hooks;
-use ListenlyVoice\Support\Settings;
+use PostAloud\Hooks;
+use PostAloud\Support\Settings;
 
 defined( 'ABSPATH' ) || exit;
 

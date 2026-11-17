@@ -2,16 +2,16 @@
 /**
  * A voice provider.
  *
- * @package ListenlyVoice
+ * @package PostAloud
  */
 
-namespace ListenlyVoice\Tts;
+namespace PostAloud\Tts;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
  * Turns text into speech. Free ships the browser and Google providers; Pro adds more
- * through the `listenly/providers` filter.
+ * through the `postaloud/providers` filter.
  */
 interface ProviderInterface {
 

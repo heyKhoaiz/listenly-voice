@@ -2,14 +2,14 @@
 /**
  * Tests for the voice sample used by the wizard and the Voices screen.
  *
- * @package ListenlyVoice
+ * @package PostAloud
  */
 
-namespace ListenlyVoice\Tests\Unit;
+namespace PostAloud\Tests\Unit;
 
-use ListenlyVoice\Tests\TestCase;
-use ListenlyVoice\Tts\Preview;
-use ListenlyVoice\Tests\FakeProvider;
+use PostAloud\Tests\TestCase;
+use PostAloud\Tts\Preview;
+use PostAloud\Tests\FakeProvider;
 
 /**
  * Preview.
@@ -29,7 +29,7 @@ final class PreviewTest extends TestCase {
 	}
 
 	public function test_passes_a_provider_error_through_with_a_502(): void {
-		$error  = new \WP_Error( 'listenly_google', 'API key not valid.' );
+		$error  = new \WP_Error( 'postaloud_google', 'API key not valid.' );
 		$result = Preview::run( new FakeProvider( $error ), 'v' );
 		$this->assertInstanceOf( \WP_Error::class, $result );
 		$this->assertSame( 'API key not valid.', $result->get_error_message() );
@@ -37,7 +37,7 @@ final class PreviewTest extends TestCase {
 	}
 
 	public function test_keeps_the_provider_error_data_next_to_the_status(): void {
-		$error  = new \WP_Error( 'listenly_google_key_invalid', 'Copy it again.', array( 'fix' => 'https://console.cloud.google.com/apis/credentials' ) );
+		$error  = new \WP_Error( 'postaloud_google_key_invalid', 'Copy it again.', array( 'fix' => 'https://console.cloud.google.com/apis/credentials' ) );
 		$result = Preview::run( new FakeProvider( $error ), 'v' );
 		$this->assertSame( 'https://console.cloud.google.com/apis/credentials', $result->data['fix'] );
 		$this->assertSame( 502, $result->data['status'] );
@@ -47,7 +47,7 @@ final class PreviewTest extends TestCase {
 		$provider = new FakeProvider( 'x', true );
 		$result   = Preview::run( $provider, '' );
 		$this->assertInstanceOf( \WP_Error::class, $result );
-		$this->assertSame( 'listenly_client_side', $result->get_error_code() );
+		$this->assertSame( 'postaloud_client_side', $result->get_error_code() );
 		$this->assertSame( 400, $result->data['status'] );
 		$this->assertSame( array(), $provider->calls );
 	}

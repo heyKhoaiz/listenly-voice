@@ -6,7 +6,7 @@ import './styles.css'
 import { App } from './App'
 
 const mount = () => {
-  const el = document.getElementById('listenly-app')
+  const el = document.getElementById('postaloud-app')
   if (el) createRoot(el).render(<App />)
 }
 

@@ -2,10 +2,10 @@
 /**
  * The visitor's browser voice (Web Speech API).
  *
- * @package ListenlyVoice
+ * @package PostAloud
  */
 
-namespace ListenlyVoice\Tts;
+namespace PostAloud\Tts;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -21,7 +21,7 @@ final class BrowserProvider implements ProviderInterface {
 
 	/** {@inheritDoc} */
 	public function label(): string {
-		return __( 'Browser voice', 'listenly-voice' );
+		return __( 'Browser voice', 'postaloud' );
 	}
 
 	/** {@inheritDoc} */
@@ -48,7 +48,7 @@ final class BrowserProvider implements ProviderInterface {
 	 * @return string|\WP_Error
 	 */
 	public function synthesize( string $text, string $voice, float $speed ) {
-		return new \WP_Error( 'listenly_client_side', __( 'The browser voice plays in the visitor\'s browser.', 'listenly-voice' ) );
+		return new \WP_Error( 'postaloud_client_side', __( 'The browser voice plays in the visitor\'s browser.', 'postaloud' ) );
 	}
 
 	/** {@inheritDoc} */

@@ -2,7 +2,7 @@
 /**
  * Unit test bootstrap: Brain Monkey stubs WordPress functions.
  *
- * @package ListenlyVoice
+ * @package PostAloud
  */
 
 require_once dirname( __DIR__, 2 ) . '/vendor/autoload.php';
@@ -11,10 +11,10 @@ require_once __DIR__ . '/TestCase.php';
 if ( ! defined( 'ABSPATH' ) ) {
 	define( 'ABSPATH', __DIR__ . '/' );
 }
-if ( ! defined( 'LISTENLY_VERSION' ) ) {
-	define( 'LISTENLY_VERSION', '0.0.0-test' );
-	define( 'LISTENLY_URL', 'https://example.test/wp-content/plugins/listenly-voice/' );
-	define( 'LISTENLY_PATH', dirname( __DIR__, 2 ) . '/' );
+if ( ! defined( 'POSTALOUD_VERSION' ) ) {
+	define( 'POSTALOUD_VERSION', '0.0.0-test' );
+	define( 'POSTALOUD_URL', 'https://example.test/wp-content/plugins/postaloud/' );
+	define( 'POSTALOUD_PATH', dirname( __DIR__, 2 ) . '/' );
 }
 
 if ( ! defined( 'DAY_IN_SECONDS' ) ) {

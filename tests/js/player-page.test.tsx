@@ -7,10 +7,10 @@ let saved: Record<string, unknown> | undefined
 
 beforeEach(() => {
   saved = undefined
-  ;(window as unknown as { listenlyConfig: unknown }).listenlyConfig = {
-    restUrl: '/wp-json/listenly/v1/',
+  ;(window as unknown as { postaloudConfig: unknown }).postaloudConfig = {
+    restUrl: '/wp-json/postaloud/v1/',
     nonce: 'n',
-    pageUrl: '/wp-admin/admin.php?page=listenly-voice',
+    pageUrl: '/wp-admin/admin.php?page=postaloud',
     version: '0.1.0',
     settings: { provider: 'browser', voice: '', speed: 1, post_types: ['post'], position: 'below', highlight: 'sentence' },
     providers: [{ id: 'browser', label: 'Browser voice', ready: true, clientSide: true, voices: [] }],
@@ -73,18 +73,18 @@ describe('Player screen', () => {
   it('warns, without blocking, when no post type is ticked', async () => {
     const u = await openPlayer()
     await u.click(screen.getByRole('checkbox', { name: 'Posts' }))
-    expect(screen.getByText('The player is off everywhere. Tick a post type, or add [listenly_player] where you want it.')).toBeInTheDocument()
+    expect(screen.getByText('The player is off everywhere. Tick a post type, or add [postaloud_player] where you want it.')).toBeInTheDocument()
   })
 
   it('shows the shortcode for placing the player by hand', async () => {
     await openPlayer()
     const box = screen.getByRole('heading', { name: 'Place it by hand' }).closest('section')!
-    expect(within(box).getByText('[listenly_player]')).toBeInTheDocument()
+    expect(within(box).getByText('[postaloud_player]')).toBeInTheDocument()
   })
 
-  it('offers light, dark and auto colours, auto by default, and saves the choice', async () => {
+  it('offers light, dark and auto colors, auto by default, and saves the choice', async () => {
     const u = await openPlayer()
-    const group = within(screen.getByRole('radiogroup', { name: 'Player colours' }))
+    const group = within(screen.getByRole('radiogroup', { name: 'Player colors' }))
     expect(group.getByRole('radio', { name: /Auto/ })).toHaveAttribute('aria-checked', 'true')
     await u.click(group.getByRole('radio', { name: /^Dark/ }))
     expect(group.getByRole('radio', { name: /^Dark/ })).toHaveAttribute('aria-checked', 'true')
@@ -93,7 +93,7 @@ describe('Player screen', () => {
   })
 
   it('adds pronunciation words, saves them and stops at the limit', async () => {
-    ;(window as unknown as { listenlyConfig: { sayLimit: number } }).listenlyConfig.sayLimit = 2
+    ;(window as unknown as { postaloudConfig: { sayLimit: number } }).postaloudConfig.sayLimit = 2
     const u = await openPlayer()
     expect(screen.getByText(/No words yet/)).toBeInTheDocument()
     await u.click(screen.getByRole('button', { name: 'Add a word' }))

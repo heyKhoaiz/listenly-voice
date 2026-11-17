@@ -2,30 +2,30 @@
 /**
  * Settings and audio REST routes.
  *
- * @package ListenlyVoice
+ * @package PostAloud
  */
 
-namespace ListenlyVoice\Rest;
+namespace PostAloud\Rest;
 
-use ListenlyVoice\Editor\PostToggle;
-use ListenlyVoice\Hooks;
-use ListenlyVoice\Player\Text;
-use ListenlyVoice\Plugin;
-use ListenlyVoice\Stats\Plays;
-use ListenlyVoice\Support\Settings;
-use ListenlyVoice\Support\Setup;
-use ListenlyVoice\Tts\GoogleProvider;
-use ListenlyVoice\Tts\LiveAudio;
-use ListenlyVoice\Tts\Preview;
+use PostAloud\Editor\PostToggle;
+use PostAloud\Hooks;
+use PostAloud\Player\Text;
+use PostAloud\Plugin;
+use PostAloud\Stats\Plays;
+use PostAloud\Support\Settings;
+use PostAloud\Support\Setup;
+use PostAloud\Tts\GoogleProvider;
+use PostAloud\Tts\LiveAudio;
+use PostAloud\Tts\Preview;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Routes under /listenly/v1.
+ * Routes under /postaloud/v1.
  */
 final class SettingsController {
 
-	const NAMESPACE = 'listenly/v1';
+	const NAMESPACE = 'postaloud/v1';
 
 	/**
 	 * Registers the routes.
@@ -185,7 +185,7 @@ final class SettingsController {
 		$providers = Plugin::instance()->providers->all();
 		$id        = sanitize_key( (string) $request->get_param( 'provider' ) );
 		if ( ! isset( $providers[ $id ] ) ) {
-			return new \WP_Error( 'listenly_no_provider', __( 'Unknown voice provider.', 'listenly-voice' ), array( 'status' => 400 ) );
+			return new \WP_Error( 'postaloud_no_provider', __( 'Unknown voice provider.', 'postaloud' ), array( 'status' => 400 ) );
 		}
 		$audio = Preview::run( $providers[ $id ], sanitize_text_field( (string) $request->get_param( 'voice' ) ) );
 		return is_wp_error( $audio ) ? $audio : rest_ensure_response( array( 'audio' => $audio ) );
@@ -237,7 +237,7 @@ final class SettingsController {
 			return $chunk;
 		}
 		header( 'Content-Type: audio/mpeg' );
-		header( 'X-Listenly-Parts: ' . $chunk['parts'] );
+		header( 'X-PostAloud-Parts: ' . $chunk['parts'] );
 		// Browsers and page caches may keep a chunk briefly; an edited post changes the text, not the URL.
 		header( 'Cache-Control: public, max-age=600' );
 		echo $chunk['audio']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Binary MP3.
@@ -276,12 +276,12 @@ final class SettingsController {
 		$settings = Settings::all();
 		$provider = Plugin::instance()->providers->get( (string) $settings['provider'] );
 		if ( $provider->is_client_side() ) {
-			return new \WP_Error( 'listenly_client_side', __( 'This voice plays in the browser.', 'listenly-voice' ), array( 'status' => 400 ) );
+			return new \WP_Error( 'postaloud_client_side', __( 'This voice plays in the browser.', 'postaloud' ), array( 'status' => 400 ) );
 		}
 		$chunks = Text::chunks( Text::for_post( (int) $request['id'] ), $provider->chunk_limit() );
 		$part   = (int) $request['part'];
 		if ( ! isset( $chunks[ $part ] ) ) {
-			return new \WP_Error( 'listenly_no_part', __( 'No such part.', 'listenly-voice' ), array( 'status' => 404 ) );
+			return new \WP_Error( 'postaloud_no_part', __( 'No such part.', 'postaloud' ), array( 'status' => 404 ) );
 		}
 		$result = LiveAudio::get( $provider, $chunks[ $part ], (string) $settings['voice'], (float) $settings['speed'], self::client_ip() );
 		if ( is_wp_error( $result ) ) {
@@ -298,7 +298,7 @@ final class SettingsController {
 
 	/**
 	 * The visitor's address for the rate limit. Only REMOTE_ADDR by default: proxy headers are
-	 * easy to fake. Sites behind a trusted proxy can use the `listenly/client_ip` filter.
+	 * easy to fake. Sites behind a trusted proxy can use the `postaloud/client_ip` filter.
 	 */
 	public static function client_ip(): string {
 		$ip = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';

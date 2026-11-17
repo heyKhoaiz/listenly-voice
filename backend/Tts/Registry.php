@@ -2,17 +2,17 @@
 /**
  * Voice provider registry.
  *
- * @package ListenlyVoice
+ * @package PostAloud
  */
 
-namespace ListenlyVoice\Tts;
+namespace PostAloud\Tts;
 
-use ListenlyVoice\Hooks;
+use PostAloud\Hooks;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Holds the providers. Pro adds its own through the `listenly/providers` filter.
+ * Holds the providers. Pro adds its own through the `postaloud/providers` filter.
  */
 final class Registry {
 

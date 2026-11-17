@@ -50,9 +50,9 @@ export function Voices({ settings, onChange }: Props) {
   return (
     <div className="lv-grid">
       <section className="lv-card">
-        <h2>{__('Voice provider', 'listenly-voice')}</h2>
-        <p className="lv-muted">{__('Who reads your posts. You pay the provider directly; Listenly adds nothing on top.', 'listenly-voice')}</p>
-        <div role="radiogroup" aria-label={__('Voice provider', 'listenly-voice')} className="lv-options">
+        <h2>{__('Voice provider', 'postaloud')}</h2>
+        <p className="lv-muted">{__('Who reads your posts. You pay the provider directly; PostAloud adds nothing on top.', 'postaloud')}</p>
+        <div role="radiogroup" aria-label={__('Voice provider', 'postaloud')} className="lv-options">
           {cfg.providers.map((p) => (
             <button
               key={p.id}
@@ -64,7 +64,7 @@ export function Voices({ settings, onChange }: Props) {
             >
               <span className="lv-radio" aria-hidden="true" />
               <span className="lv-option-name">{p.label}</span>
-              <span className="lv-badge">{p.clientSide ? __('No setup', 'listenly-voice') : __('Your key', 'listenly-voice')}</span>
+              <span className="lv-badge">{p.clientSide ? __('No setup', 'postaloud') : __('Your key', 'postaloud')}</span>
             </button>
           ))}
         </div>
@@ -72,28 +72,28 @@ export function Voices({ settings, onChange }: Props) {
 
       {provider?.id === 'google' && (
         <section className="lv-card">
-          <h2>{__('Google Cloud connection', 'listenly-voice')}</h2>
+          <h2>{__('Google Cloud connection', 'postaloud')}</h2>
           <div className="lv-panel">
-            <label htmlFor="lv-key">{__('API key', 'listenly-voice')}</label>
+            <label htmlFor="lv-key">{__('API key', 'postaloud')}</label>
             <div className="lv-row">
               <input id="lv-key" type="password" autoComplete="off" value={key} onChange={(e) => setKey(e.target.value)} placeholder={keySet ? '••••••••••••' : 'AIza…'} />
               <button type="button" className="lv-btn" onClick={saveKey} disabled={!key.trim() || testing}>
-                {__('Save and test', 'listenly-voice')}
+                {__('Save and test', 'postaloud')}
               </button>
             </div>
             {keySet && (
               <div className="lv-row">
                 <button type="button" className="lv-btn" onClick={testVoice} disabled={testing}>
-                  {testing ? __('Testing…', 'listenly-voice') : __('Test voice', 'listenly-voice')}
+                  {testing ? __('Testing…', 'postaloud') : __('Test voice', 'postaloud')}
                 </button>
               </div>
             )}
             <p className={keySet ? 'lv-ok' : 'lv-muted'} aria-live="polite">
               {tested === 'ok'
-                ? __('It works. You should hear a sample; the key stays on your server.', 'listenly-voice')
+                ? __('It works. You should hear a sample; the key stays on your server.', 'postaloud')
                 : keySet
-                  ? __('Key saved. It stays on your server.', 'listenly-voice')
-                  : __('Not connected yet.', 'listenly-voice')}
+                  ? __('Key saved. It stays on your server.', 'postaloud')
+                  : __('Not connected yet.', 'postaloud')}
             </p>
             {keyError && <p className="lv-error" role="alert">{keyError}</p>}
             {problem && <KeyProblemNotice problem={problem} />}
@@ -101,7 +101,7 @@ export function Voices({ settings, onChange }: Props) {
           </div>
           <div className="lv-two">
             <label>
-              {__('Voice', 'listenly-voice')}
+              {__('Voice', 'postaloud')}
               <select value={settings.voice} onChange={(e) => onChange({ ...settings, voice: e.target.value })}>
                 {provider.voices.map((v) => (
                   <option key={v.id} value={v.id}>{v.label}</option>
@@ -109,7 +109,7 @@ export function Voices({ settings, onChange }: Props) {
               </select>
             </label>
             <label>
-              {__('Default speed', 'listenly-voice')} · {settings.speed}×
+              {__('Default speed', 'postaloud')} · {settings.speed}×
               <input type="range" min={0.5} max={2} step={0.05} value={settings.speed} onChange={(e) => onChange({ ...settings, speed: Number(e.target.value) })} />
             </label>
           </div>

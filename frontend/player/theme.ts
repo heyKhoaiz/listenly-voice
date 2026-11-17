@@ -2,10 +2,10 @@
 // checks again when the theme switches (a class or style change on <html>/<body>) or the
 // visitor's dark-mode setting changes. The read-along highlight follows through a class on
 // <html>, because it paints the post text, not the player.
-const DARK = 'listenly-player--dark'
-const PAGE_DARK = 'listenly-dark'
+const DARK = 'postaloud-player--dark'
+const PAGE_DARK = 'postaloud-dark'
 
-/** sRGB relative luminance, 0 (black) to 1 (white); null for a see-through colour. */
+/** sRGB relative luminance, 0 (black) to 1 (white); null for a see-through color. */
 export function luminance(color: string): number | null {
   const m = color.match(/rgba?\(\s*([\d.]+)[\s,]+([\d.]+)[\s,]+([\d.]+)(?:[\s,/]+([\d.]+%?))?\s*\)/)
   if (!m) return null

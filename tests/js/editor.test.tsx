@@ -48,7 +48,7 @@ function fakeWp(meta: Record<string, unknown> = {}, opts: { panelIn?: 'editor' |
 }
 
 function show(plugins: Record<string, Plugin>) {
-  const Plugin = plugins['listenly-voice'].render
+  const Plugin = plugins['postaloud'].render
   return render(createElement(Plugin))
 }
 
@@ -57,7 +57,7 @@ describe('per-post audio switch in the block editor', () => {
     const { wp, plugins } = fakeWp()
     expect(registerPostToggle(wp)).toBe(true)
     show(plugins)
-    expect(screen.getByRole('region', { name: 'Listenly Voice' })).toBeInTheDocument()
+    expect(screen.getByRole('region', { name: 'PostAloud' })).toBeInTheDocument()
   })
 
   it('is on by default, when the post has no setting', () => {

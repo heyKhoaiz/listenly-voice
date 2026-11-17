@@ -2,20 +2,20 @@
 /**
  * Main plugin class.
  *
- * @package ListenlyVoice
+ * @package PostAloud
  */
 
-namespace ListenlyVoice;
+namespace PostAloud;
 
-use ListenlyVoice\Admin\Assets;
-use ListenlyVoice\Admin\Menu;
-use ListenlyVoice\Editor\Block;
-use ListenlyVoice\Editor\PostToggle;
-use ListenlyVoice\Integrations\Elementor;
-use ListenlyVoice\Player\Player;
-use ListenlyVoice\Rest\SettingsController;
-use ListenlyVoice\Support\Setup;
-use ListenlyVoice\Tts\Registry;
+use PostAloud\Admin\Assets;
+use PostAloud\Admin\Menu;
+use PostAloud\Editor\Block;
+use PostAloud\Editor\PostToggle;
+use PostAloud\Integrations\Elementor;
+use PostAloud\Player\Player;
+use PostAloud\Rest\SettingsController;
+use PostAloud\Support\Setup;
+use PostAloud\Tts\Registry;
 
 defined( 'ABSPATH' ) || exit;
 

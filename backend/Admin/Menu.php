@@ -2,12 +2,12 @@
 /**
  * Admin menu.
  *
- * @package ListenlyVoice
+ * @package PostAloud
  */
 
-namespace ListenlyVoice\Admin;
+namespace PostAloud\Admin;
 
-use ListenlyVoice\Hooks;
+use PostAloud\Hooks;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) || exit;
  */
 final class Menu {
 
-	const SLUG = 'listenly-voice';
+	const SLUG = 'postaloud';
 
 	/**
 	 * Registers hooks.
@@ -32,7 +32,7 @@ final class Menu {
 	 * @param string $classes Space-separated body classes.
 	 */
 	public function body_class( string $classes ): string {
-		return self::is_plugin_page() ? $classes . ' listenly-fullscreen' : $classes;
+		return self::is_plugin_page() ? $classes . ' postaloud-fullscreen' : $classes;
 	}
 
 	/**
@@ -54,15 +54,15 @@ final class Menu {
 	 * The plugin name in the menu and the app header. Filterable for white-label sites.
 	 */
 	public static function brand(): string {
-		$brand = trim( (string) apply_filters( Hooks::BRAND, __( 'Listenly Voice', 'listenly-voice' ) ) );
-		return '' !== $brand ? $brand : __( 'Listenly Voice', 'listenly-voice' );
+		$brand = trim( (string) apply_filters( Hooks::BRAND, __( 'PostAloud', 'postaloud' ) ) );
+		return '' !== $brand ? $brand : __( 'PostAloud', 'postaloud' );
 	}
 
 	/**
 	 * The mount point for the app.
 	 */
 	public function render(): void {
-		echo '<div id="listenly-app" class="listenly-app"></div>';
+		echo '<div id="postaloud-app" class="postaloud-app"></div>';
 	}
 
 	/**

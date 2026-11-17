@@ -17,7 +17,7 @@ export function Home({ settings, tiles, onOpen }: Props) {
   const [error, setError] = useState('')
   const provider = cfg.providers.find((p) => p.id === settings.provider) ?? cfg.providers[0]
   const ready = Boolean(provider && (provider.clientSide || provider.ready || (provider.id === 'google' && cfg.googleKeySet)))
-  const voice = provider?.clientSide ? __("Each visitor's device voice", 'listenly-voice') : (provider?.voices.find((v) => v.id === settings.voice)?.label ?? __('Default voice', 'listenly-voice'))
+  const voice = provider?.clientSide ? __("Each visitor's device voice", 'postaloud') : (provider?.voices.find((v) => v.id === settings.voice)?.label ?? __('Default voice', 'postaloud'))
   const position = POSITIONS().find((p) => p.id === settings.position)?.name ?? ''
   const posts = cfg.recentPosts ?? []
   const viewUrl = posts.find((p) => p.status.id !== 'off')?.viewUrl
@@ -45,14 +45,14 @@ export function Home({ settings, tiles, onOpen }: Props) {
     <div className="lv-home">
       <div className="lv-welcome">
         <div>
-          <h1>{name ? `${__('Welcome back,', 'listenly-voice')} ${name}` : __('Welcome back', 'listenly-voice')}</h1>
-          <p className="lv-muted">{__('Your posts, read aloud in the voice you choose.', 'listenly-voice')}</p>
+          <h1>{name ? `${__('Welcome back,', 'postaloud')} ${name}` : __('Welcome back', 'postaloud')}</h1>
+          <p className="lv-muted">{__('Your posts, read aloud in the voice you choose.', 'postaloud')}</p>
         </div>
         {viewUrl && (
           <a className="lv-btn lv-btn-dark lv-btn-link" href={viewUrl} target="_blank" rel="noreferrer">
-            {__('View a post', 'listenly-voice')}
+            {__('View a post', 'postaloud')}
             <Icon name="external" size={16} />
-            <span className="screen-reader-text">{__('(opens in a new tab)', 'listenly-voice')}</span>
+            <span className="screen-reader-text">{__('(opens in a new tab)', 'postaloud')}</span>
           </a>
         )}
       </div>
@@ -62,30 +62,30 @@ export function Home({ settings, tiles, onOpen }: Props) {
       <div className="lv-home-top">
         <section className="lv-card lv-voice-card" aria-labelledby="lv-voice-title">
           <div className="lv-card-head">
-            <h2 id="lv-voice-title">{__('Your voice', 'listenly-voice')}</h2>
-            <span className={`lv-pill lv-pill-${ready ? 'ok' : 'warn'}`}>{ready ? __('Ready', 'listenly-voice') : __('Needs a key', 'listenly-voice')}</span>
+            <h2 id="lv-voice-title">{__('Your voice', 'postaloud')}</h2>
+            <span className={`lv-pill lv-pill-${ready ? 'ok' : 'warn'}`}>{ready ? __('Ready', 'postaloud') : __('Needs a key', 'postaloud')}</span>
           </div>
           <dl className="lv-facts">
-            <div><dt>{__('Provider', 'listenly-voice')}</dt><dd>{provider?.label}</dd></div>
-            <div><dt>{__('Voice', 'listenly-voice')}</dt><dd>{voice}</dd></div>
-            <div><dt>{__('Speed', 'listenly-voice')}</dt><dd>{settings.speed}×</dd></div>
-            <div><dt>{__('Player', 'listenly-voice')}</dt><dd>{position}</dd></div>
-            <div><dt>{__('Plays', 'listenly-voice')}</dt><dd>{(cfg.plays ?? 0).toLocaleString()}</dd></div>
+            <div><dt>{__('Provider', 'postaloud')}</dt><dd>{provider?.label}</dd></div>
+            <div><dt>{__('Voice', 'postaloud')}</dt><dd>{voice}</dd></div>
+            <div><dt>{__('Speed', 'postaloud')}</dt><dd>{settings.speed}×</dd></div>
+            <div><dt>{__('Player', 'postaloud')}</dt><dd>{position}</dd></div>
+            <div><dt>{__('Plays', 'postaloud')}</dt><dd>{(cfg.plays ?? 0).toLocaleString()}</dd></div>
           </dl>
           <div className="lv-row">
             <button type="button" className="lv-btn lv-btn-play" onClick={sample} disabled={playing || !ready}>
               <span className="lv-play-dot"><Icon name="play" size={14} /></span>
-              {playing ? __('Playing…', 'listenly-voice') : __('Play a sample', 'listenly-voice')}
+              {playing ? __('Playing…', 'postaloud') : __('Play a sample', 'postaloud')}
             </button>
             <button type="button" className="lv-btn" onClick={() => onOpen('voices')}>
-              {ready ? __('Change voice', 'listenly-voice') : __('Add your key', 'listenly-voice')}
+              {ready ? __('Change voice', 'postaloud') : __('Add your key', 'postaloud')}
             </button>
           </div>
           {error && <p className="lv-error" role="alert">{error}</p>}
         </section>
 
         <section className="lv-card" aria-labelledby="lv-tiles-title">
-          <h2 id="lv-tiles-title">{__('Go to', 'listenly-voice')}</h2>
+          <h2 id="lv-tiles-title">{__('Go to', 'postaloud')}</h2>
           <div className="lv-tiles">
             {tiles.map((t) => (
               <button key={t.id} type="button" className="lv-tile" onClick={() => onOpen(t.id)}>
@@ -100,30 +100,30 @@ export function Home({ settings, tiles, onOpen }: Props) {
 
       <section className="lv-card" aria-labelledby="lv-recent-title">
         <div className="lv-card-head">
-          <h2 id="lv-recent-title">{__('Recent posts', 'listenly-voice')}</h2>
+          <h2 id="lv-recent-title">{__('Recent posts', 'postaloud')}</h2>
         </div>
         {settings.post_types.length === 0 ? (
           <div className="lv-empty">
-            <p className="lv-muted">{__("The player isn't shown on any post type yet.", 'listenly-voice')}</p>
-            <button type="button" className="lv-btn" onClick={() => onOpen('player')}>{__('Choose where it shows', 'listenly-voice')}</button>
+            <p className="lv-muted">{__("The player isn't shown on any post type yet.", 'postaloud')}</p>
+            <button type="button" className="lv-btn" onClick={() => onOpen('player')}>{__('Choose where it shows', 'postaloud')}</button>
           </div>
         ) : posts.length === 0 ? (
-          <p className="lv-muted lv-empty">{__('No published posts yet. The player appears on them as soon as they go live.', 'listenly-voice')}</p>
+          <p className="lv-muted lv-empty">{__('No published posts yet. The player appears on them as soon as they go live.', 'postaloud')}</p>
         ) : (
           <ul className="lv-posts">
             {posts.map((p) => (
               <li key={p.id} className="lv-post">
                 <div className="lv-post-text">
-                  <span className="lv-post-title">{p.title || __('(no title)', 'listenly-voice')}</span>
+                  <span className="lv-post-title">{p.title || __('(no title)', 'postaloud')}</span>
                   <span className="lv-post-date">
                     {p.date}
-                    {typeof p.plays === 'number' && ` · ${p.plays === 1 ? __('1 play', 'listenly-voice') : `${p.plays.toLocaleString()} ${__('plays', 'listenly-voice')}`}`}
+                    {typeof p.plays === 'number' && ` · ${p.plays === 1 ? __('1 play', 'postaloud') : `${p.plays.toLocaleString()} ${__('plays', 'postaloud')}`}`}
                   </span>
                 </div>
                 <span className={`lv-pill lv-pill-${p.status.id === 'off' ? 'off' : p.status.id === 'live' || p.status.id === 'ready' ? 'ok' : 'warn'}`}>{p.status.label}</span>
                 <div className="lv-post-actions">
-                  <a className="lv-btn lv-btn-small" href={p.viewUrl} target="_blank" rel="noreferrer" aria-label={`${__('View', 'listenly-voice')}: ${p.title} ${__('(opens in a new tab)', 'listenly-voice')}`}>{__('View', 'listenly-voice')}</a>
-                  {p.editUrl && <a className="lv-btn lv-btn-small" href={p.editUrl} aria-label={`${__('Edit', 'listenly-voice')}: ${p.title}`}>{__('Edit', 'listenly-voice')}</a>}
+                  <a className="lv-btn lv-btn-small" href={p.viewUrl} target="_blank" rel="noreferrer" aria-label={`${__('View', 'postaloud')}: ${p.title} ${__('(opens in a new tab)', 'postaloud')}`}>{__('View', 'postaloud')}</a>
+                  {p.editUrl && <a className="lv-btn lv-btn-small" href={p.editUrl} aria-label={`${__('Edit', 'postaloud')}: ${p.title}`}>{__('Edit', 'postaloud')}</a>}
                 </div>
               </li>
             ))}
@@ -138,28 +138,28 @@ export function Home({ settings, tiles, onOpen }: Props) {
 function InsertMiss({ miss, onOpen }: { miss: NonNullable<ReturnType<typeof config>['insertMiss']>; onOpen: (page: string) => void }) {
   return (
     <section className="lv-warn lv-miss" role="status" aria-labelledby="lv-miss-title">
-      <h2 id="lv-miss-title">{__('The player didn’t show on a post', 'listenly-voice')}</h2>
+      <h2 id="lv-miss-title">{__('The player didn’t show on a post', 'postaloud')}</h2>
       <p>
         <a href={miss.viewUrl} target="_blank" rel="noreferrer">
-          {miss.title || __('(no title)', 'listenly-voice')}
-          <span className="screen-reader-text">{__('(opens in a new tab)', 'listenly-voice')}</span>
+          {miss.title || __('(no title)', 'postaloud')}
+          <span className="screen-reader-text">{__('(opens in a new tab)', 'postaloud')}</span>
         </a>{' '}
         {miss.reason === 'loop'
-          ? __('is shown by your theme or page builder outside the usual post layout, so the player had no place to go.', 'listenly-voice')
-          : __('is built by your theme or page builder without the usual post content, so the player had no place to go.', 'listenly-voice')}
+          ? __('is shown by your theme or page builder outside the usual post layout, so the player had no place to go.', 'postaloud')
+          : __('is built by your theme or page builder without the usual post content, so the player had no place to go.', 'postaloud')}
       </p>
-      <p>{__('Any one of these fixes it:', 'listenly-voice')}</p>
+      <p>{__('Any one of these fixes it:', 'postaloud')}</p>
       <ul>
-        <li>{__('Choose Floating: it always shows, whatever builds the page.', 'listenly-voice')}</li>
-        <li>{__('Add the Listenly player block, the Elementor widget or [listenly_player] to the post or its template.', 'listenly-voice')}</li>
+        <li>{__('Choose Floating: it always shows, whatever builds the page.', 'postaloud')}</li>
+        <li>{__('Add the PostAloud player block, the Elementor widget or [postaloud_player] to the post or its template.', 'postaloud')}</li>
       </ul>
       <div className="lv-row">
         <button type="button" className="lv-btn lv-btn-dark" onClick={() => onOpen('player')}>
-          {__('Change where it shows', 'listenly-voice')}
+          {__('Change where it shows', 'postaloud')}
         </button>
         {miss.editUrl && (
           <a className="lv-btn lv-btn-link" href={miss.editUrl}>
-            {__('Edit the post', 'listenly-voice')}
+            {__('Edit the post', 'postaloud')}
           </a>
         )}
       </div>

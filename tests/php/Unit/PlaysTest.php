@@ -2,23 +2,23 @@
 /**
  * Tests for play counts and the free extension filters.
  *
- * @package ListenlyVoice
+ * @package PostAloud
  */
 
-namespace ListenlyVoice\Tests\Unit;
+namespace PostAloud\Tests\Unit;
 
 use Brain\Monkey\Actions;
 use Brain\Monkey\Filters;
 use Brain\Monkey\Functions;
-use ListenlyVoice\Admin\Menu;
-use ListenlyVoice\Editor\PostToggle;
-use ListenlyVoice\Hooks;
-use ListenlyVoice\Player\Player;
-use ListenlyVoice\Player\Text;
-use ListenlyVoice\Stats\Plays;
-use ListenlyVoice\Support\Settings;
-use ListenlyVoice\Tests\TestCase;
-use ListenlyVoice\Tts\Registry;
+use PostAloud\Admin\Menu;
+use PostAloud\Editor\PostToggle;
+use PostAloud\Hooks;
+use PostAloud\Player\Player;
+use PostAloud\Player\Text;
+use PostAloud\Stats\Plays;
+use PostAloud\Support\Settings;
+use PostAloud\Tests\TestCase;
+use PostAloud\Tts\Registry;
 
 /**
  * Plays, POST_DISABLED, AUTO_INSERT, POST_CONTENT and BRAND.
@@ -111,8 +111,8 @@ final class PlaysTest extends TestCase {
 	}
 
 	public function test_brand_falls_back_when_blank(): void {
-		$this->assertSame( 'Listenly Voice', Menu::brand() );
+		$this->assertSame( 'PostAloud', Menu::brand() );
 		Filters\expectApplied( Hooks::BRAND )->andReturn( '  ' );
-		$this->assertSame( 'Listenly Voice', Menu::brand() );
+		$this->assertSame( 'PostAloud', Menu::brand() );
 	}
 }

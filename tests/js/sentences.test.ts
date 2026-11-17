@@ -61,7 +61,7 @@ describe('collectSentences', () => {
 
   it('skips the player, scripts, styles, figures and navigation', () => {
     document.body.innerHTML = `<article>
-      <div class="listenly-player">Listen to this article</div>
+      <div class="postaloud-player">Listen to this article</div>
       <script>var x = 1;</script><style>p{}</style>
       <figure><figcaption>Caption.</figcaption></figure>
       <nav>Menu.</nav>

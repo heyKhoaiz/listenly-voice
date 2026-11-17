@@ -2,14 +2,14 @@
 /**
  * Recent posts for the admin Home.
  *
- * @package ListenlyVoice
+ * @package PostAloud
  */
 
-namespace ListenlyVoice\Admin;
+namespace PostAloud\Admin;
 
-use ListenlyVoice\Editor\PostToggle;
-use ListenlyVoice\Hooks;
-use ListenlyVoice\Stats\Plays;
+use PostAloud\Editor\PostToggle;
+use PostAloud\Hooks;
+use PostAloud\Stats\Plays;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -19,7 +19,7 @@ defined( 'ABSPATH' ) || exit;
 final class RecentPosts {
 
 	/**
-	 * Rows for `window.listenlyConfig.recentPosts`.
+	 * Rows for `window.postaloudConfig.recentPosts`.
 	 *
 	 * @param string[] $post_types Post types that show the player.
 	 * @param int      $limit      How many posts.
@@ -52,11 +52,11 @@ final class RecentPosts {
 				'status'  => $off
 					? array(
 						'id'    => 'off',
-						'label' => __( 'Switched off', 'listenly-voice' ),
+						'label' => __( 'Switched off', 'postaloud' ),
 					)
 					: array(
 						'id'    => 'live',
-						'label' => __( 'Plays live', 'listenly-voice' ),
+						'label' => __( 'Plays live', 'postaloud' ),
 					),
 			);
 			$rows[] = (array) apply_filters( Hooks::RECENT_POST, $row, $post );

@@ -9,18 +9,18 @@ type Props = { settings: Settings; onChange: (s: Settings) => void }
 export function Player({ settings, onChange }: Props) {
   const highlightOn = settings.highlight !== 'off'
   const extraModes = highlightModes()
-  const modes = [{ id: 'sentence', label: __('Each sentence', 'listenly-voice'), description: __('Works with every voice.', 'listenly-voice') }, ...extraModes]
+  const modes = [{ id: 'sentence', label: __('Each sentence', 'postaloud'), description: __('Works with every voice.', 'postaloud') }, ...extraModes]
 
   return (
     <div className="lv-grid">
       <section className="lv-card">
-        <h2>{__('Where it shows', 'listenly-voice')}</h2>
-        <p className="lv-muted">{__('Pick the post types and where the player sits on them.', 'listenly-voice')}</p>
+        <h2>{__('Where it shows', 'postaloud')}</h2>
+        <p className="lv-muted">{__('Pick the post types and where the player sits on them.', 'postaloud')}</p>
         <div className="lv-stack">
           <PostTypePicker settings={settings} onChange={onChange} />
           {settings.post_types.length === 0 && (
             <p className="lv-warn">
-              {__('The player is off everywhere. Tick a post type, or add [listenly_player] where you want it.', 'listenly-voice')}
+              {__('The player is off everywhere. Tick a post type, or add [postaloud_player] where you want it.', 'postaloud')}
             </p>
           )}
           <PositionPicker settings={settings} onChange={onChange} />
@@ -28,12 +28,12 @@ export function Player({ settings, onChange }: Props) {
       </section>
 
       <section className="lv-card">
-        <h2>{__('Read along', 'listenly-voice')}</h2>
+        <h2>{__('Read along', 'postaloud')}</h2>
         <div className="lv-switch-row">
           <span className="lv-switch-text">
-            <span id="lv-highlight-label" className="lv-option-name">{__('Highlight the sentence being read', 'listenly-voice')}</span>
+            <span id="lv-highlight-label" className="lv-option-name">{__('Highlight the sentence being read', 'postaloud')}</span>
             <span className="lv-voice-desc">
-              {__('Helps readers follow along, with the browser voice and Google voices. Works in Chrome, Edge, Safari and Firefox.', 'listenly-voice')}
+              {__('Helps readers follow along, with the browser voice and Google voices. Works in Chrome, Edge, Safari and Firefox.', 'postaloud')}
             </span>
           </span>
           <button
@@ -48,7 +48,7 @@ export function Player({ settings, onChange }: Props) {
           </button>
         </div>
         {highlightOn && extraModes.length > 0 && (
-          <div role="radiogroup" aria-label={__('What to highlight', 'listenly-voice')} className="lv-options">
+          <div role="radiogroup" aria-label={__('What to highlight', 'postaloud')} className="lv-options">
             {modes.map((m) => (
               <button
                 key={m.id}
@@ -70,9 +70,9 @@ export function Player({ settings, onChange }: Props) {
       </section>
 
       <section className="lv-card">
-        <h2>{__('Colours', 'listenly-voice')}</h2>
-        <p className="lv-muted">{__('Auto picks light or dark to match the page behind the player, and follows themes that switch at night.', 'listenly-voice')}</p>
-        <div role="radiogroup" aria-label={__('Player colours', 'listenly-voice')} className="lv-themes">
+        <h2>{__('Colors', 'postaloud')}</h2>
+        <p className="lv-muted">{__('Auto picks light or dark to match the page behind the player, and follows themes that switch at night.', 'postaloud')}</p>
+        <div role="radiogroup" aria-label={__('Player colors', 'postaloud')} className="lv-themes">
           {THEMES().map((t) => (
             <button
               key={t.id}
@@ -93,17 +93,17 @@ export function Player({ settings, onChange }: Props) {
       </section>
 
       <section className="lv-card" aria-labelledby="lv-say-title">
-        <h2 id="lv-say-title">{__('Pronunciation', 'listenly-voice')}</h2>
+        <h2 id="lv-say-title">{__('Pronunciation', 'postaloud')}</h2>
         <p className="lv-muted">
-          {__('Tell the voices how to say names, brands and abbreviations. Whole words only; capitals don’t matter.', 'listenly-voice')}
+          {__('Tell the voices how to say names, brands and abbreviations. Whole words only; capitals don’t matter.', 'postaloud')}
         </p>
         <SayRows pairs={settings.say ?? []} onChange={(say) => onChange({ ...settings, say })} />
       </section>
 
       <section className="lv-card">
-        <h2>{__('Place it by hand', 'listenly-voice')}</h2>
-        <p className="lv-muted">{__('Put this shortcode in any post, page or widget to show the player there.', 'listenly-voice')}</p>
-        <code className="lv-code">[listenly_player]</code>
+        <h2>{__('Place it by hand', 'postaloud')}</h2>
+        <p className="lv-muted">{__('Put this shortcode in any post, page or widget to show the player there.', 'postaloud')}</p>
+        <code className="lv-code">[postaloud_player]</code>
       </section>
     </div>
   )
@@ -114,25 +114,25 @@ function SayRows({ pairs, onChange }: { pairs: [string, string][]; onChange: (pa
   const update = (i: number, col: 0 | 1, value: string) => onChange(pairs.map((p, j) => (j === i ? (col === 0 ? [value, p[1]] : [p[0], value]) : p)))
   return (
     <div className="lv-stack">
-      {pairs.length === 0 && <p className="lv-muted">{__('No words yet. Example: “WP” said as “WordPress”.', 'listenly-voice')}</p>}
+      {pairs.length === 0 && <p className="lv-muted">{__('No words yet. Example: “WP” said as “WordPress”.', 'postaloud')}</p>}
       {pairs.map((p, i) => (
-        <div key={i} className="lv-say-row" role="group" aria-label={`${__('Word', 'listenly-voice')} ${i + 1}`}>
+        <div key={i} className="lv-say-row" role="group" aria-label={`${__('Word', 'postaloud')} ${i + 1}`}>
           <label className="lv-field">
-            {__('Written', 'listenly-voice')}
+            {__('Written', 'postaloud')}
             <input value={p[0]} maxLength={80} placeholder="WP" onChange={(e) => update(i, 0, e.target.value)} />
           </label>
           <label className="lv-field">
-            {__('Said as', 'listenly-voice')}
+            {__('Said as', 'postaloud')}
             <input value={p[1]} maxLength={160} placeholder="WordPress" onChange={(e) => update(i, 1, e.target.value)} />
           </label>
-          <button type="button" className="lv-btn" aria-label={`${__('Remove word', 'listenly-voice')} ${i + 1}`} onClick={() => onChange(pairs.filter((_, j) => j !== i))}>
-            {__('Remove', 'listenly-voice')}
+          <button type="button" className="lv-btn" aria-label={`${__('Remove word', 'postaloud')} ${i + 1}`} onClick={() => onChange(pairs.filter((_, j) => j !== i))}>
+            {__('Remove', 'postaloud')}
           </button>
         </div>
       ))}
       <div className="lv-row">
         <button type="button" className="lv-btn" disabled={pairs.length >= limit} onClick={() => onChange([...pairs, ['', '']])}>
-          {__('Add a word', 'listenly-voice')}
+          {__('Add a word', 'postaloud')}
         </button>
         <span className="lv-muted">{`${pairs.length} / ${limit}`}</span>
       </div>
@@ -141,7 +141,7 @@ function SayRows({ pairs, onChange }: { pairs: [string, string][]; onChange: (pa
 }
 
 const THEMES = (): { id: Settings['theme']; name: string; desc: string }[] => [
-  { id: 'auto', name: __('Auto (recommended)', 'listenly-voice'), desc: __('Matches your theme', 'listenly-voice') },
-  { id: 'light', name: __('Light', 'listenly-voice'), desc: __('Always light', 'listenly-voice') },
-  { id: 'dark', name: __('Dark', 'listenly-voice'), desc: __('Always dark', 'listenly-voice') },
+  { id: 'auto', name: __('Auto (recommended)', 'postaloud'), desc: __('Matches your theme', 'postaloud') },
+  { id: 'light', name: __('Light', 'postaloud'), desc: __('Always light', 'postaloud') },
+  { id: 'dark', name: __('Dark', 'postaloud'), desc: __('Always dark', 'postaloud') },
 ]

@@ -2,15 +2,15 @@
 /**
  * The frontend audio player.
  *
- * @package ListenlyVoice
+ * @package PostAloud
  */
 
-namespace ListenlyVoice\Player;
+namespace PostAloud\Player;
 
-use ListenlyVoice\Editor\PostToggle;
-use ListenlyVoice\Hooks;
-use ListenlyVoice\Support\Settings;
-use ListenlyVoice\Tts\Registry;
+use PostAloud\Editor\PostToggle;
+use PostAloud\Hooks;
+use PostAloud\Support\Settings;
+use PostAloud\Tts\Registry;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -41,7 +41,7 @@ final class Player {
 	private $skipped = '';
 
 	/** Option: the last post where the player should have shown but didn't. */
-	const MISS_OPTION = 'listenly_insert_miss';
+	const MISS_OPTION = 'postaloud_insert_miss';
 
 	/**
 	 * Constructor.
@@ -57,7 +57,7 @@ final class Player {
 	 */
 	public function register(): void {
 		add_filter( 'the_content', array( $this, 'add_player' ), 5 );
-		add_shortcode( 'listenly_player', array( $this, 'shortcode' ) );
+		add_shortcode( 'postaloud_player', array( $this, 'shortcode' ) );
 		add_action( 'wp_footer', array( $this, 'footer' ), 5 );
 	}
 
@@ -180,7 +180,7 @@ final class Player {
 	}
 
 	/**
-	 * [listenly_player] for manual placement. Empty when audio is turned off for the post.
+	 * [postaloud_player] for manual placement. Empty when audio is turned off for the post.
 	 */
 	public function shortcode(): string {
 		$post = get_post();
@@ -204,8 +204,8 @@ final class Player {
 				'post'       => $post_id,
 				'title'      => html_entity_decode( wp_strip_all_tags( get_the_title( $post_id ) ), ENT_QUOTES, 'UTF-8' ),
 				'clientSide' => $provider->is_client_side() || ! $provider->is_ready(),
-				'audioUrl'   => esc_url_raw( rest_url( 'listenly/v1/audio/' . $post_id . '/' ) ),
-				'playUrl'    => esc_url_raw( rest_url( 'listenly/v1/play/' . $post_id ) ),
+				'audioUrl'   => esc_url_raw( rest_url( 'postaloud/v1/audio/' . $post_id . '/' ) ),
+				'playUrl'    => esc_url_raw( rest_url( 'postaloud/v1/play/' . $post_id ) ),
 				'speed'      => (float) $settings['speed'],
 				'highlight'  => (string) $settings['highlight'],
 				'position'   => (string) $settings['position'],
@@ -217,10 +217,10 @@ final class Player {
 			$post_id
 		);
 		return sprintf(
-			'<div class="%s" data-listenly="%s"><noscript>%s</noscript></div>',
-			$floating ? 'listenly-player listenly-player--floating' : 'listenly-player',
+			'<div class="%s" data-postaloud="%s"><noscript>%s</noscript></div>',
+			$floating ? 'postaloud-player postaloud-player--floating' : 'postaloud-player',
 			esc_attr( (string) wp_json_encode( $data ) ),
-			esc_html__( 'Turn on JavaScript to listen to this article.', 'listenly-voice' )
+			esc_html__( 'Turn on JavaScript to listen to this article.', 'postaloud' )
 		);
 	}
 
@@ -228,8 +228,8 @@ final class Player {
 	 * Loads the player script and style once.
 	 */
 	private function enqueue(): void {
-		wp_enqueue_script( 'listenly-player', LISTENLY_URL . 'build/player/player.js', array( 'wp-i18n' ), LISTENLY_VERSION, true );
-		wp_enqueue_style( 'listenly-player', LISTENLY_URL . 'build/player/player.css', array(), LISTENLY_VERSION );
-		wp_set_script_translations( 'listenly-player', 'listenly-voice', LISTENLY_PATH . 'languages' );
+		wp_enqueue_script( 'postaloud-player', POSTALOUD_URL . 'build/player/player.js', array( 'wp-i18n' ), POSTALOUD_VERSION, true );
+		wp_enqueue_style( 'postaloud-player', POSTALOUD_URL . 'build/player/player.css', array(), POSTALOUD_VERSION );
+		wp_set_script_translations( 'postaloud-player', 'postaloud', POSTALOUD_PATH . 'languages' );
 	}
 }

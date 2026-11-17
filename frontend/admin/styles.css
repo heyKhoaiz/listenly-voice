@@ -1,6 +1,6 @@
-/* Listenly Voice admin. Tokens from the UI design canvas: warm neutrals, ink for primary
+/* PostAloud admin. Tokens from the UI design canvas: warm neutrals, ink for primary
    actions, signal orange as the one accent. No purple/teal "AI" palette. */
-.listenly-app {
+.postaloud-app {
   --lv-ground: #f4f4f1;
   --lv-side: #fbfbfa;
   --lv-card: #ffffff;
@@ -63,7 +63,7 @@
   .lv-options, .lv-two { grid-template-columns: minmax(0, 1fr); }
 }
 
-/* Setup wizard (screen 3): one centred card, steps above it. */
+/* Setup wizard (screen 3): one centered card, steps above it. */
 .lv-wizard { background: var(--lv-ground); border-radius: 22px; padding: 40px 24px 56px; min-height: 640px; }
 .lv-wizard-inner { max-width: 680px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
 .lv-wizard-head { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; min-height: 44px; }
@@ -103,8 +103,8 @@
 .lv-check { display: flex; gap: 10px; align-items: center; min-height: 44px; font-size: 15px; cursor: pointer; }
 .lv-check input[type='checkbox'] { width: 18px; height: 18px; margin: 0; border: 2px solid #a8a29e; border-radius: 4px; box-shadow: none; }
 /* wp-admin draws a blue tick; ours is white on ink. */
-.listenly-app .lv-check input[type='checkbox']:checked { background: var(--lv-ink); border-color: var(--lv-ink); }
-.listenly-app .lv-check input[type='checkbox']:checked::before { content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 10.5l3.2 3.2L15 7' fill='none' stroke='%23fff' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); margin: -1px 0 0 -1px; width: 16px; height: 16px; }
+.postaloud-app .lv-check input[type='checkbox']:checked { background: var(--lv-ink); border-color: var(--lv-ink); }
+.postaloud-app .lv-check input[type='checkbox']:checked::before { content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 10.5l3.2 3.2L15 7' fill='none' stroke='%23fff' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); margin: -1px 0 0 -1px; width: 16px; height: 16px; }
 .lv-check input[type='checkbox']:focus { box-shadow: none; outline: 2px solid var(--lv-accent); outline-offset: 2px; }
 .lv-positions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
 .lv-position { all: unset; box-sizing: border-box; display: flex; flex-direction: column; gap: 10px; padding: 12px; border-radius: 14px; background: var(--lv-panel); border: 2px solid transparent; font-size: 14px; font-weight: 600; cursor: pointer; }
@@ -147,17 +147,17 @@
    area becomes a column exactly as tall as the window below the admin bar. Admin notices
    keep their place on top, the app takes the rest and scrolls inside. Footer hidden. */
 @media (min-width: 783px) {
-  .listenly-fullscreen #wpfooter { display: none; }
-  .listenly-fullscreen #wpbody-content { box-sizing: border-box; height: calc(100vh - 32px); padding-bottom: 0; display: flex; flex-direction: column; align-items: flex-start; }
-  .listenly-fullscreen #wpbody-content > * { flex-shrink: 0; }
-  .listenly-fullscreen #wpcontent { padding-left: 0; }
-  .listenly-fullscreen #wpbody-content > .notice, .listenly-fullscreen #wpbody-content > .error, .listenly-fullscreen #wpbody-content > .updated, .listenly-fullscreen #wpbody-content > .update-nag { align-self: stretch; margin: 12px 20px 0; }
-  .listenly-fullscreen .listenly-app { align-self: stretch; flex: 1 1 0; min-height: 420px; margin: 0; display: flex; flex-direction: column; }
-  .listenly-fullscreen .lv-frame, .listenly-fullscreen .lv-wizard { flex: 1 1 0; min-height: 0; border-radius: 0; }
-  .listenly-fullscreen #wpbody-content > :is(.notice, .error, .updated, .update-nag) ~ .listenly-app { margin-top: 12px; }
-  .listenly-fullscreen .lv-frame { flex-wrap: nowrap; }
-  .listenly-fullscreen .lv-main, .listenly-fullscreen .lv-wizard { overflow-y: auto; }
-  .listenly-fullscreen .lv-top { position: sticky; top: 0; z-index: 1; }
+  .postaloud-fullscreen #wpfooter { display: none; }
+  .postaloud-fullscreen #wpbody-content { box-sizing: border-box; height: calc(100vh - 32px); padding-bottom: 0; display: flex; flex-direction: column; align-items: flex-start; }
+  .postaloud-fullscreen #wpbody-content > * { flex-shrink: 0; }
+  .postaloud-fullscreen #wpcontent { padding-left: 0; }
+  .postaloud-fullscreen #wpbody-content > .notice, .postaloud-fullscreen #wpbody-content > .error, .postaloud-fullscreen #wpbody-content > .updated, .postaloud-fullscreen #wpbody-content > .update-nag { align-self: stretch; margin: 12px 20px 0; }
+  .postaloud-fullscreen .postaloud-app { align-self: stretch; flex: 1 1 0; min-height: 420px; margin: 0; display: flex; flex-direction: column; }
+  .postaloud-fullscreen .lv-frame, .postaloud-fullscreen .lv-wizard { flex: 1 1 0; min-height: 0; border-radius: 0; }
+  .postaloud-fullscreen #wpbody-content > :is(.notice, .error, .updated, .update-nag) ~ .postaloud-app { margin-top: 12px; }
+  .postaloud-fullscreen .lv-frame { flex-wrap: nowrap; }
+  .postaloud-fullscreen .lv-main, .postaloud-fullscreen .lv-wizard { overflow-y: auto; }
+  .postaloud-fullscreen .lv-top { position: sticky; top: 0; z-index: 1; }
 }
 
 /* Home (screen 0), sidebar icons and help card. */
@@ -221,7 +221,7 @@
   .lv-nav-label { width: 100%; margin: 8px 12px 2px; }
 }
 
-/* Player colours (Player screen): three option cards, each with a mini player swatch. */
+/* Player colors (Player screen): three option cards, each with a mini player swatch. */
 .lv-themes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
 .lv-theme { flex-direction: column; align-items: stretch; gap: 10px; padding: 12px; }
 .lv-theme .lv-option-name { display: flex; align-items: center; gap: 8px; }

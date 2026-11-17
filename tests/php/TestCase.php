@@ -2,10 +2,10 @@
 /**
  * Base test case with Brain Monkey set up.
  *
- * @package ListenlyVoice
+ * @package PostAloud
  */
 
-namespace ListenlyVoice\Tests;
+namespace PostAloud\Tests;
 
 use Brain\Monkey;
 use Brain\Monkey\Functions;

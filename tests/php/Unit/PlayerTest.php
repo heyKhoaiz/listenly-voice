@@ -2,16 +2,16 @@
 /**
  * Tests for where the player is placed in a post.
  *
- * @package ListenlyVoice
+ * @package PostAloud
  */
 
-namespace ListenlyVoice\Tests\Unit;
+namespace PostAloud\Tests\Unit;
 
 use Brain\Monkey\Functions;
-use ListenlyVoice\Player\Player;
-use ListenlyVoice\Support\Settings;
-use ListenlyVoice\Tests\TestCase;
-use ListenlyVoice\Tts\Registry;
+use PostAloud\Player\Player;
+use PostAloud\Support\Settings;
+use PostAloud\Tests\TestCase;
+use PostAloud\Tts\Registry;
 
 /**
  * Player::add_player().
@@ -54,7 +54,7 @@ final class PlayerTest extends TestCase {
 	public function test_top_of_the_post_puts_the_player_before_the_content(): void {
 		$this->settings( array( 'position' => 'above' ) );
 		$html = $this->render();
-		$this->assertStringStartsWith( '<div class="listenly-player"', $html );
+		$this->assertStringStartsWith( '<div class="postaloud-player"', $html );
 		$this->assertStringEndsWith( self::CONTENT, $html );
 	}
 
@@ -62,13 +62,13 @@ final class PlayerTest extends TestCase {
 		$this->settings( array( 'position' => 'below' ) );
 		$html = $this->render();
 		$this->assertStringStartsWith( self::CONTENT, $html );
-		$this->assertStringContainsString( 'class="listenly-player"', $html );
+		$this->assertStringContainsString( 'class="postaloud-player"', $html );
 	}
 
 	public function test_floating_adds_the_floating_class(): void {
 		$this->settings( array( 'position' => 'floating' ) );
 		$html = $this->render();
-		$this->assertStringContainsString( 'class="listenly-player listenly-player--floating"', $html );
+		$this->assertStringContainsString( 'class="postaloud-player postaloud-player--floating"', $html );
 		$this->assertStringStartsWith( self::CONTENT, $html );
 	}
 
@@ -119,7 +119,7 @@ final class PlayerTest extends TestCase {
 			'time'   => time(),
 		);
 		$html                                 = $this->footer( new Player( new Registry() ) );
-		$this->assertStringContainsString( 'listenly-player--floating', $html );
+		$this->assertStringContainsString( 'postaloud-player--floating', $html );
 		$this->assertArrayNotHasKey( Player::MISS_OPTION, $this->options );
 	}
 

@@ -14,7 +14,7 @@ type Page = string
 // The app shell from the UI design: light sidebar, top bar with pill buttons, cards.
 export function App() {
   const cfg = config()
-  const brand = cfg.brand?.trim() || 'Listenly Voice'
+  const brand = cfg.brand?.trim() || 'PostAloud'
   const [page, setPage] = useState<Page>('home')
   const [settings, setSettings] = useState<Settings>(cfg.settings)
   const [saving, setSaving] = useState(false)
@@ -26,7 +26,7 @@ export function App() {
     setNotice(null)
     try {
       setSettings(await api<Settings>('settings', { method: 'POST', body: settings }))
-      setNotice({ kind: 'ok', text: __('Settings saved.', 'listenly-voice') })
+      setNotice({ kind: 'ok', text: __('Settings saved.', 'postaloud') })
     } catch (e) {
       setNotice({ kind: 'error', text: (e as Error).message })
     } finally {
@@ -34,10 +34,10 @@ export function App() {
     }
   }
 
-  const home = { id: 'home', label: __('Home', 'listenly-voice'), icon: 'home' }
+  const home = { id: 'home', label: __('Home', 'postaloud'), icon: 'home' }
   const nav: { id: Page; label: string; description?: string; icon?: string }[] = [
-    { id: 'voices', label: __('Voices', 'listenly-voice'), description: __('Provider, voice and speed', 'listenly-voice'), icon: 'voices' },
-    { id: 'player', label: __('Player', 'listenly-voice'), description: __('Where it shows and how it looks', 'listenly-voice'), icon: 'player' },
+    { id: 'voices', label: __('Voices', 'postaloud'), description: __('Provider, voice and speed', 'postaloud'), icon: 'voices' },
+    { id: 'player', label: __('Player', 'postaloud'), description: __('Where it shows and how it looks', 'postaloud'), icon: 'player' },
   ]
   const extra = extraPages(['home', ...nav.map((n) => n.id)])
   nav.push(...extra.map(({ id, label, description, icon }) => ({ id, label, description, icon })))
@@ -57,16 +57,16 @@ export function App() {
           {brand}
         </div>
         <NavItem item={home} current={page} onOpen={setPage} />
-        <p className="lv-nav-label">{__('Settings', 'listenly-voice')}</p>
+        <p className="lv-nav-label">{__('Settings', 'postaloud')}</p>
         {nav.map((item) => (
           <NavItem key={item.id} item={item} current={page} onOpen={setPage} />
         ))}
         {cfg.helpLinks !== false && <div className="lv-help">
-          <span className="lv-help-title"><Icon name="help" size={16} />{__('Need a hand?', 'listenly-voice')}</span>
-          <span className="lv-help-text">{__('Answers to common questions, or ask on the forum.', 'listenly-voice')}</span>
+          <span className="lv-help-title"><Icon name="help" size={16} />{__('Need a hand?', 'postaloud')}</span>
+          <span className="lv-help-text">{__('Answers to common questions, or ask on the forum.', 'postaloud')}</span>
           <span className="lv-help-links">
-            <a href="https://wordpress.org/plugins/listenly-voice/#faq" target="_blank" rel="noreferrer">{__('FAQ', 'listenly-voice')}</a>
-            <a href="https://wordpress.org/support/plugin/listenly-voice/" target="_blank" rel="noreferrer">{__('Support forum', 'listenly-voice')}</a>
+            <a href="https://wordpress.org/plugins/postaloud/#faq" target="_blank" rel="noreferrer">{__('FAQ', 'postaloud')}</a>
+            <a href="https://wordpress.org/support/plugin/postaloud/" target="_blank" rel="noreferrer">{__('Support forum', 'postaloud')}</a>
           </span>
         </div>}
       </nav>
@@ -74,13 +74,13 @@ export function App() {
         <header className="lv-top">
           <span className="lv-title">{[home, ...nav].find((n) => n.id === page)?.label}</span>
           <div className="lv-actions">
-            <span className="lv-chip">{edition(`${__('Free', 'listenly-voice')} · v${cfg.version}`)}</span>
+            <span className="lv-chip">{edition(`${__('Free', 'postaloud')} · v${cfg.version}`)}</span>
             <button type="button" className="lv-btn" onClick={() => setWizard(true)}>
-              {__('Run setup', 'listenly-voice')}
+              {__('Run setup', 'postaloud')}
             </button>
             {page !== 'home' && !extraPage?.hideSave && (
               <button type="button" className="lv-btn lv-btn-dark" onClick={save} disabled={saving}>
-                {saving ? __('Saving…', 'listenly-voice') : __('Save changes', 'listenly-voice')}
+                {saving ? __('Saving…', 'postaloud') : __('Save changes', 'postaloud')}
               </button>
             )}
           </div>

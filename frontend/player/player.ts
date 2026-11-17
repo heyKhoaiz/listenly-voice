@@ -1,9 +1,9 @@
 // The frontend player entry. No React, no dependencies: it must stay small.
-// Reads data-listenly (backend/Player/Player.php); see mount.ts.
+// Reads data-postaloud (backend/Player/Player.php); see mount.ts.
 import './player.css'
 import { mount } from './mount'
 
-const start = () => document.querySelectorAll<HTMLElement>('.listenly-player[data-listenly]').forEach(mount)
+const start = () => document.querySelectorAll<HTMLElement>('.postaloud-player[data-postaloud]').forEach(mount)
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start)
 else start()
 

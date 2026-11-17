@@ -13,10 +13,10 @@ vi.mock('../../frontend/admin/lib/sound', () => ({
 afterEach(() => vi.unstubAllGlobals())
 
 beforeEach(() => {
-  ;(window as unknown as { listenlyConfig: unknown }).listenlyConfig = {
-    restUrl: '/wp-json/listenly/v1/',
+  ;(window as unknown as { postaloudConfig: unknown }).postaloudConfig = {
+    restUrl: '/wp-json/postaloud/v1/',
     nonce: 'n',
-    pageUrl: '/wp-admin/admin.php?page=listenly-voice',
+    pageUrl: '/wp-admin/admin.php?page=postaloud',
     version: '0.1.0',
     settings: { provider: 'browser', voice: '', speed: 1, post_types: ['post'], position: 'above', highlight: 'sentence' },
     providers: [
@@ -44,13 +44,13 @@ it('saves the key, tests it, and names the fix when the key is restricted', asyn
   vi.stubGlobal(
     'fetch',
     vi.fn(async (url: string) => {
-      const path = url.replace('/wp-json/listenly/v1/', '')
+      const path = url.replace('/wp-json/postaloud/v1/', '')
       paths.push(path)
       if (path === 'google-key') return new Response(JSON.stringify({ connected: true }))
       if (path === 'preview') {
         return new Response(
           JSON.stringify({
-            code: 'listenly_google_key_restricted',
+            code: 'postaloud_google_key_restricted',
             message: "This key is restricted so it can't be used here.",
             data: { status: 502, fix: 'https://console.cloud.google.com/apis/credentials' },
           }),

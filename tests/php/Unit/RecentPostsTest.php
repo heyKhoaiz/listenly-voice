@@ -2,16 +2,16 @@
 /**
  * Tests for the admin Home's recent posts.
  *
- * @package ListenlyVoice
+ * @package PostAloud
  */
 
-namespace ListenlyVoice\Tests\Unit;
+namespace PostAloud\Tests\Unit;
 
 use Brain\Monkey\Filters;
 use Brain\Monkey\Functions;
-use ListenlyVoice\Admin\RecentPosts;
-use ListenlyVoice\Hooks;
-use ListenlyVoice\Tests\TestCase;
+use PostAloud\Admin\RecentPosts;
+use PostAloud\Hooks;
+use PostAloud\Tests\TestCase;
 
 /**
  * RecentPosts.

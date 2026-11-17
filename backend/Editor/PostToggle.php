@@ -2,26 +2,26 @@
 /**
  * Per-post "audio on/off" switch in the block editor.
  *
- * @package ListenlyVoice
+ * @package PostAloud
  */
 
-namespace ListenlyVoice\Editor;
+namespace PostAloud\Editor;
 
-use ListenlyVoice\Hooks;
-use ListenlyVoice\Support\Settings;
+use PostAloud\Hooks;
+use PostAloud\Support\Settings;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Registers `_listenly_disabled` for the REST API and loads build/editor/editor.js, which adds
+ * Registers `_postaloud_disabled` for the REST API and loads build/editor/editor.js, which adds
  * a switch to the post's sidebar. Sites on the classic editor get the same switch as a meta box.
  */
 final class PostToggle {
 
-	const META   = '_listenly_disabled';
-	const HANDLE = 'listenly-editor';
-	const NONCE  = 'listenly_toggle_nonce';
-	const FIELD  = 'listenly_audio_on';
+	const META   = '_postaloud_disabled';
+	const HANDLE = 'postaloud-editor';
+	const NONCE  = 'postaloud_toggle_nonce';
+	const FIELD  = 'postaloud_audio_on';
 
 	/**
 	 * Registers hooks.
@@ -81,12 +81,12 @@ final class PostToggle {
 		}
 		wp_enqueue_script(
 			self::HANDLE,
-			LISTENLY_URL . 'build/editor/editor.js',
+			POSTALOUD_URL . 'build/editor/editor.js',
 			array( 'wp-plugins', 'wp-edit-post', 'wp-editor', 'wp-element', 'wp-components', 'wp-data', 'wp-i18n' ),
-			LISTENLY_VERSION,
+			POSTALOUD_VERSION,
 			true
 		);
-		wp_set_script_translations( self::HANDLE, 'listenly-voice', LISTENLY_PATH . 'languages' );
+		wp_set_script_translations( self::HANDLE, 'postaloud', POSTALOUD_PATH . 'languages' );
 	}
 
 	/**
@@ -100,8 +100,8 @@ final class PostToggle {
 			return;
 		}
 		add_meta_box(
-			'listenly-voice',
-			__( 'Listenly Voice', 'listenly-voice' ),
+			'postaloud',
+			__( 'PostAloud', 'postaloud' ),
 			array( $this, 'render_meta_box' ),
 			(string) $post_type,
 			'side',
@@ -121,7 +121,7 @@ final class PostToggle {
 			'<p><label><input type="checkbox" name="%1$s" value="1"%2$s> %3$s</label></p>',
 			esc_attr( self::FIELD ),
 			self::is_disabled( (int) $post->ID ) ? '' : ' checked="checked"',
-			esc_html__( 'Audio player on this post', 'listenly-voice' )
+			esc_html__( 'Audio player on this post', 'postaloud' )
 		);
 	}
 

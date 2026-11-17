@@ -2,18 +2,18 @@
 /**
  * Tests for the short cache and rate limit in front of live server-side audio.
  *
- * @package ListenlyVoice
+ * @package PostAloud
  */
 
-namespace ListenlyVoice\Tests\Unit;
+namespace PostAloud\Tests\Unit;
 
 use Brain\Monkey\Filters;
 use Brain\Monkey\Functions;
-use ListenlyVoice\Hooks;
-use ListenlyVoice\Tests\FakeProvider;
-use ListenlyVoice\Tests\FakeTimedProvider;
-use ListenlyVoice\Tests\TestCase;
-use ListenlyVoice\Tts\LiveAudio;
+use PostAloud\Hooks;
+use PostAloud\Tests\FakeProvider;
+use PostAloud\Tests\FakeTimedProvider;
+use PostAloud\Tests\TestCase;
+use PostAloud\Tts\LiveAudio;
 
 /**
  * LiveAudio.
@@ -45,7 +45,7 @@ final class LiveAudioTest extends TestCase {
 		);
 	}
 
-	private function get( \ListenlyVoice\Tts\ProviderInterface $provider, string $text = 'Hello there.', string $ip = '203.0.113.5', int $now = self::NOW ) {
+	private function get( \PostAloud\Tts\ProviderInterface $provider, string $text = 'Hello there.', string $ip = '203.0.113.5', int $now = self::NOW ) {
 		return LiveAudio::get( $provider, $text, 'en-US-Neural2-F', 1.0, $ip, $now );
 	}
 
@@ -90,7 +90,7 @@ final class LiveAudioTest extends TestCase {
 	}
 
 	public function test_provider_errors_get_status_502_and_are_not_cached(): void {
-		$provider = new FakeProvider( new \WP_Error( 'listenly_google', 'Quota exceeded' ) );
+		$provider = new FakeProvider( new \WP_Error( 'postaloud_google', 'Quota exceeded' ) );
 
 		$result = $this->get( $provider );
 		$this->assertInstanceOf( \WP_Error::class, $result );
@@ -124,7 +124,7 @@ final class LiveAudioTest extends TestCase {
 
 		$result = $this->get( $provider, 'One more.', '203.0.113.5', self::NOW + 60 );
 		$this->assertInstanceOf( \WP_Error::class, $result );
-		$this->assertSame( 'listenly_busy', $result->get_error_code() );
+		$this->assertSame( 'postaloud_busy', $result->get_error_code() );
 		$this->assertSame( 429, $result->data['status'] );
 		$this->assertSame( 540, $result->data['retry_after'] );
 		$this->assertCount( 30, $provider->calls );
@@ -228,7 +228,7 @@ final class LiveAudioTest extends TestCase {
 	}
 
 	public function test_when_timed_synthesis_fails_it_falls_back_to_plain_audio_without_marks(): void {
-		$provider = new FakeTimedProvider( new \WP_Error( 'listenly_ssml_too_long', 'Too long' ), 'PLAIN-MP3' );
+		$provider = new FakeTimedProvider( new \WP_Error( 'postaloud_ssml_too_long', 'Too long' ), 'PLAIN-MP3' );
 
 		$result = $this->get( $provider, 'One.' );
 		$this->assertSame( 'PLAIN-MP3', $result['audio'] );
@@ -243,7 +243,7 @@ final class LiveAudioTest extends TestCase {
 				'site'    => array( 'max' => 1000, 'window' => 3600 ),
 			)
 		);
-		$provider = new FakeTimedProvider( new \WP_Error( 'listenly_google', 'Beta down' ) );
+		$provider = new FakeTimedProvider( new \WP_Error( 'postaloud_google', 'Beta down' ) );
 
 		$this->assertSame( 'PLAIN-MP3', $this->audio( $provider, 'One.' ) );
 		$this->assertSame( 429, $this->get( $provider, 'Two.' )->data['status'] );

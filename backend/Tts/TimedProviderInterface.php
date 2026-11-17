@@ -2,10 +2,10 @@
 /**
  * A voice provider that can say when each sentence starts.
  *
- * @package ListenlyVoice
+ * @package PostAloud
  */
 
-namespace ListenlyVoice\Tts;
+namespace PostAloud\Tts;
 
 defined( 'ABSPATH' ) || exit;
 

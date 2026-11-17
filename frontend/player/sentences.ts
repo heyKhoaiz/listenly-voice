@@ -4,7 +4,7 @@
 export type Span = { start: number; end: number }
 export type Sentence = { text: string; range: Range }
 
-const SKIP = '.listenly-player, script, style, noscript, figure, nav, button, select, textarea, [aria-hidden="true"]'
+const SKIP = '.postaloud-player, script, style, noscript, figure, nav, button, select, textarea, [aria-hidden="true"]'
 const BLOCK = /^(P|H[1-6]|LI|BLOCKQUOTE|PRE|TD|TH|DT|DD|FIGCAPTION|ARTICLE|SECTION|MAIN|DIV|HEADER|FOOTER|ASIDE|UL|OL|TABLE|TR)$/
 const CLOSERS = `"'”’)]»`
 // Lower-case words that end in a full stop without ending the sentence.

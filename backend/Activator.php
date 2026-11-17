@@ -2,13 +2,13 @@
 /**
  * Activation.
  *
- * @package ListenlyVoice
+ * @package PostAloud
  */
 
-namespace ListenlyVoice;
+namespace PostAloud;
 
-use ListenlyVoice\Support\Settings;
-use ListenlyVoice\Support\Setup;
+use PostAloud\Support\Settings;
+use PostAloud\Support\Setup;
 
 defined( 'ABSPATH' ) || exit;
 

@@ -33,7 +33,7 @@ function pickVoice(voices: SpeechSynthesisVoice[], lang: string): SpeechSynthesi
 // Held so Chrome doesn't garbage-collect the utterance and drop its end event.
 const live = new Set<SpeechSynthesisUtterance>()
 
-const noVoice = () => new Error(__('This browser has no voice installed, so it cannot read aloud. Try another browser, or pick a Google voice.', 'listenly-voice'))
+const noVoice = () => new Error(__('This browser has no voice installed, so it cannot read aloud. Try another browser, or pick a Google voice.', 'postaloud'))
 
 /** Reads text with the browser's own voice. Resolves when it finishes, rejects if it can't speak. */
 export async function speak(text: string, lang = document.documentElement.lang || 'en-US', rate = 1): Promise<void> {
@@ -67,7 +67,7 @@ export async function speak(text: string, lang = document.documentElement.lang |
     u.onend = () => settle(resolve)
     u.onerror = (e) => {
       if (e.error === 'interrupted' || e.error === 'canceled') return settle(resolve)
-      settle(() => reject(voices.length ? new Error(`${__('The browser voice failed:', 'listenly-voice')} ${e.error}`) : noVoice()))
+      settle(() => reject(voices.length ? new Error(`${__('The browser voice failed:', 'postaloud')} ${e.error}`) : noVoice()))
     }
     // Chrome drops a speak() issued in the same tick as cancel().
     setTimeout(() => {
